@@ -242,16 +242,16 @@ if __name__ == '__main__':
 
         if optimized:
             logging.info (
-                "{0:30}{1:10}".format(
+                "{0:20}{1:10}".format(
                     "Trader (optimized):", 
-                    simulation['trader']['name'].upper()
+                    simulation['trader']['name'].lower()
                     )
             )
         else:
             logging.info (
-                "{0:30}{1:10}".format(
-                    "Trader (not optimized):", 
-                    simulation['trader']['name'].upper()
+                "{0:20}{1:10}".format(
+                    "Trader:", 
+                    simulation['trader']['name'].lower()
                     )
             )
 
