@@ -102,7 +102,11 @@ const start = (configName, simConfig) => __awaiter(this, void 0, void 0, functio
 (() => __awaiter(this, void 0, void 0, function* () {
     try {
         configName = process.argv[2];
-        const simConfig = new config_generator_1.ConfigGenerator(configName);
+        assert(process.env.MONGODB, 'MONGODB Not Defined');
+        assert(process.env.SIMULATOR_DB, 'SIMULATOR_DB Not Defined');
+        const mongoRemote = yield mongodb_1.MongoClient.connect(process.env.MONGODB, { useNewUrlParser: true });
+        const remoteSimDb = mongoRemote.db(process.env.SIMULATOR_DB);
+        const simConfig = new config_generator_1.ConfigGenerator(configName, remoteSimDb);
         yield start(configName, simConfig);
     }
     catch (err) {

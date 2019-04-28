@@ -162,7 +162,20 @@ const start = async (configName: string, simConfig: ConfigGenerator) => {
     try {
 
         configName = process.argv[2];
-        const simConfig = new ConfigGenerator(configName);
+
+        assert(process.env.MONGODB, 'MONGODB Not Defined');
+        assert(process.env.SIMULATOR_DB, 'SIMULATOR_DB Not Defined');
+
+        const mongoRemote =
+            await MongoClient.connect(
+                process.env.MONGODB!,
+                { useNewUrlParser: true },
+            );
+
+        const remoteSimDb: Db = mongoRemote.db(process.env.SIMULATOR_DB);
+
+        const simConfig = new ConfigGenerator(configName, remoteSimDb);
+
         await start(configName, simConfig);
 
     } catch (err) {

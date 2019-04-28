@@ -88,7 +88,6 @@ const start = async (
             loadConfigs.push({
                 exchange: next.exchange,
                 market: next.market,
-                // pdf: next.pdf,
                 depth: next.depth,
                 timeFrame: next.timeFrame,
             });
@@ -98,8 +97,6 @@ const start = async (
 
         // Clear out from previous load
         await simDb.collection('loads').deleteMany({});
-
-        console.log (JSON.stringify(loadConfigs, null,4));
 
         for (const loadConfig of loadConfigs) {
 

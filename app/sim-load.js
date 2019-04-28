@@ -65,7 +65,6 @@ const start = (simConfig, simDb) => __awaiter(this, void 0, void 0, function* ()
         }
         let taskObjs = [];
         yield simDb.collection('loads').deleteMany({});
-        console.log(JSON.stringify(loadConfigs, null, 4));
         for (const loadConfig of loadConfigs) {
             const taskObj = Object.assign({
                 envId: simConfig.config.envId,
