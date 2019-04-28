@@ -201,7 +201,6 @@ class Orderbooks:
                     },
                 }).sort("ts", -1).limit(1)
         )
-        assert len(orderbooks) == 1, 'Unable to Find Last Orderbook'
 
         if len(orderbooks) == 0:
             return None
