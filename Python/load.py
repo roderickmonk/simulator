@@ -200,6 +200,10 @@ if __name__ == '__main__':
             orderbooks_collection=input_orderbooks
         )
 
+        if last_orderbook == None:
+            logging.info('No Orderbooks to Load')
+            os._exit(0)
+            
         actual_start = first_orderbook["ts"]
         actual_end = last_orderbook["ts"]
 

@@ -203,7 +203,10 @@ class Orderbooks:
         )
         assert len(orderbooks) == 1, 'Unable to Find Last Orderbook'
 
-        return orderbooks[0]
+        if len(orderbooks) == 0:
+            return None
+        else:
+            return orderbooks[0]
 
     @staticmethod
     def count_orderbooks(
