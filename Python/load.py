@@ -171,7 +171,7 @@ if __name__ == '__main__':
         )
 
         logging.info (
-            "{0:30}{1:10}".format( 
+            "{0:20}{1:10}".format( 
                 "Channel:",
                 ":".join([
                     str(config["envId"]),
@@ -182,10 +182,13 @@ if __name__ == '__main__':
         )
 
         logging.info(
-            "{0:30}{1:10}".format(
+            "{0:20}{1:10}".format(
                 'Start Time:', 
                 str(config["timeFrame"]["startTime"])))
-        logging.info('End Time:   %s', str(config["timeFrame"]["endTime"]))
+        logging.info(
+            "{0:20}{1:10}".format(
+                'End Time:', 
+                str(config["timeFrame"]["endTime"])))
 
         trades = remote_mongo_client.history.trades
         get_trades(
