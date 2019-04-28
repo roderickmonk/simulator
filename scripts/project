@@ -1,0 +1,23 @@
+#!/bin/bash
+
+export PATH=$PATH:./scripts:./Python
+
+# Assume production
+export NODE_ENV=production
+
+# Various useful functions
+source ./scripts/bash-functions
+
+# Various useful aliases
+source ./scripts/aliases
+
+# Give Python access to traders
+export PYTHONPATH=$SIMULATOR_PATH/traders:$SIMULATOR_PATH/Python:~/traders:.:$PYTHONPATH
+
+# Some pytest options
+# export PYTEST_ADDOPTS="--benchmark-columns=Mean,Median,Rounds"
+
+source ./bin/activate
+
+# export the version
+source ./scripts/software.version

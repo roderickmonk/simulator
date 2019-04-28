@@ -1,0 +1,25 @@
+version: '2'
+
+volumes:
+  rabbitmq_data: {}
+  mongodb_data: {}
+
+services:
+ 
+  mongodb:
+    image: 'library/mongo:3.4.20'
+    container_name: mongodb
+    restart: unless-stopped
+    privileged: true
+    network_mode: host
+    command: mongod
+
+  redis:
+    container_name: redis
+    image: redis
+    ports:
+      - "6379:6379"
+    network_mode: host
+    restart: unless-stopped
+    
+    

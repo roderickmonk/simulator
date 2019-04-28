@@ -1,0 +1,1 @@
+c++ -O3 -shared -std=gnu++11 -I ./pybind11/include `python3.7m-config --cflags --ldflags --libs` co1.cpp HftEngine.cpp -o ../../optimized_co1.so -fPIC

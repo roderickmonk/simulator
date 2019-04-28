@@ -1,0 +1,23 @@
+import math
+
+
+class Assets:
+    funds: float
+    inventory: float
+
+    def __init__(self, funds: float = math.inf, inventory: float = 0):
+        self.funds = funds
+        self.inventory = inventory
+
+    def __str__(self):
+        return str(self.__class__) + ' ' + ' '.join(('{} = {}'.format(item, self.__dict__[item]) for item in self.__dict__))
+
+    def __repr__(self):
+        return str(self.__class__) + ' ' + ' '.join(('{} = {}'.format(item, self.__dict__[item]) for item in self.__dict__))
+
+    def __eq__(self, other):
+        return math.isclose(self.funds, other.funds) and math.isclose(self.inventory, other.inventory)
+
+    def __add__(self, other):
+        self.funds += other.funds
+        self.inventory += other.inventory

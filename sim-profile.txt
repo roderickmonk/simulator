@@ -1,0 +1,795 @@
+Wrote profile results to simulate.py.lprof
+Timer unit: 1e-06 s
+
+Total time: 0.341436 s
+File: ./Python/matching_engine.py
+Function: match at line 78
+
+Line #      Hits         Time  Per Hit   % Time  Line Contents
+==============================================================
+    78                                               @profile
+    79                                               def match(
+    80                                                   self,
+    81                                                   buy_rate: float,
+    82                                                   sell_rate: float,
+    83                                                   buy_trades: [dict],
+    84                                                   sell_trades: [dict],
+    85                                               ):
+    86                                           
+    87                                                   assert buy_rate > 0 and sell_rate > 0
+    88                                           
+    89      5016      13172.0      2.6      3.9          funds, inventory = self.assets
+    90                                           
+    91                                                   if __debug__:
+    92                                                       logging.debug('buy_rate: %f, sell_rate: %f, IL: %f',
+    93                                                                     buy_rate,
+    94                                                                     sell_rate,
+    95                                                                     self.IL)
+    96                                           
+    97                                                       logging.debug(
+    98                                                           'QL: %f funds: %f, IL - inventory * sell_rate: %f',
+    99                                                           self.QL,
+   100                                                           funds,
+   101                                                           self.IL - inventory * sell_rate)
+   102                                           
+   103                                                   # Take a snapshot of the assets;
+   104                                                   # both buy and sell sides start with the same snapshot
+   105      5016       2571.0      0.5      0.8          start_assets = self.assets
+   106                                           
+   107      5016       2420.0      0.5      0.7          buy_result = self.buy(
+   108      5016       1730.0      0.3      0.5              start_assets=start_assets,
+   109      5016       1665.0      0.3      0.5              buy_rate=buy_rate,
+   110      5016       1746.0      0.3      0.5              sell_rate=sell_rate,
+   111      5016     165159.0     32.9     48.4              sell_trades=sell_trades,
+   112                                                   )
+   113                                           
+   114      5016       2686.0      0.5      0.8          sell_result = self.sell(
+   115      5016       1863.0      0.4      0.5              start_assets=start_assets,
+   116      5016       1752.0      0.3      0.5              sell_rate=sell_rate,
+   117      5016     144222.0     28.8     42.2              buy_trades=buy_trades,
+   118                                                   )
+   119                                           
+   120      5016       2450.0      0.5      0.7          return buy_result, sell_result
+
+Total time: 0.10933 s
+File: ./Python/matching_engine.py
+Function: buy at line 122
+
+Line #      Hits         Time  Per Hit   % Time  Line Contents
+==============================================================
+   122                                               @profile
+   123                                               def buy(
+   124                                                   self,
+   125                                                   start_assets: np.array,
+   126                                                   buy_rate: float,
+   127                                                   sell_rate: float,
+   128                                                   sell_trades: [dict],
+   129                                               ) -> MatchResult:
+   130                                           
+   131      5016       6265.0      1.2      5.7          if len(sell_trades) == 0:
+   132      2125       3138.0      1.5      2.9              self.buy_no_trades_count += 1
+   133      2125       3040.0      1.4      2.8              return MatchResult.NO_TRADES
+   134                                           
+   135      2891       4390.0      1.5      4.0          funds, inventory = start_assets
+   136                                           
+   137      2891       4054.0      1.4      3.7          ceiling = self.IL - inventory * sell_rate
+   138      2891       5983.0      2.1      5.5          quantity = min(self.QL, funds, ceiling)
+   139                                           
+   140                                                   """
+   141                                                   if __debug__:
+   142                                                       logging.debug ('ceiling: ' + str(ceiling))
+   143                                                       logging.debug ('quantity: ' + str(quantity))
+   144                                                   """
+   145                                           
+   146      2891       3657.0      1.3      3.3          if (ceiling <= 0 or funds <= 0):
+   147                                           
+   148      1357       2055.0      1.5      1.9              self.buy_blocked_count += 1
+   149      1357       1930.0      1.4      1.8              return MatchResult.BLOCKED
+   150                                           
+   151      1534       1088.0      0.7      1.0          matched = False
+   152      1534       1053.0      0.7      1.0          match = 0
+   153                                           
+   154      4069       3821.0      0.9      3.5          for trade in sell_trades:
+   155                                           
+   156                                                       # Trades higher than rate are ignored
+   157      2550       3183.0      1.2      2.9              if trade['r'] <= buy_rate:
+   158                                           
+   159        97        106.0      1.1      0.1                  if quantity <= 0:
+   160        15         11.0      0.7      0.0                      if matched:
+   161        15         12.0      0.8      0.0                          self.buy_match_count += 1
+   162        15         22.0      1.5      0.0                          return MatchResult.MATCHED
+   163                                                               else:
+   164                                                                   self.buy_unmatchable_count += 1
+   165                                                                   return MatchResult.UNMATCHABLE
+   166                                           
+   167        82        126.0      1.5      0.1                  base = min(quantity, trade['q'] * buy_rate)
+   168        82         79.0      1.0      0.1                  quote = base/buy_rate
+   169        82         88.0      1.1      0.1                  fee = quote * self.actual_fee_rate
+   170        82         70.0      0.9      0.1                  notion = quote * buy_rate
+   171                                           
+   172                                                           # Ensure we meet the min notional
+   173        82         83.0      1.0      0.1                  if notion < self.min_notional:
+   174                                                               if matched:
+   175                                                                   self.buy_match_count += 1
+   176                                                                   return MatchResult.MATCHED
+   177                                                               else:
+   178                                                                   self.buy_notion_failure_count += 1
+   179                                                                   return MatchResult.MIN_NOTIONAL_FAILURE
+   180                                           
+   181                                                           if __debug__:
+   182                                                               logging.debug('actual_fee_rate: %f, base: %f, quote: %f, fee: %f',
+   183                                                                             self.actual_fee_rate, base, quote, fee)
+   184                                           
+   185        82         59.0      0.7      0.1                  matched = True
+   186                                           
+   187        82        111.0      1.4      0.1                  self.trades_collection.insert({
+   188        82         94.0      1.1      0.1                      "runId": sim_config.partition_config["runId"],
+   189        82         76.0      0.9      0.1                      "simVersion": sim_config.partition_config["simVersion"],
+   190        82         65.0      0.8      0.1                      "s": sim_config.partition_config["simId"],
+   191        82         57.0      0.7      0.1                      "p": sim_config.partition_config["_id"],
+   192        82         57.0      0.7      0.1                      "ceiling": ceiling,
+   193        82         70.0      0.9      0.1                      "idx": self.sim_trades_idx,
+   194        82         63.0      0.8      0.1                      "match": match,
+   195        82        388.0      4.7      0.4                      "ts": datetime.now(),
+   196        82         63.0      0.8      0.1                      "buy": True,
+   197        82         62.0      0.8      0.1                      "o": sim_config.orderbook_id,
+   198        82         77.0      0.9      0.1                      "t": trade['_id'],
+   199        82         72.0      0.9      0.1                      "quantity": quantity,
+   200        82         56.0      0.7      0.1                      "r": buy_rate,
+   201        82         63.0      0.8      0.1                      "q": quote,
+   202        82         76.0      0.9      0.1                      "b": -base,
+   203        82         53.0      0.6      0.0                      "buyFee": fee,
+   204        82      56452.0    688.4     51.6                      "historyTrade": trade,
+   205                                                           })
+   206                                           
+   207        82        180.0      2.2      0.2                  quantity -= base
+   208        82        994.0     12.1      0.9                  self.assets += [-base, quote-fee]
+   209                                           
+   210        82        101.0      1.2      0.1                  self.sim_trades_idx += 1
+   211        82         68.0      0.8      0.1                  match += 1
+   212                                           
+   213      1519       1209.0      0.8      1.1          if matched:
+   214        64         65.0      1.0      0.1              self.buy_match_count += 1
+   215        64         94.0      1.5      0.1              return MatchResult.MATCHED
+   216                                                   else:
+   217      1455       2343.0      1.6      2.1              self.buy_unmatchable_count += 1
+   218      1455       2008.0      1.4      1.8              return MatchResult.UNMATCHABLE
+
+Total time: 0.093346 s
+File: ./Python/matching_engine.py
+Function: sell at line 220
+
+Line #      Hits         Time  Per Hit   % Time  Line Contents
+==============================================================
+   220                                               @profile
+   221                                               def sell(
+   222                                                   self,
+   223                                                   start_assets: np.array,
+   224                                                   sell_rate: float,
+   225                                                   buy_trades: [dict],
+   226                                               ) -> MatchResult:
+   227                                           
+   228      5016       9543.0      1.9     10.2          _, inventory = start_assets
+   229                                           
+   230      5016       4753.0      0.9      5.1          if len(buy_trades) == 0:
+   231                                           
+   232      2743       2629.0      1.0      2.8              self.sell_no_trades_count += 1
+   233      2743       2347.0      0.9      2.5              return MatchResult.NO_TRADES
+   234                                           
+   235      2273       5053.0      2.2      5.4          quantity = min(self.QL, inventory * sell_rate)
+   236                                           
+   237      2273       2321.0      1.0      2.5          if quantity <= 0:
+   238       598        761.0      1.3      0.8              self.sell_blocked_count += 1
+   239       598        542.0      0.9      0.6              return MatchResult.BLOCKED
+   240                                           
+   241      1675       1187.0      0.7      1.3          matched = False
+   242      1675       1118.0      0.7      1.2          match = 0
+   243                                           
+   244      4940       4437.0      0.9      4.8          for trade in buy_trades:
+   245                                           
+   246                                                       # Trades lower than rate are ignored
+   247      3278       3944.0      1.2      4.2              if trade['r'] >= sell_rate:
+   248                                           
+   249        81         74.0      0.9      0.1                  if quantity <= 0:
+   250                                           
+   251        13          9.0      0.7      0.0                      if matched:
+   252        13         15.0      1.2      0.0                          self.sell_match_count += 1
+   253        13         18.0      1.4      0.0                          return MatchResult.MATCHED
+   254                                           
+   255                                                               else:
+   256                                                                   self.sell_unmatchable_count += 1
+   257                                                                   return MatchResult.UNMATCHABLE
+   258                                           
+   259        68        104.0      1.5      0.1                  base = min(quantity, trade['q'] * sell_rate)
+   260        68         70.0      1.0      0.1                  quote = base / sell_rate
+   261        68         66.0      1.0      0.1                  fee = base * self.actual_fee_rate
+   262        68         52.0      0.8      0.1                  notion = quote * sell_rate
+   263                                           
+   264                                                           """
+   265                                                           if __debug__:
+   266                                                               logging.debug(f'base: {base}, quote: {quote}, fee: {fee}, notion: {notion}')
+   267                                                           """
+   268                                           
+   269                                                           # Ensure we meet the min notional
+   270        68         75.0      1.1      0.1                  if notion < self.min_notional:
+   271                                                               if matched:
+   272                                                                   self.sell_match_count += 1
+   273                                                                   return MatchResult.MATCHED
+   274                                                               else:
+   275                                                                   self.sell_notion_failure_count += 1
+   276                                                                   return MatchResult.MIN_NOTIONAL_FAILURE
+   277                                           
+   278        68         52.0      0.8      0.1                  matched = True
+   279                                           
+   280        68         88.0      1.3      0.1                  self.trades_collection.insert({
+   281        68         80.0      1.2      0.1                      "runId": sim_config.partition_config["runId"],
+   282        68         58.0      0.9      0.1                      "simVersion": sim_config.partition_config["simVersion"],
+   283        68         58.0      0.9      0.1                      "s": sim_config.partition_config["simId"],
+   284        68         51.0      0.8      0.1                      "p": sim_config.partition_config["_id"],
+   285        68         59.0      0.9      0.1                      "idx": self.sim_trades_idx,
+   286        68         48.0      0.7      0.1                      "match": match,
+   287        68        320.0      4.7      0.3                      "ts": datetime.now(),
+   288        68         50.0      0.7      0.1                      "buy": False,
+   289        68         58.0      0.9      0.1                      "o": sim_config.orderbook_id,
+   290        68         62.0      0.9      0.1                      "t": trade['_id'],
+   291        68         49.0      0.7      0.1                      "quantity": quantity,
+   292        68         45.0      0.7      0.0                      "r": sell_rate,
+   293        68         75.0      1.1      0.1                      "q": -quote,
+   294        68         52.0      0.8      0.1                      "b": base,
+   295        68         41.0      0.6      0.0                      "sellFee": fee,
+   296        68      46739.0    687.3     50.1                      "historyTrade": trade,
+   297                                                           })
+   298                                           
+   299        68        137.0      2.0      0.1                  quantity -= base
+   300        68        824.0     12.1      0.9                  self.assets += [base-fee, -quote]
+   301                                           
+   302        68         75.0      1.1      0.1                  self.sim_trades_idx += 1
+   303        68         54.0      0.8      0.1                  match += 1
+   304                                           
+   305      1662       1321.0      0.8      1.4          if matched:
+   306        55         59.0      1.1      0.1              self.sell_match_count += 1
+   307        55         68.0      1.2      0.1              return MatchResult.MATCHED
+   308                                                   else:
+   309      1607       2223.0      1.4      2.4              self.sell_unmatchable_count += 1
+   310      1607       1482.0      0.9      1.6              return MatchResult.UNMATCHABLE
+
+Total time: 1.8869 s
+File: ./Python/orderbooks.py
+Function: next at line 255
+
+Line #      Hits         Time  Per Hit   % Time  Line Contents
+==============================================================
+   255                                               @profile
+   256                                               def next(self):
+   257                                           
+   258      5036       2988.0      0.6      0.2          while True:
+   259                                           
+   260      5036    1463837.0    290.7     77.6              orderbook = self.iter.next()
+   261                                           
+   262      5035       3272.0      0.6      0.2              if orderbook == None:
+   263                                                           raise StopIteration
+   264                                           
+   265                                                       assert "s" in orderbook
+   266                                           
+   267      5035       3860.0      0.8      0.2              if orderbook["s"] == True:
+   268                                           
+   269                                                           # Snapshot
+   270      5035      41826.0      8.3      2.2                  self.buy_orderbook = orderbook["buy"]
+   271      5035      37855.0      7.5      2.0                  self.sell_orderbook = orderbook["sell"]
+   272                                           
+   273                                                       else:
+   274                                           
+   275                                                           # Delta
+   276                                                           self.apply_deltas(orderbook)
+   277                                           
+   278                                                           orderbook["buy"] = self.buy_orderbook
+   279                                                           orderbook["sell"] = self.sell_orderbook
+   280                                           
+   281                                                       # First orderbooks not needed
+   282      5035      28808.0      5.7      1.5              if self.start.replace(tzinfo=None) <= orderbook["ts"].replace(tzinfo=None):
+   283      5035       2419.0      0.5      0.1                  break
+   284                                           
+   285                                                   # Sanity check: best buy strictly less than best sell
+   286                                                   assert orderbook["buy"][0][0] < orderbook["sell"][0][0]
+   287                                           
+   288      5035     165425.0     32.9      8.8          orderbook["buy"] = np.array(orderbook["buy"], dtype=float)
+   289      5035     134317.0     26.7      7.1          orderbook["sell"] = np.array(orderbook["sell"], dtype=float)
+   290                                           
+   291                                                   assert len(orderbook["buy"]) > 0
+   292                                                   assert len(orderbook["sell"]) > 0
+   293                                           
+   294      5035       2296.0      0.5      0.1          return orderbook
+
+Total time: 20.5871 s
+File: ./Python/simulate.py
+Function: simulate at line 68
+
+Line #      Hits         Time  Per Hit   % Time  Line Contents
+==============================================================
+    68                                           @profile
+    69                                           def simulate():
+    70                                           
+    71         1          5.0      5.0      0.0      matching_engine: MatchingEngine = None
+    72         1          4.0      4.0      0.0      CO_calls = 0
+    73         1          4.0      4.0      0.0      matching_engine_calls = 0
+    74         1          3.0      3.0      0.0      returncode = 0
+    75         1          8.0      8.0      0.0      max_time_diffs = np.array([])
+    76         1          4.0      4.0      0.0      last_ob_timestamp = None
+    77                                           
+    78         1          3.0      3.0      0.0      buy_trades_count = 0
+    79         1          4.0      4.0      0.0      sell_trades_count = 0
+    80                                           
+    81         1          4.0      4.0      0.0      try:
+    82                                           
+    83         1          5.0      5.0      0.0          logging.basicConfig(
+    84         1          5.0      5.0      0.0              format='%(asctime)s %(levelname)-8s %(message)s',
+    85         1          4.0      4.0      0.0              level=logging.INFO,
+    86         1         97.0     97.0      0.0              datefmt='%Y-%m-%d %H:%M:%S')
+    87                                           
+    88         1         23.0     23.0      0.0          logging.debug(f'simulate args: {sys.argv}')
+    89                                           
+    90         1          5.0      5.0      0.0          if len(sys.argv) == 2:
+    91         1         17.0     17.0      0.0              partition_id = ObjectId(sys.argv[1])
+    92                                                   else:
+    93                                                       assert False, 'Usage: simulate <Simulation ObjectId>'
+    94                                           
+    95         1         17.0     17.0      0.0          logging.debug('partition_id: ' + str(partition_id))
+    96                                           
+    97                                                   assert os.environ['MONGODB'], 'MONGODB Not Defined'
+    98         1       4662.0   4662.0      0.0          remote_mongo_client = MongoClient(os.environ['MONGODB'])
+    99                                           
+   100                                                   assert os.environ['SIMULATOR_DB'], 'SIMULATOR_DB Not Defined'
+   101         1         61.0     61.0      0.0          sim_db = remote_mongo_client[os.environ['SIMULATOR_DB']]
+   102         1         57.0     57.0      0.0          sim_config.partition_config = sim_db.partitions.find_one(
+   103                                                       {
+   104         1      12891.0  12891.0      0.1                  "_id": partition_id
+   105                                                       }
+   106                                                   )
+   107                                           
+   108         1          8.0      8.0      0.0          logging.debug('sim_config.partition_config:\n' +
+   109         1         51.0     51.0      0.0                        str(sim_config.partition_config))
+   110                                           
+   111         1          4.0      4.0      0.0          if sim_config.partition_config == None:
+   112                                                       raise Exception('Unknown Trader Configuration')
+   113                                           
+   114                                                   # If simId is 0, then it is a stand alone subprocess test run
+   115         1         10.0     10.0      0.0          if sim_config.partition_config["simId"] == '0':
+   116                                                       sim_config.partition_config["simId"] = ObjectId()
+   117                                           
+   118         1          4.0      4.0      0.0          start = sim_config.partition_config["startTime"]
+   119         1          3.0      3.0      0.0          end = sim_config.partition_config["endTime"]
+   120                                           
+   121         1         74.0     74.0      0.0          trades = remote_mongo_client.history.trades
+   122                                           
+   123         1         32.0     32.0      0.0          pdf = sim_db.PDFs.find_one(
+   124                                                       filter={
+   125         1       1138.0   1138.0      0.0                  "name": sim_config.partition_config["pdf"]
+   126                                                       }
+   127                                                   )
+   128                                           
+   129         1         17.0     17.0      0.0          sim_config.pdf_x = np.array(pdf["x"])
+   130                                                   assert len(sim_config.pdf_x) > 0
+   131                                           
+   132         1         17.0     17.0      0.0          sim_config.pdf_y = np.array(pdf["y"])
+   133                                                   assert len(sim_config.pdf_y) > 0
+   134                                           
+   135                                                   assert sim_config.pdf_x.shape == sim_config.pdf_y.shape
+   136                                           
+   137         1         42.0     42.0      0.0          sim_config.pdf_x = np.power(10, sim_config.pdf_x)
+   138                                           
+   139         1          4.0      4.0      0.0          QL = sim_config.partition_config['quantityLimit']
+   140         1          4.0      4.0      0.0          IL = sim_config.partition_config['inventoryLimit']
+   141                                           
+   142                                                   sim_config.rate_precision = - \
+   143         1         10.0     10.0      0.0              int(numpy.log10(sim_config.partition_config['tick']))
+   144                                           
+   145                                                   sim_config.quantity_precision = - \
+   146         1          6.0      6.0      0.0              int(numpy.log10(sim_config.partition_config['tick']))
+   147                                           
+   148                                                   assert sim_config.partition_config["minNotional"], "Min Notional Missing"
+   149                                           
+   150                                                   # Count the number of source orderbooks
+   151         1          4.0      4.0      0.0          source_orderbooks = Orderbooks.count_orderbooks(
+   152         1          4.0      4.0      0.0              0,
+   153         1          3.0      3.0      0.0              'bittrex',
+   154         1          4.0      4.0      0.0              'btc-eth',
+   155         1          4.0      4.0      0.0              start,
+   156         1          4.0      4.0      0.0              end,
+   157         1      22284.0  22284.0      0.1              sim_db.orderbooks
+   158                                                   )
+   159                                           
+   160         1        341.0    341.0      0.0          logging.info(f'Total Source Orderbooks: {source_orderbooks}')
+   161                                           
+   162         1          4.0      4.0      0.0          matching_engine = MatchingEngine(
+   163                                           
+   164         1         13.0     13.0      0.0              assets=np.array([math.inf, 0], dtype=float),
+   165         1          4.0      4.0      0.0              QL=QL,
+   166         1          4.0      4.0      0.0              IL=IL,
+   167         1          4.0      4.0      0.0              actual_fee_rate=sim_config.partition_config["actualFeeRate"],
+   168         1          4.0      4.0      0.0              min_notional=sim_config.partition_config["minNotional"],
+   169         1         54.0     54.0      0.0              trades_collection=sim_db.trades,
+   170                                                   )
+   171                                           
+   172         1         22.0     22.0      0.0          logging.debug(f'start: {start}')
+   173         1         10.0     10.0      0.0          logging.debug(f'end: {end}')
+   174                                           
+   175         1       4472.0   4472.0      0.0          sim_config.init(sim_config.partition_config)
+   176                                           
+   177         1        221.0    221.0      0.0          logging.info('trader: ' + str(sim_config.partition_config["trader"]))
+   178                                           
+   179                                                   if __debug__:
+   180                                                       from CO1 import Trader
+   181                                                       trader = Trader(sim_config)
+   182                                           
+   183                                                   else:
+   184         1          5.0      5.0      0.0              trader = importlib.import_module(
+   185         1         95.0     95.0      0.0                  sim_config.partition_config["trader"]).Trader(sim_config)
+   186                                           
+   187         1          3.0      3.0      0.0          try:
+   188         1          4.0      4.0      0.0              orderbooks = Orderbooks(
+   189         1         43.0     43.0      0.0                  orderbooks_collection=sim_db.orderbooks,
+   190         1          4.0      4.0      0.0                  envId=sim_config.partition_config["envId"],
+   191         1          4.0      4.0      0.0                  exchange=sim_config.partition_config["exchange"].lower(),
+   192         1          4.0      4.0      0.0                  market=sim_config.partition_config["market"].lower(),
+   193         1          4.0      4.0      0.0                  depth=sim_config.partition_config["depth"],
+   194         1          3.0      3.0      0.0                  start=start,
+   195         1       3877.0   3877.0      0.0                  end=end,
+   196                                                       )
+   197                                           
+   198                                                   except StopIteration:
+   199                                                       os._exit(0)
+   200                                           
+   201         1          4.0      4.0      0.0          orderbook = None
+   202                                           
+   203         1          3.0      3.0      0.0          total_orderbooks = 0
+   204         1          4.0      4.0      0.0          last_ob_timestamp = None
+   205                                           
+   206         1          3.0      3.0      0.0          try:
+   207                                           
+   208         1          4.0      4.0      0.0              while True:
+   209                                           
+   210      5036    1955287.0    388.3      9.5                  orderbook = orderbooks.next()
+   211                                           
+   212                                                           # Record the 3 largest OB gaps
+   213      5035      15200.0      3.0      0.1                  if last_ob_timestamp != None:
+   214                                           
+   215      5034      15627.0      3.1      0.1                      ob_time_diff = orderbook["ts"] - last_ob_timestamp
+   216      5034      14454.0      2.9      0.1                      max_time_diffs = np.sort(
+   217      5034     145723.0     28.9      0.7                          np.append(max_time_diffs, ob_time_diff))[::-1][0:3]
+   218                                           
+   219      5035      15005.0      3.0      0.1                  last_ob_timestamp = orderbook["ts"]
+   220                                           
+   221      5035      14191.0      2.8      0.1                  total_orderbooks += 1
+   222                                           
+   223      5035      16367.0      3.3      0.1                  sim_config.orderbook_id = orderbook['_id']
+   224                                           
+   225      5035      18202.0      3.6      0.1                  buy_trades = orderbook["buy_trades"]
+   226                                                           assert all(buy_trades[i]["r"] >= buy_trades[i+1]["r"]
+   227                                                                      for i in range(len(buy_trades)-1)), 'Buy Trades Not Sorted'
+   228      5035      14729.0      2.9      0.1                  buy_trades_count += len(buy_trades)
+   229                                           
+   230      5035      17972.0      3.6      0.1                  sell_trades = orderbook["sell_trades"]
+   231                                                           assert all(sell_trades[i]["r"] <= sell_trades[i+1]["r"]
+   232                                                                      for i in range(len(sell_trades)-1)), 'Sell Trades Not Sorted'
+   233      5035      13411.0      2.7      0.1                  sell_trades_count += len(sell_trades)
+   234                                           
+   235                                                           assert len(buy_trades) > 0 or len(sell_trades) > 0
+   236                                           
+   237      5035      12864.0      2.6      0.1                  if (__debug__ and
+   238                                                                   (
+   239                                                                       len(buy_trades) > 0 or
+   240                                                                       len(sell_trades) > 0
+   241                                                                   )
+   242                                                               ):
+   243                                                               logging.debug('len(buy_trades): ' + str(len(buy_trades)))
+   244                                                               logging.debug('len(sell_trades): ' + str(len(sell_trades)))
+   245                                           
+   246      5035      12938.0      2.6      0.1                  CO_calls += 1
+   247                                           
+   248                                                           market_rate = (
+   249      5035      17678.0      3.5      0.1                      orderbook['buy'][0][0] +
+   250      5035      18838.0      3.7      0.1                      orderbook['sell'][0][0]
+   251      5035      20838.0      4.1      0.1                  ) / 2
+   252                                           
+   253      5035      14487.0      2.9      0.1                  depth = sim_config.partition_config["depth"]
+   254                                           
+   255                                                           buyob = Orderbooks.apply_depth(depth, orderbook['buy']) \
+   256      5035     485571.0     96.4      2.4                      if depth > 0 else orderbook['buy']
+   257      5035      58935.0     11.7      0.3                  buyob[:, 1] *= market_rate
+   258                                           
+   259                                                           sellob = Orderbooks.apply_depth(depth, orderbook['sell']) \
+   260      5035     410867.0     81.6      2.0                      if depth > 0 else orderbook['sell']
+   261      5035      36982.0      7.3      0.2                  sellob[:, 1] *= market_rate
+   262                                           
+   263      5035   13864766.0   2753.7     67.3                  result = trader.compute_orders(buyob=buyob, sellob=sellob)
+   264                                           
+   265      5035      16565.0      3.3      0.1                  status, explain, buy_rate, sell_rate = result
+   266                                           
+   267      5035      18964.0      3.8      0.1                  if buy_rate > 0 and sell_rate > 0:
+   268                                           
+   269      5016      13794.0      2.8      0.1                      matching_engine_calls += 1
+   270                                           
+   271      5016      14475.0      2.9      0.1                      buy_match, sell_match = matching_engine.match(
+   272      5016      12726.0      2.5      0.1                          buy_rate=buy_rate,
+   273      5016      12727.0      2.5      0.1                          sell_rate=sell_rate,
+   274      5016      13171.0      2.6      0.1                          buy_trades=buy_trades,
+   275      5016     399229.0     79.6      1.9                          sell_trades=sell_trades,
+   276                                                               )
+   277                                           
+   278      5016      18013.0      3.6      0.1                      funds, inventory = matching_engine.assets
+   279                                           
+   280                                                               if __debug__:
+   281                                                                   logging.debug(f'compute_orders return: {result}')
+   282                                                                   logging.debug('buy_match: ' + str(buy_match))
+   283                                                                   logging.debug('sell_match: ' + str(sell_match))
+   284                                           
+   285      5016      13730.0      2.7      0.1                      buy_depth = sum(map(
+   286      5016      14365.0      2.9      0.1                          lambda x: x[1] if x[0] > buy_rate else 0,
+   287      5016     435756.0     86.9      2.1                          buyob))
+   288                                           
+   289      5016      13129.0      2.6      0.1                      sell_depth = sum(
+   290      5016      12888.0      2.6      0.1                          map(
+   291      5016      13451.0      2.7      0.1                              lambda x: x[1] if x[0] < sell_rate else 0,
+   292      5016     406301.0     81.0      2.0                              sellob))
+   293                                           
+   294      5016     166652.0     33.2      0.8                      sim_db.matchings.insert({
+   295      5016      16030.0      3.2      0.1                          "runId": sim_config.partition_config["runId"],
+   296      5016      13571.0      2.7      0.1                          "simVersion": sim_config.partition_config["simVersion"],
+   297      5016      13353.0      2.7      0.1                          "e": sim_config.partition_config["envId"],
+   298      5016      13503.0      2.7      0.1                          "x": sim_config.partition_config["exchange"],
+   299      5016      13361.0      2.7      0.1                          "m": sim_config.partition_config["market"],
+   300      5016      13353.0      2.7      0.1                          "s": sim_config.partition_config["simId"],
+   301      5016      13297.0      2.7      0.1                          "p": sim_config.partition_config["_id"],
+   302      5016      13268.0      2.6      0.1                          "depth": sim_config.partition_config["depth"],
+   303      5016      14299.0      2.9      0.1                          "ob": orderbook['_id'],
+   304      5016      33215.0      6.6      0.2                          "ts": datetime.now(),
+   305      5016      17579.0      3.5      0.1                          "topBuy": orderbook['buy'][0][0],
+   306      5016      12850.0      2.6      0.1                          "buyRate": buy_rate,
+   307      5016      13673.0      2.7      0.1                          "buyCount": len(buy_trades),
+   308      5016      29690.0      5.9      0.1                          "buyMatch": str(buy_match).split('.')[1],
+   309      5016      12962.0      2.6      0.1                          "buyDepth": buy_depth,
+   310                                                                   "buys": list(map((lambda x: x["r"]), buy_trades))
+   311      5016      18921.0      3.8      0.1                          if len(buy_trades) > 0 else None,
+   312      5016      15659.0      3.1      0.1                          "topSell": orderbook['sell'][0][0],
+   313      5016      12912.0      2.6      0.1                          "sellRate": sell_rate,
+   314      5016      13136.0      2.6      0.1                          "sellCount": len(sell_trades),
+   315      5016      19683.0      3.9      0.1                          "sellMatch": str(sell_match).split('.')[1],
+   316      5016      12934.0      2.6      0.1                          "sellDepth": sell_depth,
+   317                                                                   "sells": list(map((lambda x: x["r"]), sell_trades))
+   318      5016      20262.0      4.0      0.1                          if len(sell_trades) > 0 else None,
+   319      5016      12920.0      2.6      0.1                          "funds": funds,
+   320      5016      20786.0      4.1      0.1                          "inventory": inventory,
+   321      5016    1336522.0    266.5      6.5                      }, w=0, j=False)
+   322                                           
+   323         1          3.0      3.0      0.0          except StopIteration:
+   324                                                       # logging.info('StopIteration Detected')
+   325         1          4.0      4.0      0.0              returncode = 0
+   326                                           
+   327                                                   except KeyError as err:
+   328                                                       logging.error('KeyError Detected: %r', err)
+   329                                                       logging.exception('Exception: %s', err)
+   330                                                       returncode = 1
+   331                                           
+   332                                               except Exception as err:
+   333                                                   logging.exception('Exception: %s', err)
+   334                                           
+   335                                               except:
+   336                                                   logging.exception('Unknown Exception')
+   337                                           
+   338                                               finally:
+   339                                           
+   340         1        179.0    179.0      0.0          logging.info(f'CO Calls: {CO_calls}')
+   341         1         89.0     89.0      0.0          logging.info(f'buy_trades_count: {buy_trades_count}')
+   342         1         75.0     75.0      0.0          logging.info(f'sell_trades_count: {sell_trades_count}')
+   343         1         71.0     71.0      0.0          logging.info(f'Matching Engine Calls: {matching_engine_calls}')
+   344         1          3.0      3.0      0.0          logging.info(
+   345         1         69.0     69.0      0.0              f'buy_blocked_count: {matching_engine.buy_blocked_count}')
+   346         1          3.0      3.0      0.0          logging.info(
+   347         1         69.0     69.0      0.0              f'buy_no_trades_count: {matching_engine.buy_no_trades_count}')
+   348         1          3.0      3.0      0.0          logging.info(
+   349         1         69.0     69.0      0.0              f'buy_notion_failure_count: {matching_engine.buy_notion_failure_count}')
+   350         1         68.0     68.0      0.0          logging.info(f'buy_match_count: {matching_engine.buy_match_count}')
+   351         1          3.0      3.0      0.0          logging.info(
+   352         1         67.0     67.0      0.0              f'buy_unmatchable_count: {matching_engine.buy_unmatchable_count}')
+   353                                           
+   354         1         17.0     17.0      0.0          logging.info(
+   355         1         82.0     82.0      0.0              f'sell_blocked_count: {matching_engine.sell_blocked_count}')
+   356         1          3.0      3.0      0.0          logging.info(
+   357         1         68.0     68.0      0.0              f'sell_no_trades_count: {matching_engine.sell_no_trades_count}')
+   358         1          3.0      3.0      0.0          logging.info(
+   359         1         64.0     64.0      0.0              f'sell_notion_failure_count: {matching_engine.sell_notion_failure_count}')
+   360         1         64.0     64.0      0.0          logging.info(f'sell_match_count: {matching_engine.sell_match_count}')
+   361         1          3.0      3.0      0.0          logging.info(
+   362         1         63.0     63.0      0.0              f'sell_unmatchable_count: {matching_engine.sell_unmatchable_count}')
+   363                                           
+   364         1          3.0      3.0      0.0          logging.info(
+   365         1         63.0     63.0      0.0              'Largest Gaps Between Orderbooks (Hours:Minutes:Seconds)')
+   366                                           
+   367         4         16.0      4.0      0.0          for time_diff in max_time_diffs:
+   368         3         17.0      5.7      0.0              total_minutes = time_diff.total_seconds() // 60
+   369         3          8.0      2.7      0.0              logging.info(
+   370         3          9.0      3.0      0.0                  '    -> %04d:%02d:%02d',
+   371         3          9.0      3.0      0.0                  total_minutes // 60,
+   372         3          7.0      2.3      0.0                  total_minutes % 60,
+   373         3        204.0     68.0      0.0                  time_diff.total_seconds() % 60)
+   374                                           
+   375         1         67.0     67.0      0.0          logging.info(f'Total Orderbooks: {total_orderbooks}')
+   376         1         73.0     73.0      0.0          logging.info(f'Last OB Timestamp: {last_ob_timestamp}')
+   377         1         11.0     11.0      0.0          sys.exit(returncode)
+
+Total time: 11.2006 s
+File: /home/ubuntu/simulator/traders/CO1.py
+Function: evol at line 40
+
+Line #      Hits         Time  Per Hit   % Time  Line Contents
+==============================================================
+    40                                               @profile
+    41                                               def evol(self, pv: np.ndarray):
+    42                                                   """
+    43                                                   Calculate the expected volume for a potential order.
+    44                                           
+    45                                                   The histrogam approximates the probability discreet distribution of
+    46                                                   market order (MO) sizes. For example, MOs of size = 0.1 BTC
+    47                                                   occur more frequently than those of size = 1.0 BTC.
+    48                                                   pv is the preceding volume; the amount of volume ahead of our order
+    49                                                   on the OB.
+    50                                                   """
+    51                                           
+    52                                                   assert self.pdf_x.shape == self.pdf_y.shape
+    53                                           
+    54     10070       8956.0      0.9      0.1          ev = [np.sum(
+    55                                                       np.minimum(
+    56                                                           np.maximum(self.pdf_x - x, 0),
+    57                                                           self.QL,
+    58                                                       ) * self.pdf_y,
+    59     10070   11186090.0   1110.8     99.9          ) for x in pv]
+    60                                           
+    61                                                   """
+    62                                           
+    63                                                   logging.debug('pv: ' + str(pv))
+    64                                           
+    65                                                   ev2 = np.zeros_like(pv, dtype=float)
+    66                                           
+    67                                                   for j, x in enumerate(pv):
+    68                                           
+    69                                                       x1 = np.maximum(pdf_x - x, 0)
+    70                                                       logging.debug('x1: ' + str(x1))
+    71                                                       x2 = np.minimum(x1, QL)
+    72                                                       logging.debug('x2: ' + str(x2))
+    73                                                       x3 = x2 * pdf_y
+    74                                                       logging.debug('x3: ' + str(x3))
+    75                                           
+    76                                                       ev2[j] = np.sum(x3)
+    77                                           
+    78                                                   logging.debug('ev: ' + str(ev))
+    79                                           
+    80                                                   assert np.array_equiv(ev, ev2)
+    81                                           
+    82                                                   """
+    83     10070       5546.0      0.6      0.0          return ev
+
+Total time: 1.42782 s
+File: /home/ubuntu/simulator/traders/CO1.py
+Function: get_pv_and_rates at line 85
+
+Line #      Hits         Time  Per Hit   % Time  Line Contents
+==============================================================
+    85                                               @profile
+    86                                               def get_pv_and_rates(self, ob: np.ndarray, is_buy: bool):
+    87                                           
+    88                                                   assert len(ob) > 0
+    89                                                   assert ob.shape[1] == 2
+    90                                           
+    91     10070      25805.0      2.6      1.8          r = np.array(ob[:, 0])
+    92     10070      12191.0      1.2      0.9          q = np.array(ob[:, 1])
+    93                                           
+    94     10070      30871.0      3.1      2.2          rates = r + self.tick if is_buy else r - self.tick
+    95                                           
+    96     10070     408288.0     40.5     28.6          pv = np.roll(np.cumsum(q), 1)
+    97     10070       9816.0      1.0      0.7          pv[0] = 0
+    98                                           
+    99     10070       5285.0      0.5      0.4          mask = np.isin(
+   100     10070      96649.0      9.6      6.8              np.around(rates, decimals=self.rate_precision),
+   101     10070      54765.0      5.4      3.8              np.around(r, decimals=self.rate_precision),
+   102     10070     758157.0     75.3     53.1              invert=True,
+   103                                                   )
+   104                                           
+   105     10070      25989.0      2.6      1.8          return pv[mask], rates[mask]
+
+Total time: 13.7166 s
+File: /home/ubuntu/simulator/traders/CO1.py
+Function: compute_orders at line 107
+
+Line #      Hits         Time  Per Hit   % Time  Line Contents
+==============================================================
+   107                                               @profile
+   108                                               def compute_orders(
+   109                                                   self,
+   110                                                   buyob: np.ndarray,
+   111                                                   sellob: np.ndarray,
+   112                                               ):
+   113                                           
+   114      5035       7113.0      1.4      0.1          start_time = time.time()
+   115                                           
+   116      5035       3408.0      0.7      0.0          try:
+   117                                           
+   118      5035      11342.0      2.3      0.1              market_rate: float = (buyob[0][0] + sellob[0][0]) / 2
+   119                                           
+   120      5035     837005.0    166.2      6.1              buypv, buyrates = self.get_pv_and_rates(ob=buyob, is_buy=True) 
+   121      5035     684482.0    135.9      5.0              sellpv, sellrates = self.get_pv_and_rates(ob=sellob, is_buy=False)
+   122                                           
+   123                                                       if __debug__:
+   124                                                           logging.debug('buypv:\n' + str(buypv))
+   125                                                           logging.debug('buyrates:\n' + str(buyrates))
+   126                                                           logging.debug('sellpv:\n' + str(sellpv))
+   127                                                           logging.debug('sellrates:\n' + str(sellrates))
+   128                                           
+   129                                                       # an adjusted price for each order that factors in the fee
+   130                                           
+   131      5035      16168.0      3.2      0.1              buyrateswfee:  np.ndarray = buyrates / (1 - self.fee_rate)
+   132                                           
+   133      5035       9878.0      2.0      0.1              sellrateswfee = sellrates * (1 - self.fee_rate)
+   134                                           
+   135                                                       if __debug__:
+   136                                                           logging.debug('buyrateswfee:\n' + str(buyrateswfee))
+   137                                                           logging.debug('sellrateswfee:\n' + str(sellrateswfee))
+   138                                           
+   139      5035    5736798.0   1139.4     41.8              buyev = self.evol(buypv)
+   140                                           
+   141      5035    5518850.0   1096.1     40.2              sellev = self.evol(sellpv)
+   142                                           
+   143                                                       if __debug__:
+   144                                                           logging.debug('buyev:\n' + str(buyev))
+   145                                                           logging.debug('sellev:\n' + str(sellev))
+   146                                           
+   147                                                       # Get a matrix of the pairwise minimum 'evol' for all possible pairs
+   148                                                       # of orders. The idea is that the lower of the two values creates
+   149                                                       # a bottleneck, which is a notable innacuracy, though somewhat correct.
+   150      5035     256673.0     51.0      1.9              minev = np.minimum.outer(buyev, sellev)
+   151                                           
+   152                                                       # get a matrix of profit margins for all possible order pairs
+   153      5035       4417.0      0.9      0.0              profmarg = np.subtract.outer(
+   154      5035     105794.0     21.0      0.8                  sellrateswfee, buyrateswfee).transpose()
+   155                                           
+   156                                                       # get the products of evol * (profit margin)
+   157      5035      98609.0     19.6      0.7              expprofit = minev * profmarg
+   158                                           
+   159                                                       if __debug__:
+   160                                                           logging.debug('minev:\n' + str(minev))
+   161                                                           logging.debug('profmarg:\n' + str(profmarg))
+   162                                                           logging.debug('expprofit:\n' + str(expprofit))
+   163                                                           logging.debug('expprofit.max(): ' + str(expprofit.max()))
+   164                                           
+   165                                                       # If expected profit is <= 0, then cancel the current orders
+   166      5035      73936.0     14.7      0.5              if expprofit.max() <= 0:
+   167        19         18.0      0.9      0.0                  return [0, None, -1, -1]
+   168                                           
+   169                                                       else:
+   170                                                           # select the best order pair(s)
+   171      5016       4064.0      0.8      0.0                  best_orders = np.array(
+   172      5016     293021.0     58.4      2.1                      np.where(expprofit == expprofit.max())
+   173                                                           ).flatten()
+   174                                           
+   175                                                           assert len(best_orders) >= 2
+   176                                                           assert len(buyrates) >= best_orders[0]
+   177                                                           assert len(sellrates) >= best_orders[1]
+   178                                           
+   179      5016       8691.0      1.7      0.1                  buy_rate = buyrates[best_orders[0]]
+   180      5016       4464.0      0.9      0.0                  sell_rate = sellrates[best_orders[1]]
+   181                                           
+   182      5016       4633.0      0.9      0.0                  return [0, None, buy_rate, sell_rate]
+   183                                           
+   184                                                   except Exception as err:
+   185                                           
+   186                                                       logging.exception(err)
+   187                                                       raise
+   188                                           
+   189                                                   finally:
+   190                                                       pass
+   191      5035      33856.0      6.7      0.2              rounded_end = ('{0:.8f}'.format(round(time.time()-start_time, 8)))
+   192                                           
+   193      5035       3389.0      0.7      0.0              if __debug__:
+   194                                                           logging.debug(
+   195                                                               'Simulation Execution Time: %s seconds',
+   196                                                               str(rounded_end))
+

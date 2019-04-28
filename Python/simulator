@@ -1,0 +1,485 @@
+#!/usr/bin/env python
+
+import os
+import time
+import asyncio
+import logging
+import json
+import sys
+from pprint import pprint
+import dateutil.parser
+import datetime
+from schema import Schema, And, Use, Optional, SchemaError
+from pymongo import MongoClient
+from bson.objectid import ObjectId
+from dateutil import parser
+from orderbooks import Orderbooks
+
+try:
+    profile
+except NameError:
+    def profile(x): return x
+
+sim_id = ""
+
+
+def check(conf_schema, conf):
+
+    try:
+        conf_schema.validate(conf)
+        return True
+    except SchemaError as err:
+        logging.warn(err)
+        return False
+
+
+stsim_config_schema = Schema({
+
+    '_id': And(Use(str)),
+    'runId': And(Use(str)),
+    'simVersion': And(Use(str)),
+    'envId': And(Use(int)),
+    'minNotional': And(Use(int)),
+    'exchange': And(Use(str)),
+    'market': And(Use(str)),
+    'depth': And(Use(float)),
+    'timeFrame': And(Use(list)),
+    'partitions': And(Use(int)),
+    'trader': And(Use(str)),
+    'quantityLimit': And(Use(float)),
+    'inventoryLimit': And(Use(float)),
+    'feeRate': And(Use(float)),
+    'actualFeeRate': And(Use(float)),
+    'tick': And(Use(float)),
+    'pdf': And(Use(list)),
+}, ignore_extra_keys=True)
+
+trader_config_schema = Schema({
+
+    '_id': And(Use(str)),
+    'quantityLimit': And(Use(float)),
+    'inventoryLimit': And(Use(float)),
+    'feeRate': And(Use(float)),
+    'actualFeeRate': And(Use(float)),
+    'tick': And(Use(float)),
+    'pdf': And(Use(list)),
+}, ignore_extra_keys=True)
+
+
+async def run_command(*args):
+    """Run command in subprocess
+
+    Example from:
+        http://asyncio.readthedocs.io/en/latest/subprocess.html
+    """
+    global sim_id
+
+    # Create subprocess
+    process = await asyncio.create_subprocess_exec(
+        *args,
+        # stdout must a pipe to be accessible as process.stdout
+        stdout=asyncio.subprocess.PIPE)
+
+    # Status
+    logging.debug('Partiton %s Started', sim_id)
+
+    # Wait for the subprocess to finish
+    stdout, stderr = await process.communicate()
+
+    if (stdout != None):
+        logging.debug('stdout: %s', stdout)
+    if (stderr != None):
+        logging.info('stderr: %s', stderr)
+
+    # Result
+    result = stdout.decode().strip()
+    logging.debug('result: %r', result)
+
+    return 0
+
+
+def make_chunks(l, n):
+    """Yield successive n-sized chunks from l.
+
+    Note:
+        Taken from https://stackoverflow.com/a/312464
+    """
+    for i in range(0, len(l), n):
+        yield l[i:i + n]
+
+
+def run_asyncio_commands(tasks):
+    """Run tasks asynchronously using asyncio and return results
+
+    If max_concurrent_tasks are set to 0, no limit is applied.
+    """
+
+    all_results = []
+
+    chunks = make_chunks(l=tasks, n=20)
+
+    for tasks_in_chunk in chunks:
+
+        loop = asyncio.get_event_loop()
+
+        commands = asyncio.gather(*tasks_in_chunk)  # Unpack list using *
+        results = loop.run_until_complete(commands)
+        all_results += results
+        loop.close()
+    return all_results
+
+
+def partition(start, end, intv):
+    diff = (end - start) / intv
+    for i in range(intv):
+        yield (start + diff * i).isoformat()
+    yield end.isoformat()
+
+
+def count_trades(
+    envId: int,
+    exchange: str,
+    market: str,
+    start: datetime,
+    end: datetime,
+    trades,
+):
+
+    return trades.count_documents(
+        filter={
+            "e": envId,
+            "x": exchange,
+            "m": market,
+            "ts": {
+                "$gte": start,
+                "$lte": end,
+            },
+        })
+
+
+def count_trades_without_ob(
+    envId: int,
+    exchange: str,
+    market: str,
+    start: datetime,
+    end: datetime,
+    trades,
+):
+
+    return trades.count_documents(
+        filter={
+            "e": envId,
+            "x": exchange,
+            "m": market,
+            "ts": {
+                "$gte": start,
+                "$lte": end,
+            },
+            "ob": {
+                "$exists": False
+            }
+        })
+
+
+def count_sim_trades(simId: str, trades,):
+
+    return trades.count_documents(
+        filter={"s": ObjectId(simId), })
+
+
+if __name__ == '__main__':
+
+    try:
+
+        logging.basicConfig(
+            format='[%(levelname)-5s] %(message)s',
+            level=logging.INFO,
+            datefmt='')
+
+        # Track how long the simulation takes
+        start_simulation = time.time()
+
+        sim_id = sys.argv[1]
+
+        local_mongo_client = MongoClient()
+        if local_mongo_client == None:
+            raise Exception('Unable to Connect to Local MongoDB Database')
+
+        local_db = local_mongo_client['sim']
+        if local_db == None:
+            raise Exception('Unable to Connect to Local Database')
+            
+        assert os.environ['MONGODB'], 'MONGODB Not Defined'
+        remote_mongo_client = MongoClient(os.environ['MONGODB'])
+        if remote_mongo_client == None:
+            raise Exception('Unable to Connect to Database')
+
+        # Prep for db access
+        assert os.environ['SIMULATOR_DB'], 'SIMULATOR_DB Not Defined'
+        sim_db = remote_mongo_client[os.environ['SIMULATOR_DB']]
+        if sim_db == None:
+            raise Exception('Unable to Connect to Database')
+
+        # Load and check configuration
+        simulation = sim_db.simulations.find_one(
+            {"_id": ObjectId(sim_id)}
+        )
+
+        logging.debug('simulation: %r', simulation)
+
+        if simulation == None:
+            raise Exception('Unknown Simulator')
+
+        if not check(stsim_config_schema, simulation):
+            raise Exception('Invalid Simulator Configuration')
+
+        start = simulation['timeFrame']['startTime']
+        logging.debug('start: ' + str(start))
+        end = simulation['timeFrame']['endTime']
+        logging.debug('end: ' + str(end))
+
+        optimized = simulation['trader']['optimized']
+
+        if optimized:
+            logging.info (
+                "{0:30}{1:10}".format(
+                    "Trader (optimized):", 
+                    simulation['trader']['name'].upper()
+                    )
+            )
+        else:
+            logging.info (
+                "{0:30}{1:10}".format(
+                    "Trader (not optimized):", 
+                    simulation['trader']['name'].upper()
+                    )
+            )
+
+        # Get first and last orderbook
+        first_orderbook = Orderbooks.get_first_orderbook(
+
+            simulation["envId"],
+            simulation["exchange"],
+            simulation["market"],
+            start,
+            remote_mongo_client.history.orderbooks
+        )
+
+        last_orderbook = Orderbooks.get_last_orderbook(
+
+            simulation["envId"],
+            simulation["exchange"],
+            simulation["market"],
+            start,
+            end,
+            remote_mongo_client.history.orderbooks
+        )
+
+        logging.info (
+            "{0:30}{1:10}".format( 
+                "Channel:",
+                ":".join([
+                    str(simulation["envId"]),
+                    simulation["exchange"],
+                    simulation["market"]
+                ])
+            )
+        )
+
+        actual_start = first_orderbook["ts"]
+        actual_end = last_orderbook["ts"]
+
+        logging.info(
+            "{0:30}{1:10}".format(
+                'Actual Start:', 
+                str(actual_start)
+            )
+        )
+        logging.info(
+            "{0:30}{1:10}".format(
+                'Actual End:', 
+                str(actual_end)
+            )
+        )
+
+        assert actual_start < actual_end
+
+        # Record the actual start and end times of the simulation
+        simulation['timeFrame']['startTime'] = actual_start
+        simulation['timeFrame']['endTime'] = actual_end
+        sim_db.simulations.replace_one({"_id": ObjectId(sim_id)}, simulation)
+
+        # Count the number of orderbooks
+        number_orderbooks = Orderbooks.count_orderbooks(
+
+            simulation["envId"],
+            simulation["exchange"],
+            simulation["market"],
+            actual_start,
+            actual_end,
+            remote_mongo_client.history.orderbooks
+        )
+
+        logging.info(
+            "{0:22}{1:10d}".format(
+                'Orderbooks:',
+                number_orderbooks)
+        )
+
+        # Count the number of orderbooks
+        number_corrupt_orderbooks = Orderbooks.count_corrupt_orderbooks(
+
+            simulation["envId"],
+            simulation["exchange"],
+            simulation["market"],
+            actual_start,
+            actual_end,
+            remote_mongo_client.history.orderbooks
+        )
+
+        logging.info(
+            "{0:22}{1:10d}".format(
+                'Corrupt Orderbooks:',
+                number_corrupt_orderbooks)
+        )
+
+        number_trades = count_trades(
+
+            simulation["envId"],
+            simulation["exchange"],
+            simulation["market"],
+            actual_start,
+            actual_end,
+            remote_mongo_client.history.trades
+        )
+
+        logging.info(
+            "{0:22}{1:10d}".format(
+                'Trades:',
+                number_trades)
+        )
+
+        number_trades_without_ob = count_trades_without_ob(
+
+            simulation["envId"],
+            simulation["exchange"],
+            simulation["market"],
+            actual_start,
+            actual_end,
+            remote_mongo_client.history.trades
+        )
+
+        logging.info(
+            "{0:22}{1:10d}".format(
+                'Trades w/o Orderbook:',
+                number_trades_without_ob)
+        )
+
+        partitions = list(
+            partition(actual_start, actual_end, simulation['partitions']))
+
+        # Start the n subprocesses
+        commands = []
+        for i in range(len(partitions)-1):
+
+            partition_id = ObjectId()
+            partition_config = {
+                "_id": partition_id,
+                "runId": simulation['runId'],
+                "simVersion": simulation['simVersion'],
+                "simId": ObjectId(sim_id),
+                "envId": simulation['envId'],
+                "minNotional": simulation['minNotional'],
+                "partition": i,
+                "exchange": simulation['exchange'],
+                "market": simulation['market'],
+                "depth": simulation['depth'],
+                "trader": simulation['trader']['name'],
+                'quantityLimit': simulation['quantityLimit'],
+                'inventoryLimit': simulation['inventoryLimit'],
+                'feeRate': simulation['feeRate'],
+                'actualFeeRate': simulation['actualFeeRate'],
+                'tick': simulation['tick'],
+                'pdf': simulation['pdf'],
+                'startTime': dateutil.parser.parse(partitions[i]),
+                'endTime': dateutil.parser.parse(partitions[i+1]),
+            }
+
+            sim_db.partitions.insert_one(partition_config)
+            local_db.partitions.insert_one(partition_config)
+
+            if optimized:
+
+                path = "/home/ubuntu/simulate-rust/target/release/simulate-rust"
+                command = [path, str(partition_id)]
+
+            else:
+
+                path = os.getcwd()+'/Python/'+'simulate.py'
+
+                if os.environ.get('SIM_DEBUG'):
+
+                    command = [
+                        'python',
+                        path,
+                        str(partition_id)
+                    ]
+
+                else:
+
+                    command = [
+                        'python',
+                        '-O',
+                        path,
+                        str(partition_id)
+                    ]
+
+            commands.append(command)
+
+        tasks = []
+        for command in commands:
+            logging.debug('command: %r', command)
+            tasks.append(run_command(*command))
+
+        results = run_asyncio_commands(tasks)
+        logging.debug('Results: %r', results)
+
+        end_simulation = time.time()
+        rounded_end = ('{0:.1f}'.format(
+            round(end_simulation-start_simulation, 4)))
+
+        number_sim_trades = count_sim_trades(
+            sim_id,
+            sim_db.trades,
+        )
+
+        logging.info(
+            "{0:24}{1:8d}".format(
+            'Total Sim Trades:',
+            number_sim_trades)
+        )
+        
+        logging.info(
+            "{0:24}{1:4.1f}".format(
+            'Execution Time (secs):        ',
+            round(end_simulation-start_simulation, 1))
+        )
+
+        sim_db.simulations.find_one_and_update(
+            filter={"_id": ObjectId(sim_id)},
+            update={"$set": {'status': "COMPLETE"}},
+            upsert=False)
+
+    except ValueError as err:
+
+        logging.warning(err)
+        logging.warning(
+            'Ensure datetimes are in ISO Date Time Format, e.g.  "YYYY-MM-DDTHH:MM:SS"')
+        logging.warning('Incomplete ISO Date Format are completed automatically')
+
+    except Exception as err:
+
+        logging.exception(err)
+
+    finally:
+        quit()

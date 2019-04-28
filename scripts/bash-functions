@@ -1,0 +1,50 @@
+#!/bin/bash
+
+msg () {
+  echo "${PROGNAME}: ${1:-"Message Not Provided"}" 1>&2
+}
+
+clean-exit () {
+  trap '' EXIT;
+  exit 0;
+}
+
+error-exit () {
+  
+  # Display error message and exit
+  msg "${1:-"Unknown Error"}" 1>&2
+  msg 'Aborted'
+  exit 1
+}
+
+func-err () {
+  echo 'Error in function: '$1', Line '$2': '"$3"
+  return 0
+}
+
+# Move a git tag
+tag-mv () {
+  tag-rm $1 || return 1;
+  tag-add $1 || return 1;
+  return 0
+}
+
+tag-add () {
+  git tag $1 || return 1;
+  echo 'Local Tag Added'
+  git push origin $(get_current_branch) refs/tags/$1 | return 1;
+  echo 'Remote Tag Added'  
+  return 0
+}
+
+tag-rm () {
+  git tag -d $1 || return 1;
+  echo 'Local Tag Removed'
+  git push --delete origin $(get_current_branch) refs/tags/$1 || return 1;
+  echo 'Remote Tag Removed'
+  return 0
+}
+
+get_current_branch() {
+    git rev-parse --abbrev-ref HEAD
+}

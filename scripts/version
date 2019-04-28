@@ -1,0 +1,36 @@
+#!/bin/bash
+
+if [ $# -ne 1 ]; then echo "Usage : version <version>"; exit 1; fi
+
+# If a version number is provided, then ensure that it is of the required form
+VERSION_REGEX="^v[0-9]+\.[0-9]+\.[0-9]+$"
+if [ $# -eq 1 ]; then
+  if ! [[ $1 =~ $VERSION_REGEX ]]; then
+    echo 'Version must be of the form X.Y.Z, where X, Y, and Z are all positive integers'
+    return 1
+  else
+    # Go back to the master before proceeding
+    if ! git checkout master 2>&1 >/dev/null; then
+      msg 'git checkout master failed';
+      return 1;
+    fi
+    # Ensure software is up-to-date
+    if ! git pull 2>&1 >/dev/null; then
+      msg 'git pull failed';
+      return 1;
+    fi
+    if ! git checkout tags/$1 -B version-$1 2>&1 >/dev/null; then
+      msg 'git checkout failed';
+      return 1;
+    fi
+    # Bring npm up to date
+    npm install
+  fi
+fi
+
+# export the version
+# . ./scripts/software.version
+
+source ./scripts/software.version
+
+echo 'SIM Version'$SIM_VERSION
