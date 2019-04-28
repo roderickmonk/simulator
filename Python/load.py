@@ -170,6 +170,17 @@ if __name__ == '__main__':
             ], unique=True
         )
 
+       logging.info (
+            "{0:30}{1:10}".format( 
+                "Channel:",
+                ":".join([
+                    str(config["envId"]),
+                    config["exchange"],
+                    config["market"]
+                ])
+            )
+        )
+
         trades = remote_mongo_client.history.trades
         get_trades(
             trades=trades,
@@ -203,7 +214,7 @@ if __name__ == '__main__':
         if last_orderbook == None:
             logging.info('No Orderbooks to Load')
             os._exit(0)
-            
+
         actual_start = first_orderbook["ts"]
         actual_end = last_orderbook["ts"]
 
