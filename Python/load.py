@@ -227,8 +227,14 @@ if __name__ == '__main__':
         actual_start = first_orderbook["ts"]
         actual_end = last_orderbook["ts"]
 
-        logging.info('Actual Start: %s', str(actual_start))
-        logging.info('Actual End:   %s', str(actual_end))
+        logging.info(
+            "{0:20}{1:10}".format(
+            'Actual Start:', 
+            str(actual_start)))
+        logging.info(
+            "{0:20}{1:10}".format(
+            'Actual End:', 
+            str(actual_end)))
 
         assert actual_start < actual_end
 
