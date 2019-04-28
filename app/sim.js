@@ -15,10 +15,9 @@ const async_1 = require("async");
 const config_generator_1 = require("./config-generator");
 const debug_1 = require("./debug");
 const child_process_1 = require("child_process");
-const mongo_1 = require("./mongo");
 const mongodb_1 = require("mongodb");
 let configName = "";
-const start = (configName, simConfig) => __awaiter(this, void 0, void 0, function* () {
+const start = (simConfig, simDb) => __awaiter(this, void 0, void 0, function* () {
     const startProcessTime = process.hrtime();
     const startTime = new Date();
     try {
@@ -40,7 +39,7 @@ const start = (configName, simConfig) => __awaiter(this, void 0, void 0, functio
                 trim: simConfig.config.trim,
             }, nextSimConfig);
             debug_1.debug('taskObj:\n', JSON.stringify(taskObj, null, 4));
-            const { insertedId: simId } = yield mongo_1.Mongo.simDb.collection('simulations')
+            const { insertedId: simId } = yield simDb.collection('simulations')
                 .insertOne(taskObj);
             tasks.push((callback) => {
                 try {
@@ -83,7 +82,7 @@ const start = (configName, simConfig) => __awaiter(this, void 0, void 0, functio
                     endTime: new Date(),
                     elapsedTime,
                 };
-                yield mongo_1.Mongo.simDb.collection('runs').insertOne(runObj);
+                yield simDb.collection('runs').insertOne(runObj);
                 process.exit(0);
             }
             catch (err) {
@@ -107,7 +106,7 @@ const start = (configName, simConfig) => __awaiter(this, void 0, void 0, functio
         const mongoRemote = yield mongodb_1.MongoClient.connect(process.env.MONGODB, { useNewUrlParser: true });
         const remoteSimDb = mongoRemote.db(process.env.SIMULATOR_DB);
         const simConfig = new config_generator_1.ConfigGenerator(configName, remoteSimDb);
-        yield start(configName, simConfig);
+        yield start(simConfig, remoteSimDb);
     }
     catch (err) {
         console.log(err);

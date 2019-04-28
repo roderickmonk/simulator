@@ -7,7 +7,6 @@ import { ConfigGenerator } from "./config-generator"
 import { simParams } from "./sim-params"
 import { debug } from "./debug";
 import { exec, } from 'child_process';
-import { Mongo } from "./mongo";
 
 import {
     Collection,
@@ -20,10 +19,12 @@ import {
 
 let configName = "";
 
-const start = async (configName: string, simConfig: ConfigGenerator) => {
+const start = async (
+    simConfig: ConfigGenerator,
+    simDb: Db)
+    : Promise<void> => {
 
     const startProcessTime = process.hrtime();
-
     const startTime = new Date();
 
     try {
@@ -58,7 +59,7 @@ const start = async (configName: string, simConfig: ConfigGenerator) => {
             debug('taskObj:\n', JSON.stringify(taskObj, null, 4));
 
             const { insertedId: simId } =
-                await Mongo.simDb.collection('simulations')
+                await simDb.collection('simulations')
                     .insertOne(taskObj);
 
             // Accumulate all tasks into one structure
@@ -137,7 +138,7 @@ const start = async (configName: string, simConfig: ConfigGenerator) => {
                         elapsedTime,
                     }
 
-                    await Mongo.simDb.collection('runs').insertOne(runObj);
+                    await simDb.collection('runs').insertOne(runObj);
 
                     process.exit(0);
 
@@ -176,7 +177,9 @@ const start = async (configName: string, simConfig: ConfigGenerator) => {
 
         const simConfig = new ConfigGenerator(configName, remoteSimDb);
 
-        await start(configName, simConfig);
+        // await start(configName, simConfig);
+
+        await start(simConfig, remoteSimDb);
 
     } catch (err) {
 
