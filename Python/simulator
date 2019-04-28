@@ -242,14 +242,14 @@ if __name__ == '__main__':
 
         if optimized:
             logging.info (
-                "{0:20}{1:10}".format(
+                "{0:30}{1:10}".format(
                     "Trader (optimized):", 
                     simulation['trader']['name'].lower()
                     )
             )
         else:
             logging.info (
-                "{0:20}{1:10}".format(
+                "{0:30}{1:10}".format(
                     "Trader:", 
                     simulation['trader']['name'].lower()
                     )
@@ -276,7 +276,7 @@ if __name__ == '__main__':
         )
 
         logging.info (
-            "{0:20}{1:10}".format( 
+            "{0:30}{1:10}".format( 
                 "Channel:",
                 ":".join([
                     str(simulation["envId"]),
@@ -287,11 +287,11 @@ if __name__ == '__main__':
         )
 
         logging.info(
-            "{0:20}{1:10}".format(
+            "{0:30}{1:10}".format(
                 'Start Time:', 
                 str(simulation["timeFrame"]["startTime"])))
         logging.info(
-            "{0:20}{1:10}".format(
+            "{0:30}{1:10}".format(
                 'End Time:', 
                 str(simulation["timeFrame"]["endTime"])))
 
