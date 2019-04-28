@@ -276,7 +276,7 @@ if __name__ == '__main__':
         )
 
         logging.info (
-            "{0:30}{1:10}".format( 
+            "{0:20}{1:10}".format( 
                 "Channel:",
                 ":".join([
                     str(simulation["envId"]),
@@ -285,6 +285,15 @@ if __name__ == '__main__':
                 ])
             )
         )
+
+        logging.info(
+            "{0:20}{1:10}".format(
+                'Start Time:', 
+                str(simulation["timeFrame"]["startTime"])))
+        logging.info(
+            "{0:20}{1:10}".format(
+                'End Time:', 
+                str(simulation["timeFrame"]["endTime"])))
 
         actual_start = first_orderbook["ts"]
 
