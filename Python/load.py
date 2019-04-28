@@ -170,7 +170,7 @@ if __name__ == '__main__':
             ], unique=True
         )
 
-       logging.info (
+        logging.info (
             "{0:30}{1:10}".format( 
                 "Channel:",
                 ":".join([
