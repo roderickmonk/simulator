@@ -181,6 +181,9 @@ if __name__ == '__main__':
             )
         )
 
+        logging.info('Start: %s', str(config["timeFrame"]["startTime"]))
+        logging.info('End:   %s', str(config["timeFrame"]["endTime"]))
+
         trades = remote_mongo_client.history.trades
         get_trades(
             trades=trades,
