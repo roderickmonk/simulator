@@ -220,7 +220,7 @@ if __name__ == '__main__':
             orderbooks_collection=input_orderbooks
         )
 
-        if last_orderbook == None:
+        if first_orderbook == None or last_orderbook == None:
             logging.info('No Orderbooks to Load')
             os._exit(0)
 

@@ -174,9 +174,10 @@ class Orderbooks:
                 })
             .sort("ts", 1).limit(1)
         )
-        assert len(orderbooks) > 0
-
-        return orderbooks[0]
+        if len(orderbooks) == 0:
+            return None
+        else:
+            return orderbooks[0]
 
     @staticmethod
     def get_last_orderbook(
