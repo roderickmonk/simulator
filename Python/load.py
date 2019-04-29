@@ -221,7 +221,7 @@ if __name__ == '__main__':
         )
 
         if first_orderbook == None or last_orderbook == None:
-            logging.info('No Orderbooks to Load')
+            logging.info('No Orderbooks')
             os._exit(0)
 
         actual_start = first_orderbook["ts"]

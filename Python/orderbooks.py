@@ -287,7 +287,10 @@ class Orderbooks:
                 break
 
         # Sanity check: best buy strictly less than best sell
-        assert orderbook["buy"][0][0] < orderbook["sell"][0][0]
+        try:
+            assert orderbook["buy"][0][0] < orderbook["sell"][0][0]
+        except AssertionError as err:
+            logError (err)
 
         orderbook["buy"] = np.array(orderbook["buy"], dtype=float)
         orderbook["sell"] = np.array(orderbook["sell"], dtype=float)
