@@ -323,6 +323,7 @@ if __name__ == '__main__':
         simulation['timeFrame']['endTime'] = actual_end
         sim_db.simulations.replace_one({"_id": ObjectId(sim_id)}, simulation)
 
+        """
         # Count the number of orderbooks
         number_orderbooks = Orderbooks.count_orderbooks(
 
@@ -388,6 +389,7 @@ if __name__ == '__main__':
                 'Trades w/o Orderbook:',
                 number_trades_without_ob)
         )
+        """
 
         partitions = list(
             partition(actual_start, actual_end, simulation['partitions']))
