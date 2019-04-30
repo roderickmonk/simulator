@@ -183,14 +183,14 @@ export class ConfigGenerator {
             // ToDo: the following is required but strange
             process.on('unhandledRejection', _.noop);
 
-            const config: ISimConfiguration | null = await this.simDb
+            this.config = await this.simDb
                 .collection('configurations')
                 .findOne({ name: this.configName });
 
             assert(this.config, 'Unknown Configuration');
 
-            configValidator(config!);
-            this.validateSimConfig(config!.simConfig);
+            configValidator(this.config!);
+            this.validateSimConfig(this.config!.simConfig);
 
             return this.generate(0);
 

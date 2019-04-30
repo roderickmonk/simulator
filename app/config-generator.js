@@ -79,12 +79,12 @@ class ConfigGenerator {
         this.getGenerator = () => __awaiter(this, void 0, void 0, function* () {
             try {
                 process.on('unhandledRejection', _.noop);
-                const config = yield this.simDb
+                this.config = yield this.simDb
                     .collection('configurations')
                     .findOne({ name: this.configName });
                 assert(this.config, 'Unknown Configuration');
-                config_manager_1.configValidator(config);
-                this.validateSimConfig(config.simConfig);
+                config_manager_1.configValidator(this.config);
+                this.validateSimConfig(this.config.simConfig);
                 return this.generate(0);
             }
             catch (err) {
