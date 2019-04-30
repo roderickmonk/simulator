@@ -49,7 +49,7 @@ export interface ISimConfiguration {
     readonly trim: boolean;
     readonly minNotional: number;
     readonly parallelSimulations: number;
-    readonly simConfig: Array<object>;
+    readonly simConfig: any;
 }
 
 export const configValidator = (simConfig: ISimConfiguration):
