@@ -156,7 +156,6 @@ def run():
     # Cleanup as we go
     r.delete (matching_list_keys)
    
-
     logging.debug ("After sim_db.matchings.count_documents({}): %d", sim_db.matchings.count_documents({}))
 
 if __name__ == '__main__':

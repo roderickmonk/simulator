@@ -83,12 +83,14 @@ class Orderbooks:
                     },
                     "V": "V", # valid flag
                 }
+            """
             ).sort([
                 ("e", pymongo.ASCENDING),
                 ("x", pymongo.ASCENDING),
                 ("m", pymongo.ASCENDING),
                 ("ts", pymongo.ASCENDING),
             ])
+            """
         )
 
     def __str__(self):
