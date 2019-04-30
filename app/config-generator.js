@@ -14,6 +14,7 @@ const _ = require("lodash");
 const chalk = require('chalk');
 const debug_1 = require("./debug");
 const sim_params_1 = require("./sim-params");
+const config_manager_1 = require("./config-manager");
 const GenerateSchema = require('generate-schema');
 class ConfigGenerator {
     constructor(configName, simDb) {
@@ -78,13 +79,12 @@ class ConfigGenerator {
         this.getGenerator = () => __awaiter(this, void 0, void 0, function* () {
             try {
                 process.on('unhandledRejection', _.noop);
-                this.config = yield this.simDb
+                const config = yield this.simDb
                     .collection('configurations')
                     .findOne({ name: this.configName });
                 assert(this.config, 'Unknown Configuration');
-                if (this.config) {
-                    this.validateSimConfig(this.config.simConfig);
-                }
+                config_manager_1.configValidator(config);
+                this.validateSimConfig(config.simConfig);
                 return this.generate(0);
             }
             catch (err) {

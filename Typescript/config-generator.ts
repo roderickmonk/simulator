@@ -5,7 +5,6 @@ import * as _ from "lodash";
 const chalk = require('chalk');
 import { debug } from "./debug";
 import { simParams } from "./sim-params"
-import { Mongo } from "./mongo";
 
 import {
     Collection,
@@ -16,15 +15,12 @@ import {
     ObjectId,
 } from "mongodb";
 
-const GenerateSchema = require('generate-schema')
+import {
+    configValidator,
+    ISimConfiguration,
+} from "./config-manager";
 
-interface ISimConfig {
-    envId: number;
-    trim: number;
-    parallelSimulations: number;
-    minNotional: number;
-    simConfig: Array<Array<object>>;
-}
+const GenerateSchema = require('generate-schema')
 
 export class ConfigGenerator {
 
@@ -33,7 +29,7 @@ export class ConfigGenerator {
     private propertyData = new Map();
     private propertySchema = new Map();
 
-    public config: ISimConfig | null = null;
+    public config: ISimConfiguration | null = null;
 
     constructor(
         private configName: string,
@@ -187,15 +183,14 @@ export class ConfigGenerator {
             // ToDo: the following is required but strange
             process.on('unhandledRejection', _.noop);
 
-            this.config = await this.simDb
+            const config: ISimConfiguration | null = await this.simDb
                 .collection('configurations')
                 .findOne({ name: this.configName });
 
             assert(this.config, 'Unknown Configuration');
 
-            if (this.config) {
-                this.validateSimConfig(this.config.simConfig);
-            }
+            configValidator(config!);
+            this.validateSimConfig(config!.simConfig);
 
             return this.generate(0);
 
