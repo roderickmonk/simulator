@@ -56,7 +56,7 @@ export interface ISimConfiguration {
 
 export const configValidator = (simConfig: ISimConfiguration):
 
-    boolean => {
+    Promise<boolean> => {
 
     try {
 
@@ -72,16 +72,15 @@ export const configValidator = (simConfig: ISimConfiguration):
 
         if (!valid || validate.errors) {
 
-            console.log(`Invalid Configuration: ` +
-                `${JSON.stringify(validate.errors, null, 4)}`);
-            return false;
-
-        } else {
-            return true;
+            const msg = `Invalid Configuration: ` +
+                `${JSON.stringify(validate.errors, null, 4)}`;
+            return Promise.reject(new Error(msg));
         }
 
+        return Promise.resolve(true);
+
     } catch (err) {
-        throw err;
+        return Promise.reject(err);
     }
 }
 

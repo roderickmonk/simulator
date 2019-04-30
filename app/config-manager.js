@@ -40,15 +40,13 @@ exports.configValidator = (simConfig) => {
         const validate = ajv.compile(simSchema);
         const valid = validate(simConfig);
         if (!valid || validate.errors) {
-            console.log(`Invalid Configuration: ` +
-                `${JSON.stringify(validate.errors, null, 4)}`);
-            return false;
+            const msg = `Invalid Configuration: ` +
+                `${JSON.stringify(validate.errors, null, 4)}`;
+            return Promise.reject(new Error(msg));
         }
-        else {
-            return true;
-        }
+        return Promise.resolve(true);
     }
     catch (err) {
-        throw err;
+        return Promise.reject(err);
     }
 };

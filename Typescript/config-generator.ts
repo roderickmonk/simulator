@@ -189,7 +189,7 @@ export class ConfigGenerator {
 
             assert(this.config, 'Unknown Configuration');
 
-            const validConfig = configValidator(this.config!);
+            const validConfig = await configValidator(this.config!);
 
             if (validConfig) {
                 this.validateSimConfig(this.config!.simConfig);
