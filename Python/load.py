@@ -446,8 +446,6 @@ if __name__ == '__main__':
                     r.delete (sell_quantities_key)
                     r.rpush (sell_quantities_key, *orderbook['sell'][:, 1])
 
-                    # os._exit(0)
-
         except StopIteration:
 
             returncode = 0
