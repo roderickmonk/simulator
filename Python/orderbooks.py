@@ -86,15 +86,6 @@ class Orderbooks:
            
         )
 
-    """
-            ).sort([
-                ("e", pymongo.ASCENDING),
-                ("x", pymongo.ASCENDING),
-                ("m", pymongo.ASCENDING),
-                ("ts", pymongo.ASCENDING),
-            ])
-    """
-    
     def __str__(self):
         return str(self.__class__) + '\n' + '\n'.join(
             '{} = {}'.format(
