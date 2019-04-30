@@ -150,9 +150,9 @@ export class ConfigGenerator {
 
         } else {
 
-            const depth = this.propertyData.get(levelProperties[0]).length;
+            const levelDepth = this.propertyData.get(levelProperties[0]).length;
 
-            for (let i = 0; i < depth; ++i) {
+            for (let i = 0; i < levelDepth; ++i) {
 
                 const returnObj = {};
 

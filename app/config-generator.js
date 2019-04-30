@@ -105,8 +105,8 @@ class ConfigGenerator {
             yield {};
         }
         else {
-            const depth = this.propertyData.get(levelProperties[0]).length;
-            for (let i = 0; i < depth; ++i) {
+            const levelDepth = this.propertyData.get(levelProperties[0]).length;
+            for (let i = 0; i < levelDepth; ++i) {
                 const returnObj = {};
                 for (const prop of levelProperties) {
                     returnObj[prop] = this.propertyData.get(prop)[i];
