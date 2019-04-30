@@ -20,12 +20,6 @@ const simSchema = {
         "parallelSimulations": {
             "type": "number",
         },
-        "simConfig": {
-            "type": "array",
-            "items": {
-                "type": "object",
-            }
-        },
     },
     "required": [
         "name",
