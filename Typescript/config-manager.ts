@@ -64,7 +64,7 @@ export const configValidator = (simConfig: ISimConfiguration):
         const ajv = new Ajv({
             allErrors: true,
             useDefaults: true,
-            verbose: true
+            verbose: false,
         });
 
         const validate = ajv.compile(simSchema);
