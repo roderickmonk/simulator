@@ -199,7 +199,6 @@ const start = async (
 
     } catch (err) {
 
-        console.log(err);
         return Promise.reject(err);
     }
 }

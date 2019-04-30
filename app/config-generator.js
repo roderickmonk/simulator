@@ -84,9 +84,13 @@ class ConfigGenerator {
                     .findOne({ name: this.configName });
                 assert(this.config, 'Unknown Configuration');
                 const validConfig = config_manager_1.configValidator(this.config);
-                assert(validConfig);
-                this.validateSimConfig(this.config.simConfig);
-                return this.generate(0);
+                if (validConfig) {
+                    this.validateSimConfig(this.config.simConfig);
+                    return this.generate(0);
+                }
+                else {
+                    return Promise.reject(new Error('Invalid Configuration'));
+                }
             }
             catch (err) {
                 return Promise.reject(err);

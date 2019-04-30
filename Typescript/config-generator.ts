@@ -191,11 +191,14 @@ export class ConfigGenerator {
 
             const validConfig = configValidator(this.config!);
 
-            assert (validConfig);
-            
-            this.validateSimConfig(this.config!.simConfig);
+            if (validConfig) {
+                this.validateSimConfig(this.config!.simConfig);
+                return this.generate(0);
 
-            return this.generate(0);
+            } else {
+                return Promise.reject(new Error('Invalid Configuration'));
+            }
+
 
         } catch (err) {
             return Promise.reject(err);

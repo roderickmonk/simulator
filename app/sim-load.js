@@ -124,7 +124,6 @@ const start = (simConfig, simDb) => __awaiter(this, void 0, void 0, function* ()
         }));
     }
     catch (err) {
-        console.log(err);
         return Promise.reject(err);
     }
 });
