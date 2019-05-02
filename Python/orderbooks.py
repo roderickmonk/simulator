@@ -265,9 +265,9 @@ class Orderbooks:
     @profile
     def next(self):
 
-        while True:
-            
-            while True:
+        while True: // Until a clean OB
+
+            while True: // Until prelimary OBs are removed
 
                 orderbook = self.iter.next()
 
@@ -296,12 +296,15 @@ class Orderbooks:
 
             # Sanity check: best buy strictly less than best sell
             try:
-                assert orderbook["buy"][0][0] < orderbook["sell"][0][0], "OB Corruption"
+                assert orderbook["buy"][0][0] < orderbook["sell"][0][0]
                 break
+
             except AssertionError as err:
                 # Log the first instance, otherwise just keep a count
-                logging.error (err)
-                logging.error (orderbook["ts"])
+                        logging.info(f'    Total Trades:  {trades_count}')
+
+                msg = f'OB Corruption: bestBuy={orderbook["buy"][0][0]} >= bestSell={orderbook["sell"][0][0]} @ {orderbook["ts"]}'
+                logging.error (msg)
                 if self.corrupt_order_book_count == 0:
                     logging.error (err, orderbook["ts"])
                 self.corrupt_order_book_count += 1
