@@ -260,19 +260,6 @@ if __name__ == '__main__':
         total_trades = 0
         last_ob_timestamp = None
         corrupt_orderbooks = 0
-
-        # Get a local copy of the PDF
-        """
-        pdf = sim_db.PDFs.find_one({"name": config["pdf"]})
-        assert pdf, "Unknown PDF"
-
-        local_sim_db.PDFs.delete_one({"name": config["pdf"]})
-
-        try: 
-            local_sim_db.PDFs.insert_one(pdf)
-        except pymongo.errors.DuplicateKeyError:
-            pass
-        """
         
         r = redis.Redis(
             host='localhost', 
@@ -445,6 +432,8 @@ if __name__ == '__main__':
                     sell_quantities_key = ":".join([str(orderbook['_id']),"sell_quantities"])
                     r.delete (sell_quantities_key)
                     r.rpush (sell_quantities_key, *orderbook['sell'][:, 1])
+
+            logging.info(f'Corrupt Orderbook Count:  {orderbooks.corrupt_order_book_count}')
 
         except StopIteration:
 

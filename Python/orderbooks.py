@@ -15,6 +15,7 @@ class Orderbooks:
 
     time_of_start_snapshot = None
     actual_end = None
+    corrupt_order_book_count = 0
 
     def __init__(
             self,
@@ -290,11 +291,15 @@ class Orderbooks:
             if self.start.replace(tzinfo=None) <= orderbook["ts"].replace(tzinfo=None):
                 break
 
-        # Sanity check: best buy strictly less than best sell
-        try:
-            assert orderbook["buy"][0][0] < orderbook["sell"][0][0], "OB Corruption"
-        except AssertionError as err:
-            logging.error (err)
+            # Sanity check: best buy strictly less than best sell
+            try:
+                assert orderbook["buy"][0][0] < orderbook["sell"][0][0], "OB Corruption"
+                break
+            except AssertionError as err:
+                
+                if self.corrupt_order_book_count == 0:
+                    logging.error (err, orderbook["ts"])
+                self.corrupt_order_book_count += 1
 
         orderbook["buy"] = np.array(orderbook["buy"], dtype=float)
         orderbook["sell"] = np.array(orderbook["sell"], dtype=float)
