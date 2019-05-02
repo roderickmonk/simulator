@@ -265,9 +265,9 @@ class Orderbooks:
     @profile
     def next(self):
 
-        while True: // Until a clean OB
+        while True: # Until a clean OB
 
-            while True: // Until prelimary OBs are removed
+            while True: # Until prelimary OBs are removed
 
                 orderbook = self.iter.next()
 
