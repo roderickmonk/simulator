@@ -305,7 +305,6 @@ class Orderbooks:
                     msg = f'OB Corruption: bestBuy={orderbook["buy"][0][0]} >= bestSell={orderbook["sell"][0][0]} @ {orderbook["ts"]}'
                     logging.error (msg)
                 self.corrupt_order_book_count += 1
-                os._exit(0)
 
         orderbook["buy"] = np.array(orderbook["buy"], dtype=float)
         orderbook["sell"] = np.array(orderbook["sell"], dtype=float)
