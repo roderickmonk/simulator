@@ -110,7 +110,7 @@ def redis_get (r, cycle_time, field):
     raw = [float(i) for i in raw]
     return np.array([raw]), raw
 
-# @pytest.mark.skip(reason="Test Not Routinely Carried Out")
+@pytest.mark.skip(reason="Test Not Routinely Carried Out")
 def test_co1_real_time():
 
     fee = 0.0027
