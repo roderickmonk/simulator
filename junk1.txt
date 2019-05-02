@@ -1,0 +1,163 @@
+Load (load-error-kmd) 5ccb298a97de0a6b30f77d3e Activated
+Load (load-error-kmd) 5ccb298a97de0a6b30f77d3f Activated
+Load (load-error-kmd) 5ccb298a97de0a6b30f77d40 Activated
+Load (load-error-kmd) 5ccb298a97de0a6b30f77d41 Activated
+Load (load-error-kmd) 5ccb298a97de0a6b30f77d42 Activated
+Load (load-error-kmd) 5ccb298a97de0a6b30f77d43 Activated
+Load (load-error-kmd) 5ccb298a97de0a6b30f77d44 Activated
+Load (load-error-kmd) 5ccb298a97de0a6b30f77d45 Activated
+Load (load-error-kmd) 5ccb298a97de0a6b30f77d46 Activated
+[INFO ] Channel:            0:bittrex:btc-kmd
+[INFO ] Start Time:         2019-02-20 00:00:00
+[INFO ] End Time:           2019-02-23 00:00:00
+[INFO ] Actual Start:       2019-02-20 00:00:00.774000
+[INFO ] Actual End:         2019-02-22 23:59:59.154000
+[INFO ] LOAD RESULTS
+[INFO ]     Total Trades:  11321
+[INFO ]     Buy Trades:    5517
+[INFO ]     Sell Trades:   5895
+[INFO ]     Trades w/o OB: -91
+[INFO ]     Saved OBs:     5376
+[INFO ] Largest Gaps Between Orderbooks (Hours:Minutes:Seconds)
+[INFO ]     -> 0000:00:42
+[INFO ]     -> 0000:00:38
+[INFO ]     -> 0000:00:36
+[INFO ] Load Time: 238.8 seconds
+Load Complete
+[INFO ] Channel:            0:bittrex:btc-kmd
+[INFO ] Start Time:         2019-02-23 00:00:00
+[INFO ] End Time:           2019-02-26 00:00:00
+[INFO ] Actual Start:       2019-02-23 00:00:01.312000
+[INFO ] Actual End:         2019-02-25 23:59:59.518000
+[INFO ] LOAD RESULTS
+[INFO ]     Total Trades:  13439
+[INFO ]     Buy Trades:    6912
+[INFO ]     Sell Trades:   6634
+[INFO ]     Trades w/o OB: -107
+[INFO ]     Saved OBs:     6453
+[INFO ] Largest Gaps Between Orderbooks (Hours:Minutes:Seconds)
+[INFO ]     -> 0000:00:46
+[INFO ]     -> 0000:00:44
+[INFO ]     -> 0000:00:35
+[INFO ] Load Time: 304.5 seconds
+Load Complete
+[INFO ] Channel:            0:bittrex:btc-kmd
+[INFO ] Start Time:         2019-02-26 00:00:00
+[INFO ] End Time:           2019-03-01 00:00:00
+[INFO ] Actual Start:       2019-02-26 00:00:00.666000
+[INFO ] Actual End:         2019-02-28 23:59:59.941000
+[INFO ] LOAD RESULTS
+[INFO ]     Total Trades:  9081
+[INFO ]     Buy Trades:    4431
+[INFO ]     Sell Trades:   4673
+[INFO ]     Trades w/o OB: -23
+[INFO ]     Saved OBs:     4320
+[INFO ] Largest Gaps Between Orderbooks (Hours:Minutes:Seconds)
+[INFO ]     -> 0004:04:25
+[INFO ]     -> 0000:03:28
+[INFO ]     -> 0000:02:57
+[INFO ] Load Time: 326.2 seconds
+Load Complete
+[INFO ] Channel:            0:bittrex:btc-kmd
+[INFO ] Start Time:         2019-03-01 00:00:00
+[INFO ] End Time:           2019-03-04 00:00:00
+[INFO ] Actual Start:       2019-03-01 00:00:00.146000
+[INFO ] Actual End:         2019-03-03 23:59:59.345000
+[INFO ] LOAD RESULTS
+[INFO ]     Total Trades:  3418
+[INFO ]     Buy Trades:    1494
+[INFO ]     Sell Trades:   1937
+[INFO ]     Trades w/o OB: -13
+[INFO ]     Saved OBs:     1974
+[INFO ] Largest Gaps Between Orderbooks (Hours:Minutes:Seconds)
+[INFO ]     -> 0000:02:39
+[INFO ]     -> 0000:01:45
+[INFO ]     -> 0000:01:45
+[INFO ] Load Time: 428.8 seconds
+Load Complete
+[INFO ] Channel:            0:bittrex:btc-kmd
+[INFO ] Start Time:         2019-03-04 00:00:00
+[INFO ] End Time:           2019-03-07 00:00:00
+[INFO ] Actual Start:       2019-03-04 00:00:00.826000
+[INFO ] Actual End:         2019-03-06 23:59:57.557000
+[INFO ] LOAD RESULTS
+[INFO ]     Total Trades:  6165
+[INFO ]     Buy Trades:    2565
+[INFO ]     Sell Trades:   3644
+[INFO ]     Trades w/o OB: -44
+[INFO ]     Saved OBs:     3530
+[INFO ] Largest Gaps Between Orderbooks (Hours:Minutes:Seconds)
+[INFO ]     -> 0000:00:57
+[INFO ]     -> 0000:00:37
+[INFO ]     -> 0000:00:33
+[INFO ] Load Time: 437.2 seconds
+Load Complete
+[INFO ] Channel:            0:bittrex:btc-kmd
+[INFO ] Start Time:         2019-03-07 00:00:00
+[INFO ] End Time:           2019-03-10 00:00:00
+[INFO ] Actual Start:       2019-03-07 00:00:01.058000
+[INFO ] Actual End:         2019-03-09 23:59:57.892000
+[INFO ] LOAD RESULTS
+[INFO ]     Total Trades:  4927
+[INFO ]     Buy Trades:    2165
+[INFO ]     Sell Trades:   2761
+[INFO ]     Trades w/o OB: 1
+[INFO ]     Saved OBs:     2887
+[INFO ] Largest Gaps Between Orderbooks (Hours:Minutes:Seconds)
+[INFO ]     -> 0000:00:52
+[INFO ]     -> 0000:00:38
+[INFO ]     -> 0000:00:36
+[INFO ] Load Time: 533.9 seconds
+Load Complete
+[INFO ] Channel:            0:bittrex:btc-kmd
+[INFO ] Start Time:         2019-03-10 00:00:00
+[INFO ] End Time:           2019-03-13 00:00:00
+[INFO ] Actual Start:       2019-03-10 00:00:01.297000
+[INFO ] Actual End:         2019-03-12 17:12:47.511000
+[INFO ] LOAD RESULTS
+[INFO ]     Total Trades:  6949
+[INFO ]     Buy Trades:    3047
+[INFO ]     Sell Trades:   3504
+[INFO ]     Trades w/o OB: 398
+[INFO ]     Saved OBs:     3324
+[INFO ] Largest Gaps Between Orderbooks (Hours:Minutes:Seconds)
+[INFO ]     -> 0009:54:06
+[INFO ]     -> 0000:01:02
+[INFO ]     -> 0000:00:49
+[INFO ] Load Time: 393.1 seconds
+Load Complete
+[INFO ] Channel:            0:bittrex:btc-kmd
+[INFO ] Start Time:         2019-03-13 00:00:00
+[INFO ] End Time:           2019-03-16 00:00:00
+[INFO ] Actual Start:       2019-03-13 08:14:35.355000
+[INFO ] Actual End:         2019-03-15 23:59:57.629000
+[INFO ] LOAD RESULTS
+[INFO ]     Total Trades:  35888
+[INFO ]     Buy Trades:    8606
+[INFO ]     Sell Trades:   10158
+[INFO ]     Trades w/o OB: 17124
+[INFO ]     Saved OBs:     11152
+[INFO ] Largest Gaps Between Orderbooks (Hours:Minutes:Seconds)
+[INFO ]     -> 0015:51:33
+[INFO ]     -> 0000:37:06
+[INFO ]     -> 0000:00:34
+[INFO ] Load Time: 546.3 seconds
+Load Complete
+[INFO ] Channel:            0:bittrex:btc-kmd
+[INFO ] Start Time:         2019-03-16 00:00:00
+[INFO ] End Time:           2019-03-20 00:00:00
+[INFO ] Actual Start:       2019-03-16 00:00:00.120000
+[INFO ] Actual End:         2019-03-19 23:59:57.213000
+[INFO ] LOAD RESULTS
+[INFO ]     Total Trades:  8112
+[INFO ]     Buy Trades:    3376
+[INFO ]     Sell Trades:   4755
+[INFO ]     Trades w/o OB: -19
+[INFO ]     Saved OBs:     5017
+[INFO ] Largest Gaps Between Orderbooks (Hours:Minutes:Seconds)
+[INFO ]     -> 0000:04:57
+[INFO ]     -> 0000:01:09
+[INFO ]     -> 0000:00:59
+[INFO ] Load Time: 599.6 seconds
+Load Complete
+Load Execution Time (hh:mm:ss): 00:13:59

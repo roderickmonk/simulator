@@ -298,6 +298,8 @@ class Orderbooks:
                 break
             except AssertionError as err:
                 # Log the first instance, otherwise just keep a count
+                logging.error (err)
+                logging.error (orderbook["ts"])
                 if self.corrupt_order_book_count == 0:
                     logging.error (err, orderbook["ts"])
                 self.corrupt_order_book_count += 1
