@@ -435,7 +435,8 @@ if __name__ == '__main__':
 
 
         except StopIteration:
-            logging.info(f'Corrupt Orderbook Count:  {orderbooks.corrupt_order_book_count}')
+            if orderbooks.corrupt_order_book_count > 0:
+                logging.info(f'Corrupt Orderbook Count:  {orderbooks.corrupt_order_book_count}')
 
             returncode = 0
 
