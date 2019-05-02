@@ -301,12 +301,9 @@ class Orderbooks:
 
             except AssertionError as err:
                 # Log the first instance, otherwise just keep a count
-                        logging.info(f'    Total Trades:  {trades_count}')
-
-                msg = f'OB Corruption: bestBuy={orderbook["buy"][0][0]} >= bestSell={orderbook["sell"][0][0]} @ {orderbook["ts"]}'
-                logging.error (msg)
                 if self.corrupt_order_book_count == 0:
-                    logging.error (err, orderbook["ts"])
+                    msg = f'OB Corruption: bestBuy={orderbook["buy"][0][0]} >= bestSell={orderbook["sell"][0][0]} @ {orderbook["ts"]}'
+                    logging.error (msg)
                 self.corrupt_order_book_count += 1
                 os._exit(0)
 
