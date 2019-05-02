@@ -4,6 +4,7 @@ from pymongo import MongoClient
 from pymongo.collection import Collection
 from functools import reduce
 from datetime import datetime, timedelta
+import os
 import numpy as np
 
 try:
@@ -296,10 +297,12 @@ class Orderbooks:
                 assert orderbook["buy"][0][0] < orderbook["sell"][0][0], "OB Corruption"
                 break
             except AssertionError as err:
-                
+                # Log the first instance, otherwise just keep a count
                 if self.corrupt_order_book_count == 0:
                     logging.error (err, orderbook["ts"])
                 self.corrupt_order_book_count += 1
+                os._exit(0)
+
 
         orderbook["buy"] = np.array(orderbook["buy"], dtype=float)
         orderbook["sell"] = np.array(orderbook["sell"], dtype=float)
