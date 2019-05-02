@@ -266,31 +266,33 @@ class Orderbooks:
     def next(self):
 
         while True:
+            
+            while True:
 
-            orderbook = self.iter.next()
+                orderbook = self.iter.next()
 
-            if orderbook == None:
-                raise StopIteration
+                if orderbook == None:
+                    raise StopIteration
 
-            assert "s" in orderbook
+                assert "s" in orderbook
 
-            if orderbook["s"] == True:
+                if orderbook["s"] == True:
 
-                # Snapshot
-                self.buy_orderbook = orderbook["buy"]
-                self.sell_orderbook = orderbook["sell"]
+                    # Snapshot
+                    self.buy_orderbook = orderbook["buy"]
+                    self.sell_orderbook = orderbook["sell"]
 
-            else:
+                else:
 
-                # Delta
-                self.apply_deltas(orderbook)
+                    # Delta
+                    self.apply_deltas(orderbook)
 
-                orderbook["buy"] = self.buy_orderbook
-                orderbook["sell"] = self.sell_orderbook
+                    orderbook["buy"] = self.buy_orderbook
+                    orderbook["sell"] = self.sell_orderbook
 
-            # First orderbooks not needed
-            if self.start.replace(tzinfo=None) <= orderbook["ts"].replace(tzinfo=None):
-                break
+                # First orderbooks not needed
+                if self.start.replace(tzinfo=None) <= orderbook["ts"].replace(tzinfo=None):
+                    break
 
             # Sanity check: best buy strictly less than best sell
             try:
@@ -304,7 +306,6 @@ class Orderbooks:
                     logging.error (err, orderbook["ts"])
                 self.corrupt_order_book_count += 1
                 os._exit(0)
-
 
         orderbook["buy"] = np.array(orderbook["buy"], dtype=float)
         orderbook["sell"] = np.array(orderbook["sell"], dtype=float)
