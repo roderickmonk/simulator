@@ -433,9 +433,9 @@ if __name__ == '__main__':
                     r.delete (sell_quantities_key)
                     r.rpush (sell_quantities_key, *orderbook['sell'][:, 1])
 
-            logging.info(f'Corrupt Orderbook Count:  {orderbooks.corrupt_order_book_count}')
 
         except StopIteration:
+            logging.info(f'Corrupt Orderbook Count:  {orderbooks.corrupt_order_book_count}')
 
             returncode = 0
 
