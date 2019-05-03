@@ -497,7 +497,6 @@ if __name__ == '__main__':
 
         FORMAT = "{0:25}{1:10d}"
         logging.info(f'LOAD RESULTS')     
-        logging.info(FORMAT.format('    Total Trades:',trades_count))
         logging.info(FORMAT.format('    Buy Trades:',buy_trades_count))
         logging.info(FORMAT.format('    Sell Trades:',sell_trades_count))
         logging.info(FORMAT.format('    Saved OBs:',saved_orderbook_count))
@@ -518,10 +517,5 @@ if __name__ == '__main__':
             load_minutes // 60,
             load_minutes % 60,
             time_diff.load_time() % 60)
-
-        logging.info(
-            'Load Time: %s seconds',
-            str(load_time)
-        )
 
         sys.exit(returncode)
