@@ -507,7 +507,7 @@ if __name__ == '__main__':
         rounded_end2 = ('{0:.1f}'.format(
             round(time.time()-start_execution, 4)))
 
-        rounded_end = round(time.time()-start_execution))
+        rounded_end = round(time.time()-start_execution)
 
         logging.info(
             'Largest Gaps Between Orderbooks (HH:MM:SS)')
