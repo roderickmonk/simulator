@@ -516,6 +516,6 @@ if __name__ == '__main__':
             'Load Time (HH:MM:SS): %02d:%02d:%02d',
             load_minutes // 60,
             load_minutes % 60,
-            time_diff.load_time() % 60)
+            load_time.total_seconds() % 60)
 
         sys.exit(returncode)
