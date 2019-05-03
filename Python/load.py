@@ -500,10 +500,9 @@ if __name__ == '__main__':
         FORMAT = "{0:25}{1:10d}"
         logging.info(f'LOAD RESULTS')     
         logging.info(FORMAT.format('    Total Trades:',trades_count))
-        logging.info(f'    Buy Trades:    {buy_trades_count}')
-        logging.info(f'    Sell Trades:   {sell_trades_count}')
-        # logging.info(f'    Trades w/o OB: {trades_count - (buy_trades_count+sell_trades_count)}')
-        logging.info(f'    Saved OBs:     {saved_orderbook_count}')
+        logging.info(FORMAT.format('    Buy Trades:',buy_trades_count))
+        logging.info(FORMAT.format('    Sell Trades:',sell_trades_count))
+        logging.info(FORMAT.format('    Saved OBs:',saved_orderbook_count))
 
         rounded_end = ('{0:.1f}'.format(
             round(time.time()-start_execution, 4)))
@@ -518,6 +517,8 @@ if __name__ == '__main__':
                 total_minutes // 60,
                 total_minutes % 60,
                 time_diff.total_seconds() % 60)
+
+        logging.info(FORMAT.format('Load Time (seconds):',rounded_end))
 
         logging.info(
             'Load Time: %s seconds',
