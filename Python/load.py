@@ -487,7 +487,7 @@ if __name__ == '__main__':
 
     finally:
 
-        logging.info('Orderbook Gaps (HH:MM:SS)')
+        logging.info('Orderbook Gaps (HH:MM:SS):')
         for gap in max_time_diffs:
             gap_minutes = gap.total_seconds() // 60
             gap_time = "{0:25}{1}:{2}:{3}".format (
@@ -511,7 +511,5 @@ if __name__ == '__main__':
         logging.info(FORMAT.format('    Buy Trades:',buy_trades_count))
         logging.info(FORMAT.format('    Sell Trades:',sell_trades_count))
         logging.info(FORMAT.format('    Saved OBs:',saved_orderbook_count))
-
- 
 
         sys.exit(returncode)
