@@ -487,15 +487,13 @@ if __name__ == '__main__':
 
     finally:
 
-        trades_count = trades.count_documents({
-            "e": config["envId"],
-            "x": config["exchange"],
-            "m": config["market"],
-            "ts": {
-                "$gte": config["timeFrame"]["startTime"],
-                "$lte": config["timeFrame"]["endTime"],
-            }
-        })
+        for time_diff in max_time_diffs:
+            diff_minutes = time_diff.total_seconds() // 60
+            logging.info(
+                '    -> %02d:%02d:%02d',
+                diff_minutes // 60,
+                diff_minutes % 60,
+                time_diff.total_seconds() % 60)
 
         FORMAT = "{0:25}{1:10d}"
         logging.info(f'LOAD RESULTS')     
@@ -511,14 +509,6 @@ if __name__ == '__main__':
 
         logging.info(
             'Largest Gaps Between Orderbooks (HH:MM:SS)')
-
-        for time_diff in max_time_diffs:
-            diff_minutes = time_diff.total_seconds() // 60
-            logging.info(
-                '    -> %02d:%02d:%02d',
-                diff_minutes // 60,
-                diff_minutes % 60,
-                time_diff.total_seconds() % 60)
 
         logging.info("{0:25}{1:10d}".format('Load Time (HH:MM:SS):',load_time))
 
