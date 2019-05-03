@@ -511,12 +511,12 @@ if __name__ == '__main__':
             load_minutes % 60,
             load_time % 60)
 
-        xx = "{0:25}{1:2d}".format (
+        xx = "{0:25}{1:2d}{2:2d}{3:2d}".format (
             "Load Time (HH:MM:SS):", 
             load_minutes // 60,
             load_minutes % 60,
             load_time % 60)
 
-        logging.info (x)
+        logging.info (xx)
 
         sys.exit(returncode)
