@@ -246,7 +246,7 @@ if __name__ == '__main__':
         )
 
         logging.info(
-            "{0:25}{1:10d}".format(
+            "{0:25}{1:<d}".format(
                 'Orderbooks:',
                 number_orderbooks)
         )
