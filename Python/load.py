@@ -263,7 +263,7 @@ if __name__ == '__main__':
         )
 
         logging.info(
-            "{0:25}{1:10d}".format(
+            "{0:25}{1:<d}".format(
                 'Corrupt Orderbooks:',
                 number_corrupt_orderbooks)
         )
@@ -506,7 +506,7 @@ if __name__ == '__main__':
             f'{load_time % 60:02}')
 
         logging.info (load_time_formatted)
-        FORMAT = "{0:25}{1:10d}"
+        FORMAT = "{0:25}{1:<d}"
         logging.info(f'LOAD RESULTS')
         logging.info(FORMAT.format('    Buy Trades:',buy_trades_count))
         logging.info(FORMAT.format('    Sell Trades:',sell_trades_count))
