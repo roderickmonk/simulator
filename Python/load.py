@@ -190,12 +190,6 @@ if __name__ == '__main__':
                 'End Time:', 
                 str(config["timeFrame"]["endTime"])))
 
-        logging.info(
-            "{0:22}{1:10d}".format(
-                'Corrupt Orderbooks:',
-                number_corrupt_orderbooks)
-        )
-
         trades = remote_mongo_client.history.trades
         get_trades(
             trades=trades,
@@ -270,6 +264,12 @@ if __name__ == '__main__':
             actual_start,
             actual_end,
             remote_mongo_client.history.orderbooks
+        )
+
+        logging.info(
+            "{0:22}{1:10d}".format(
+                'Corrupt Orderbooks:',
+                number_corrupt_orderbooks)
         )
 
         trades = remote_mongo_client.history.trades
