@@ -504,8 +504,10 @@ if __name__ == '__main__':
         logging.info(FORMAT.format('    Sell Trades:',sell_trades_count))
         logging.info(FORMAT.format('    Saved OBs:',saved_orderbook_count))
 
-        rounded_end = ('{0:.1f}'.format(
+        rounded_end2 = ('{0:.1f}'.format(
             round(time.time()-start_execution, 4)))
+
+        rounded_end = round(time.time()-start_execution))
 
         logging.info(
             'Largest Gaps Between Orderbooks (HH:MM:SS)')
@@ -518,7 +520,7 @@ if __name__ == '__main__':
                 total_minutes % 60,
                 time_diff.total_seconds() % 60)
 
-        logging.info("{0:25}{1:10}".format('Load Time (seconds):',rounded_end))
+        logging.info("{0:25}{1:10d}".format('Load Time (seconds):',rounded_end))
 
         logging.info(
             'Load Time: %s seconds',
