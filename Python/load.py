@@ -488,13 +488,20 @@ if __name__ == '__main__':
     finally:
 
         logging.info('Orderbook Gaps (HH:MM:SS)')
-        for time_diff in max_time_diffs:
-            diff_minutes = time_diff.total_seconds() // 60
+        for gap in max_time_diffs:
+            gap_minutes = gap.total_seconds() // 60
             logging.info(
                 '    -> %02d:%02d:%02d',
-                diff_minutes // 60,
-                diff_minutes % 60,
-                time_diff.total_seconds() % 60)
+                gap_minutes // 60,
+                gap_minutes % 60,
+                gap.total_seconds() % 60)
+            gap_time_formatted = "{0:25}{1}:{2}:{3}".format (
+                "",
+                f'{gap_minutes // 60:02}',
+                f'{gap_minutes % 60:02}',
+                f'{gap.total_seconds() % 60:02}')  
+            logging.info (gap_time_formatted)              
+
 
         FORMAT = "{0:25}{1:10d}"
         logging.info(f'LOAD RESULTS')
@@ -505,23 +512,13 @@ if __name__ == '__main__':
         load_time = round(time.time()-start_execution)
 
         load_minutes = load_time // 60
-        logging.info(
-            'Load Time (HH:MM:SS): %02d:%02d:%02d',
-            load_minutes // 60,
-            load_minutes % 60,
-            load_time % 60)
 
-        xx = "{0:25}{1}:{2}:{3}".format (
+        load_time_formatted = "{0:25}{1}:{2}:{3}".format (
             "Load Time (HH:MM:SS):", 
             f'{load_minutes // 60:02}',
             f'{load_minutes % 60:02}',
             f'{load_time % 60:02}')
 
-        logging.info (xx)
-
-        val = 0
-        xx2 = f'{val:02}'
-        logging.info (xx2)
-
+        logging.info (load_time_formatted)
 
         sys.exit(returncode)
