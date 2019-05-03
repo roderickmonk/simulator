@@ -499,8 +499,8 @@ if __name__ == '__main__':
             gap_time_formatted = "{0:25}{1}:{2}:{3}".format (
                 "",
                 f'{int(gap_minutes // 60):02}',
-                f'{gap_minutes % 60:02}',
-                f'{gap.total_seconds() % 60:02}')  
+                f'{int(gap_minutes % 60):02}',
+                f'{int(gap.total_seconds() % 60):02}')  
             logging.info (gap_time_formatted)              
 
 
