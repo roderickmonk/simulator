@@ -504,27 +504,34 @@ if __name__ == '__main__':
         logging.info(FORMAT.format('    Sell Trades:',sell_trades_count))
         logging.info(FORMAT.format('    Saved OBs:',saved_orderbook_count))
 
-        rounded_end2 = ('{0:.1f}'.format(
+        load_time2 = ('{0:.1f}'.format(
             round(time.time()-start_execution, 4)))
 
-        rounded_end = round(time.time()-start_execution)
+        load_time = round(time.time()-start_execution)
 
         logging.info(
             'Largest Gaps Between Orderbooks (HH:MM:SS)')
 
         for time_diff in max_time_diffs:
-            total_minutes = time_diff.total_seconds() // 60
+            diff_minutes = time_diff.total_seconds() // 60
             logging.info(
                 '    -> %02d:%02d:%02d',
-                total_minutes // 60,
-                total_minutes % 60,
+                diff_minutes // 60,
+                diff_minutes % 60,
                 time_diff.total_seconds() % 60)
 
-        logging.info("{0:25}{1:10d}".format('Load Time (seconds):',rounded_end))
+        logging.info("{0:25}{1:10d}".format('Load Time (HH:MM:SS):',load_time))
+
+        load_minutes = time_diff.total_seconds() // 60
+        logging.info(
+            'Load Time (HH:MM:SS): %02d:%02d:%02d',
+            load_minutes // 60,
+            load_minutes % 60,
+            time_diff.load_time() % 60)
 
         logging.info(
             'Load Time: %s seconds',
-            str(rounded_end)
+            str(load_time)
         )
 
         sys.exit(returncode)
