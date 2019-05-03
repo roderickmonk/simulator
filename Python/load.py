@@ -487,6 +487,7 @@ if __name__ == '__main__':
 
     finally:
 
+        logging.info('Largest Gaps Between Orderbooks (HH:MM:SS)')
         for time_diff in max_time_diffs:
             diff_minutes = time_diff.total_seconds() // 60
             logging.info(
@@ -506,16 +507,13 @@ if __name__ == '__main__':
 
         load_time = round(time.time()-start_execution)
 
-        logging.info(
-            'Largest Gaps Between Orderbooks (HH:MM:SS)')
-
         logging.info("{0:25}{1:10d}".format('Load Time (HH:MM:SS):',load_time))
 
-        load_minutes = time_diff.total_seconds() // 60
+        load_minutes = load_time // 60
         logging.info(
             'Load Time (HH:MM:SS): %02d:%02d:%02d',
             load_minutes // 60,
             load_minutes % 60,
-            load_time.total_seconds() % 60)
+            load_time % 60)
 
         sys.exit(returncode)
