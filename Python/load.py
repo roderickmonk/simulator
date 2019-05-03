@@ -102,10 +102,6 @@ def find_trades(trades, filter):
 
     return buy_trades, sell_trades
 
-
-#start = dateutil.parser.parse("2018-09-15T00:00:00.000+0000")
-#end = dateutil.parser.parse("2018-09-16T02:00:00.000+0000")
-
 if __name__ == '__main__':
 
     returncode = 0
@@ -129,7 +125,7 @@ if __name__ == '__main__':
         assert os.environ['MONGODB'], 'MONGODB Not Defined'
         remote_mongo_client = MongoClient(os.environ['MONGODB'])
         if remote_mongo_client == None:
-            raise Exception('Unable to Connect to Remote MongoDB Database')
+            raise Exception('Unable to Connect to Remote MongoDB')
 
         # Prep for remote mongodb access
         assert os.environ['SIMULATOR_DB'], 'SIMULATOR_DB Not Defined'
@@ -139,7 +135,7 @@ if __name__ == '__main__':
 
         # Prep for local mongodb access
         local_mongo_client = MongoClient()
-        assert local_mongo_client, 'Unable to Connect to Local MongoDB Database'
+        assert local_mongo_client, 'Unable to Connect to Local MongoDB'
         local_sim_db = local_mongo_client['sim']
 
         # Load and check configuration
@@ -510,12 +506,12 @@ if __name__ == '__main__':
             round(time.time()-start_execution, 4)))
 
         logging.info(
-            'Largest Gaps Between Orderbooks (Hours:Minutes:Seconds)')
+            'Largest Gaps Between Orderbooks (HH:MM:SS)')
 
         for time_diff in max_time_diffs:
             total_minutes = time_diff.total_seconds() // 60
             logging.info(
-                '    -> %04d:%02d:%02d',
+                '    -> %02d:%02d:%02d',
                 total_minutes // 60,
                 total_minutes % 60,
                 time_diff.total_seconds() % 60)
