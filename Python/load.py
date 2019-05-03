@@ -490,19 +490,12 @@ if __name__ == '__main__':
         logging.info('Orderbook Gaps (HH:MM:SS)')
         for gap in max_time_diffs:
             gap_minutes = gap.total_seconds() // 60
-            logging.info(
-                '    -> %02d:%02d:%02d',
-                gap_minutes // 60,
-                gap_minutes % 60,
-                gap.total_seconds() % 60)
-
-            gap_time_formatted = "{0:25}{1}:{2}:{3}".format (
+            gap_time = "{0:25}{1}:{2}:{3}".format (
                 "",
                 f'{int(gap_minutes // 60):02}',
                 f'{int(gap_minutes % 60):02}',
                 f'{int(gap.total_seconds() % 60):02}')  
-            logging.info (gap_time_formatted)              
-
+            logging.info (gap_time)              
 
         FORMAT = "{0:25}{1:10d}"
         logging.info(f'LOAD RESULTS')
