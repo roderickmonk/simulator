@@ -519,4 +519,9 @@ if __name__ == '__main__':
 
         logging.info (xx)
 
+        val = 0
+        xx2 = f'{val:02}'
+        logging.info (xx2)
+
+
         sys.exit(returncode)
