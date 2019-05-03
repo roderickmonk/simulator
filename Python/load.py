@@ -171,7 +171,7 @@ if __name__ == '__main__':
         )
 
         logging.info (
-            "{0:20}{1:10}".format( 
+            "{0:30}{1:10}".format( 
                 "Channel:",
                 ":".join([
                     str(config["envId"]),
@@ -182,11 +182,11 @@ if __name__ == '__main__':
         )
 
         logging.info(
-            "{0:20}{1:10}".format(
+            "{0:30}{1:10}".format(
                 'Start Time:', 
                 str(config["timeFrame"]["startTime"])))
         logging.info(
-            "{0:20}{1:10}".format(
+            "{0:30}{1:10}".format(
                 'End Time:', 
                 str(config["timeFrame"]["endTime"])))
 
@@ -228,11 +228,11 @@ if __name__ == '__main__':
         actual_end = last_orderbook["ts"]
 
         logging.info(
-            "{0:20}{1:10}".format(
+            "{0:30}{1:10}".format(
             'Actual Start:', 
             str(actual_start)))
         logging.info(
-            "{0:20}{1:10}".format(
+            "{0:30}{1:10}".format(
             'Actual End:', 
             str(actual_end)))
 
@@ -250,7 +250,7 @@ if __name__ == '__main__':
         )
 
         logging.info(
-            "{0:22}{1:10d}".format(
+            "{0:30}{1:10d}".format(
                 'Orderbooks:',
                 number_orderbooks)
         )
@@ -267,7 +267,7 @@ if __name__ == '__main__':
         )
 
         logging.info(
-            "{0:22}{1:10d}".format(
+            "{0:30}{1:10d}".format(
                 'Corrupt Orderbooks:',
                 number_corrupt_orderbooks)
         )
@@ -503,7 +503,7 @@ if __name__ == '__main__':
         logging.info(f'    Total Trades:  {trades_count}')
         logging.info(f'    Buy Trades:    {buy_trades_count}')
         logging.info(f'    Sell Trades:   {sell_trades_count}')
-        logging.info(f'    Trades w/o OB: {trades_count - (buy_trades_count+sell_trades_count)}')
+        # logging.info(f'    Trades w/o OB: {trades_count - (buy_trades_count+sell_trades_count)}')
         logging.info(f'    Saved OBs:     {saved_orderbook_count}')
 
         rounded_end = ('{0:.1f}'.format(
