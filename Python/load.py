@@ -190,34 +190,6 @@ if __name__ == '__main__':
                 'End Time:', 
                 str(config["timeFrame"]["endTime"])))
 
-        # Count the number of orderbooks
-        number_orderbooks = Orderbooks.count_orderbooks(
-
-            simulation["envId"],
-            simulation["exchange"],
-            simulation["market"],
-            actual_start,
-            actual_end,
-            remote_mongo_client.history.orderbooks
-        )
-
-        logging.info(
-            "{0:22}{1:10d}".format(
-                'Orderbooks:',
-                number_orderbooks)
-        )
-
-        # Count the number of corrupt orderbooks
-        number_corrupt_orderbooks = Orderbooks.count_corrupt_orderbooks(
-
-            simulation["envId"],
-            simulation["exchange"],
-            simulation["market"],
-            actual_start,
-            actual_end,
-            remote_mongo_client.history.orderbooks
-        )
-
         logging.info(
             "{0:22}{1:10d}".format(
                 'Corrupt Orderbooks:',
@@ -271,6 +243,34 @@ if __name__ == '__main__':
             str(actual_end)))
 
         assert actual_start < actual_end
+
+            # Count the number of orderbooks
+        number_orderbooks = Orderbooks.count_orderbooks(
+
+            config["envId"],
+            config["exchange"],
+            simulation["market"],
+            actual_start,
+            actual_end,
+            remote_mongo_client.history.orderbooks
+        )
+
+        logging.info(
+            "{0:22}{1:10d}".format(
+                'Orderbooks:',
+                number_orderbooks)
+        )
+
+        # Count the number of corrupt orderbooks
+        number_corrupt_orderbooks = Orderbooks.count_corrupt_orderbooks(
+
+            config["envId"],
+            config["exchange"],
+            simulation["market"],
+            actual_start,
+            actual_end,
+            remote_mongo_client.history.orderbooks
+        )
 
         trades = remote_mongo_client.history.trades
 
