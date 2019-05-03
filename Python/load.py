@@ -518,7 +518,7 @@ if __name__ == '__main__':
                 total_minutes % 60,
                 time_diff.total_seconds() % 60)
 
-        logging.info(FORMAT.format('Load Time (seconds):',rounded_end))
+        logging.info("{0:25}{1:10}".format('Load Time (seconds):',rounded_end))
 
         logging.info(
             'Load Time: %s seconds',
