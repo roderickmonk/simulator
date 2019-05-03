@@ -243,7 +243,7 @@ if __name__ == '__main__':
 
             config["envId"],
             config["exchange"],
-            simulation["market"],
+            config["market"],
             actual_start,
             actual_end,
             remote_mongo_client.history.orderbooks
@@ -260,7 +260,7 @@ if __name__ == '__main__':
 
             config["envId"],
             config["exchange"],
-            simulation["market"],
+            config["market"],
             actual_start,
             actual_end,
             remote_mongo_client.history.orderbooks
