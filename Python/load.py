@@ -498,7 +498,7 @@ if __name__ == '__main__':
         })
 
         logging.info(f'LOAD RESULTS')     
-        logging.info("{0:25}{1:10d}".format('    Total Trades:',trades_count)
+        logging.info("{0:25}{1:10d}".format('    Total Trades:',trades_count))
         logging.info(f'    Buy Trades:    {buy_trades_count}')
         logging.info(f'    Sell Trades:   {sell_trades_count}')
         # logging.info(f'    Trades w/o OB: {trades_count - (buy_trades_count+sell_trades_count)}')
