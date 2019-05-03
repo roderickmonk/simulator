@@ -497,16 +497,8 @@ if __name__ == '__main__':
                 f'{int(gap.total_seconds() % 60):02}')  
             logging.info (gap_time)              
 
-        FORMAT = "{0:25}{1:10d}"
-        logging.info(f'LOAD RESULTS')
-        logging.info(FORMAT.format('    Buy Trades:',buy_trades_count))
-        logging.info(FORMAT.format('    Sell Trades:',sell_trades_count))
-        logging.info(FORMAT.format('    Saved OBs:',saved_orderbook_count))
-
         load_time = round(time.time()-start_execution)
-
         load_minutes = load_time // 60
-
         load_time_formatted = "{0:25}{1}:{2}:{3}".format (
             "Load Time (HH:MM:SS):", 
             f'{load_minutes // 60:02}',
@@ -514,5 +506,12 @@ if __name__ == '__main__':
             f'{load_time % 60:02}')
 
         logging.info (load_time_formatted)
+        FORMAT = "{0:25}{1:10d}"
+        logging.info(f'LOAD RESULTS')
+        logging.info(FORMAT.format('    Buy Trades:',buy_trades_count))
+        logging.info(FORMAT.format('    Sell Trades:',sell_trades_count))
+        logging.info(FORMAT.format('    Saved OBs:',saved_orderbook_count))
+
+ 
 
         sys.exit(returncode)
