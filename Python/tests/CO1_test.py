@@ -131,7 +131,7 @@ def test_co1_real_time():
             'pdf': "not-used",
         }
 
-        import optimized_co1;
+        import evol_a_cycler;
 
         r = redis.Redis(host='localhost', port=6379, encoding=u'utf-8', decode_responses=False, db=0)
 
