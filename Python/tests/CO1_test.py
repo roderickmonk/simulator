@@ -369,7 +369,7 @@ def test_evol_a_cycler_real_time():
 
                     # sellOB
                     sell_rates = redis_get2 (r, cycle_time, "sell_rates")
-                    sell_quantities redis_get2 (r, cycle_time, "sell_quantities")
+                    sell_quantities = redis_get2 (r, cycle_time, "sell_quantities")
 
                     assert sell_rates.size == sell_quantities.size
 
