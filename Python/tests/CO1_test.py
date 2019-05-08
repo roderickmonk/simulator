@@ -408,7 +408,7 @@ def test_evol_a_cycler_real_time():
 
                     logging.error(
                         output_format.format (
-                        "Rust Sell:",
+                        "Rust   Buy:",
                         '%.8f' % rust_buy_rate,
                         "Sell:",
                         '%.8f' % rust_sell_rate))
