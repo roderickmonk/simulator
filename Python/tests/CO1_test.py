@@ -399,12 +399,12 @@ def test_evol_a_cycler_real_time():
                         buyob, 
                         sellob)
                         
-                    logging.error ("Rate Precision: %d", sim_config.rate_precision)
+                    logging.debug ("Rate Precision: %d", sim_config.rate_precision)
                     
                     logging.error(
-                        f'BUY:  Python: {round(buy_rate, sim_config.rate_precision)}, Rust: {rust_buy_rate}')
+                        f'Python: Buy:  {round(buy_rate, sim_config.rate_precision)}, Sell: {round(sell_rate, sim_config.rate_precision)}')
                     logging.error(
-                        f'SELL: Python: {round(sell_rate, sim_config.rate_precision)}, Rust: {rust_sell_rate}')
+                        f'Rust:   Buy:  {rust_buy_rate}, Sell: , {rust_sell_rate}')
 
                     rust_python_identical = \
                         abs (rust_buy_rate - buy_rate) < tick and \
