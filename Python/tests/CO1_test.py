@@ -131,7 +131,7 @@ def test_co1_real_time():
             'pdf': "not-used",
         }
 
-        import evol_a_cycler;
+        import evol_a_cycler as test_trader
 
         r = redis.Redis(host='localhost', port=6379, encoding=u'utf-8', decode_responses=False, db=0)
 
@@ -223,7 +223,7 @@ def test_co1_real_time():
                     trader = co1.Trader(sim_config)
 
                     t1=datetime.utcnow()
-                    buy_rate, sell_rate = trader.compute_orders(
+                    buy_rate, sell_rate = test_trader.compute_orders(
                         buyob, 
                         sellob)
                         
