@@ -340,13 +340,13 @@ def test_evol_a_cycler_real_time():
                     logging.error ("%r, %f, %f", cycle_time, rust_buy_rate, rust_sell_rate)
 
                     # pdf_x
-                    sim_config.pdf_x = redis_get2 (r, cycle_time, "pdf_x")
+                    sim_config.pdf_x  = redis_get2 (r, cycle_time, "pdf_x")[0]
                     assert sim_config.pdf_x.size > 0
 
                     logging.debug ("sim_config.pdf_x:\n%r", sim_config.pdf_x)
 
                     # pdf_y
-                    sim_config.pdf_y = redis_get2 (r, cycle_time, "pdf_y")
+                    sim_config.pdf_y = redis_get2 (r, cycle_time, "pdf_y")[0]
                     assert sim_config.pdf_y.size > 0
 
                     assert sim_config.pdf_x.size == sim_config.pdf_y.size
