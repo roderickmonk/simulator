@@ -364,7 +364,7 @@ def test_evol_a_cycler_real_time():
                     assert buy_rates.size == buy_quantities.size
 
                     buyob = np.vstack((buy_rates, buy_quantities)).T
-                    logging.error('buyob:\n%r', buyob)
+                    logging.debug('buyob:\n%r', buyob)
 
                     # sellOB
                     sell_rates = redis_get2 (r, cycle_time, "sell_rates")
