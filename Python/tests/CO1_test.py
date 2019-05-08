@@ -307,7 +307,7 @@ def test_evol_a_cycler_real_time():
             'pdf': "not-used",
         }
 
-        import evol_a_cycler as Trader
+        import evol_a_cycler as trader_under_test
 
         r = redis.Redis(host='localhost', port=6379, encoding=u'utf-8', decode_responses=False, db=0)
 
@@ -391,7 +391,7 @@ def test_evol_a_cycler_real_time():
                     sellob = np.vstack((sell_rates, sell_quantities)).T
                     logging.debug('sellob:\n%r', sellob)
 
-                    trader = Trader(sim_config)
+                    trader = trader_under_test.Trader(sim_config)
 
                     t1=datetime.utcnow()
                     buy_rate, sell_rate = trader.compute_orders(
