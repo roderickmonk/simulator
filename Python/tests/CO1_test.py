@@ -404,7 +404,7 @@ def test_evol_a_cycler_real_time():
                     logging.error(
                         "{0:13}{1:10}, {2:10}{3:10f}".format (
                         "Python: Buy:",
-                        f'{round(buy_rate, sim_config.rate_precision):08}',
+                        '%.8f' % round(buy_rate, sim_config.rate_precision),
                         "Sell:",
                         round(sell_rate, sim_config.rate_precision)))
 
