@@ -415,9 +415,6 @@ def test_evol_a_cycler_real_time():
                         "Sell:",
                         '%.8f' % rust_sell_rate))
 
-                    logging.error(
-                        f'Rust:   Buy:  {rust_buy_rate}, Sell: , {rust_sell_rate}')
-
                     rust_python_identical = \
                         abs (rust_buy_rate - buy_rate) < tick and \
                         abs (rust_sell_rate - sell_rate) < tick
