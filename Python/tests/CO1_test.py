@@ -337,8 +337,7 @@ def test_evol_a_cycler_real_time():
 
                     cycle_time, rust_buy_rate, rust_sell_rate = itemgetter('cycle_time', 'buy_rate', 'sell_rate')(rx_msg)
 
-                    logging.error ("%r, %f, %f", cycle_time, rust_buy_rate, rust_sell_rate)
-
+                    logging.error ("Cycle Time: %r", cycle_time);
                     # pdf_x
                     sim_config.pdf_x  = redis_get2 (r, cycle_time, "pdf_x")[0]
                     assert sim_config.pdf_x.size > 0
@@ -399,7 +398,6 @@ def test_evol_a_cycler_real_time():
                         buyob, 
                         sellob)
                         
-                    logging.debug ("Rate Precision: %d", sim_config.rate_precision)
                     output_format = "{0:13}{1:10}, {2:6} {3:10}"
                     logging.error(
                         output_format.format (
@@ -410,7 +408,7 @@ def test_evol_a_cycler_real_time():
 
                     logging.error(
                         output_format.format (
-                        "Rust: Sell:",
+                        "Rust Sell:",
                         '%.8f' % rust_buy_rate,
                         "Sell:",
                         '%.8f' % rust_sell_rate))
@@ -424,7 +422,7 @@ def test_evol_a_cycler_real_time():
                     else:                       
                         rust_python_diff_count += 1
 
-                    logging.error(f'Rust / Python Identical Count: {rust_python_same_count}, Different Count: {rust_python_diff_count}')     
+                    logging.error(f'Rust / Python Same: {rust_python_same_count}, Diff: {rust_python_diff_count}')     
 
         assert round(buy_rate, sim_config.rate_precision) == -1
         assert round(sell_rate, sim_config.rate_precision) == -1
