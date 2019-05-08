@@ -405,9 +405,11 @@ def test_evol_a_cycler_real_time():
                     logging.error(
                         f'SELL: Python: {round(sell_rate, sim_config.rate_precision)}, Rust: {rust_sell_rate}')
 
+                    """
                     if abs (rust_buy_rate - buy_rate) >= tick:
                         logging.error ("Aborting...")
                         os._exit(0)
+                    """
 
                     rust_python_identical = \
                         abs (rust_buy_rate - buy_rate) < tick and \
