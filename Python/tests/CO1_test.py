@@ -110,6 +110,13 @@ def redis_get (r, cycle_time, field):
     raw = [float(i) for i in raw]
     return np.array([raw]), raw
 
+def redis_get2 (r, cycle_time, field):
+    raw = r.get(":".join ([cycle_time, field])).decode()
+    raw = raw[0:-1]  # Remove the dangling comma
+    raw = raw.split(',')
+    raw = [float(i) for i in raw]
+    return np.array([raw])
+
 @pytest.mark.skip(reason="Test Not Routinely Carried Out")
 def test_co1_real_time():
 
@@ -161,6 +168,7 @@ def test_co1_real_time():
                     logging.error ("%r, %f, %f", cycle_time, rust_buy_rate, rust_sell_rate)
 
                     # pdf_x
+                    
                     sim_config.pdf_x, pdf_x_list = redis_get (r, cycle_time, "pdf_x")
                     assert sim_config.pdf_x.size > 0
                     assert sim_config.pdf_x.size == len(pdf_x_list)
@@ -332,14 +340,14 @@ def test_evol_a_cycler_real_time():
                     logging.error ("%r, %f, %f", cycle_time, rust_buy_rate, rust_sell_rate)
 
                     # pdf_x
-                    sim_config.pdf_x, pdf_x_list = redis_get (r, cycle_time, "pdf_x")
+                    sim_config.pdf_x, redis_get2 (r, cycle_time, "pdf_x")
                     assert sim_config.pdf_x.size > 0
                     assert sim_config.pdf_x.size == len(pdf_x_list)
 
                     logging.debug ("sim_config.pdf_x:\n%r", sim_config.pdf_x)
 
                     # pdf_y
-                    sim_config.pdf_y, pdf_y_list = redis_get (r, cycle_time, "pdf_y")
+                    sim_config.pdf_y = redis_get2 (r, cycle_time, "pdf_y")
                     assert sim_config.pdf_y.size > 0
                     assert sim_config.pdf_y.size == len(pdf_y_list)
 
@@ -354,8 +362,8 @@ def test_evol_a_cycler_real_time():
                     logging.debug('pdf_y:\n%r', sim_config.pdf_y)
 
                     # buyOB
-                    buy_rates, buy_rates_list = redis_get (r, cycle_time, "buy_rates")
-                    buy_quantities, buy_quantities_list = redis_get (r, cycle_time, "buy_quantities")
+                    buy_rates = redis_get2 (r, cycle_time, "buy_rates")
+                    buy_quantities = redis_get2 (r, cycle_time, "buy_quantities")
 
                     assert buy_rates.size == buy_quantities.size
                     assert len(buy_rates_list) == len (buy_quantities_list)
@@ -365,27 +373,27 @@ def test_evol_a_cycler_real_time():
                     logging.debug('buyob:\n%r', buyob)
 
                     # sellOB
-                    sell_rates, sell_rates_list = redis_get (r, cycle_time, "sell_rates")
-                    sell_quantities, sell_quantities_list = redis_get (r, cycle_time, "sell_quantities")
+                    sell_rates, sell_rates_list = redis_get2 (r, cycle_time, "sell_rates")
+                    sell_quantities, sell_quantities_list = redis_get2 (r, cycle_time, "sell_quantities")
 
                     assert sell_rates.size == sell_quantities.size
                     assert len(sell_rates_list) == len (sell_quantities_list)
                     assert sell_rates.size == len (sell_rates_list)
 
                     # buy_rates
-                    buy_candidate_rates_ref, _ = redis_get (r, cycle_time, "buy_candidate_rates")
+                    buy_candidate_rates_ref = redis_get2 (r, cycle_time, "buy_candidate_rates")
                     assert buy_candidate_rates_ref.size > 0
 
                     # sell_rates
-                    sell_candidate_rates_ref, _ = redis_get (r, cycle_time, "sell_candidate_rates")                    
+                    sell_candidate_rates_ref = redis_get2 (r, cycle_time, "sell_candidate_rates")                    
                     assert sell_candidate_rates_ref.size > 0
 
                     # buy_ev
-                    buy_ev_ref, _ = redis_get (r, cycle_time, "buy_ev")
+                    buy_ev_ref = redis_get2 (r, cycle_time, "buy_ev")
                     assert buy_ev_ref.size > 0
 
                     # sell_ev
-                    sell_ev_ref, _ = redis_get (r, cycle_time, "sell_ev")                    
+                    sell_ev_ref = redis_get2 (r, cycle_time, "sell_ev")                    
                     assert sell_ev_ref.size > 0
 
                     sellob = np.vstack((sell_rates, sell_quantities)).T
@@ -404,12 +412,6 @@ def test_evol_a_cycler_real_time():
                         f'BUY:  Python: {round(buy_rate, sim_config.rate_precision)}, Rust: {rust_buy_rate}')
                     logging.error(
                         f'SELL: Python: {round(sell_rate, sim_config.rate_precision)}, Rust: {rust_sell_rate}')
-
-                    """
-                    if abs (rust_buy_rate - buy_rate) >= tick:
-                        logging.error ("Aborting...")
-                        os._exit(0)
-                    """
 
                     rust_python_identical = \
                         abs (rust_buy_rate - buy_rate) < tick and \
