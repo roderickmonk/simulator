@@ -340,19 +340,16 @@ def test_evol_a_cycler_real_time():
                     logging.error ("%r, %f, %f", cycle_time, rust_buy_rate, rust_sell_rate)
 
                     # pdf_x
-                    sim_config.pdf_x, redis_get2 (r, cycle_time, "pdf_x")
+                    sim_config.pdf_x = redis_get2 (r, cycle_time, "pdf_x")
                     assert sim_config.pdf_x.size > 0
-                    assert sim_config.pdf_x.size == len(pdf_x_list)
 
                     logging.debug ("sim_config.pdf_x:\n%r", sim_config.pdf_x)
 
                     # pdf_y
                     sim_config.pdf_y = redis_get2 (r, cycle_time, "pdf_y")
                     assert sim_config.pdf_y.size > 0
-                    assert sim_config.pdf_y.size == len(pdf_y_list)
 
                     assert sim_config.pdf_x.size == sim_config.pdf_y.size
-                    assert len(pdf_x_list) == len (pdf_y_list)
 
                     logging.debug ("sim_config.pdf_y:\n%r", sim_config.pdf_y)
 
@@ -366,19 +363,15 @@ def test_evol_a_cycler_real_time():
                     buy_quantities = redis_get2 (r, cycle_time, "buy_quantities")
 
                     assert buy_rates.size == buy_quantities.size
-                    assert len(buy_rates_list) == len (buy_quantities_list)
-                    assert buy_rates.size == len (buy_rates_list)
 
                     buyob = np.vstack((buy_rates, buy_quantities)).T
                     logging.debug('buyob:\n%r', buyob)
 
                     # sellOB
-                    sell_rates, sell_rates_list = redis_get2 (r, cycle_time, "sell_rates")
-                    sell_quantities, sell_quantities_list = redis_get2 (r, cycle_time, "sell_quantities")
+                    sell_rates = redis_get2 (r, cycle_time, "sell_rates")
+                    sell_quantities redis_get2 (r, cycle_time, "sell_quantities")
 
                     assert sell_rates.size == sell_quantities.size
-                    assert len(sell_rates_list) == len (sell_quantities_list)
-                    assert sell_rates.size == len (sell_rates_list)
 
                     # buy_rates
                     buy_candidate_rates_ref = redis_get2 (r, cycle_time, "buy_candidate_rates")
