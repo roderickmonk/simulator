@@ -402,7 +402,7 @@ def test_evol_a_cycler_real_time():
                     logging.debug ("Rate Precision: %d", sim_config.rate_precision)
                     
                     logging.error(
-                        "{0:13f}{1:10f}{2:10}{3:10f}",format (
+                        "{0:13f}{1:10f}{2:10}{3:10f}".format (
                         "Python: Buy:",
                         round(buy_rate, sim_config.rate_precision),
                         "Sell:",
