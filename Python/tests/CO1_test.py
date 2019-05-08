@@ -413,7 +413,7 @@ def test_evol_a_cycler_real_time():
                         "Rust: Sell:",
                         '%.8f' % rust_buy_rate,
                         "Sell:",
-                        '%.8f' % rust_sell_rate)))
+                        '%.8f' % rust_sell_rate))
 
                     logging.error(
                         f'Rust:   Buy:  {rust_buy_rate}, Sell: , {rust_sell_rate}')
