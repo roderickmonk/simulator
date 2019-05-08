@@ -199,7 +199,7 @@ def test_co1_real_time():
                     assert buy_rates.size == len (buy_rates_list)
 
                     buyob = np.vstack((buy_rates, buy_quantities)).T
-                    logging.debug('buyob:\n%r', buyob)
+                    logging.warning('buyob:\n%r', buyob)
 
                     # sellOB
                     sell_rates, sell_rates_list = redis_get (r, cycle_time, "sell_rates")
