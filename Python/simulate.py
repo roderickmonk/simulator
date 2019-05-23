@@ -314,7 +314,7 @@ def simulate():
                 "    {0:20}{1:8d}".format("Unmatchable:", matching_engine.sell_unmatchable_count))
             logging.info(
                 "    {0:20}{1:8d}".format("Notion Failures:", matching_engine.sell_notion_failure_count))
-                
+
             returncode = 0
 
         except KeyError as err:
@@ -330,6 +330,7 @@ def simulate():
 
     finally:
 
+        """
         # Send the matchings to the database
         if len (matchings) > 0:
             sim_db.matchings.insert_many(matchings)
@@ -362,6 +363,7 @@ def simulate():
             "    {0:20}{1:8d}".format("Unmatchable:", matching_engine.sell_unmatchable_count))
         logging.info(
             "    {0:20}{1:8d}".format("Notion Failures:", matching_engine.sell_notion_failure_count))
+        """
 
         sys.exit(returncode)
 
