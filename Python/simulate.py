@@ -282,6 +282,39 @@ def simulate():
 
         except StopIteration:
             # logging.info('StopIteration Detected')
+                  # Send the matchings to the database
+            if len (matchings) > 0:
+                sim_db.matchings.insert_many(matchings)
+
+            logging.info(
+                "{0:24}{1:8d}".format("CO Calls:", CO_calls))
+            logging.info(
+                "{0:24}{1:8d}".format("Matching Engine Calls:", matching_engine_calls))
+
+            logging.info("BUY SUMMARY")
+            logging.info(
+                "    {0:20}{1:8d}".format("Matches:", matching_engine.buy_match_count))
+            logging.info(
+                "    {0:20}{1:8d}".format("Blocked:", matching_engine.buy_blocked_count))
+            logging.info(
+                "    {0:20}{1:8d}".format("No Trades", matching_engine.buy_no_trades_count))
+            logging.info(
+                "    {0:20}{1:8d}".format("Unmatchable:", matching_engine.buy_unmatchable_count))
+            logging.info(
+                "    {0:20}{1:8d}".format("Notion Failures:",matching_engine.buy_notion_failure_count))
+
+            logging.info("SELL SUMMARY")
+            logging.info(
+                "    {0:20}{1:8d}".format("Matches:", matching_engine.sell_match_count))
+            logging.info(
+                "    {0:20}{1:8d}".format("Blocked:", matching_engine.sell_blocked_count))
+            logging.info(
+                "    {0:20}{1:8d}".format("No Trades:", matching_engine.sell_no_trades_count))
+            logging.info(
+                "    {0:20}{1:8d}".format("Unmatchable:", matching_engine.sell_unmatchable_count))
+            logging.info(
+                "    {0:20}{1:8d}".format("Notion Failures:", matching_engine.sell_notion_failure_count))
+                
             returncode = 0
 
         except KeyError as err:
