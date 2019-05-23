@@ -347,6 +347,7 @@ if __name__ == '__main__':
                 "trader": simulation['trader']['name'],
                 'quantityLimit': simulation['quantityLimit'],
                 'inventoryLimit': simulation['inventoryLimit'],
+                'allowOrderConflicts': simulation['allowOrderConflicts'],
                 'feeRate': simulation['feeRate'],
                 'actualFeeRate': simulation['actualFeeRate'],
                 'tick': simulation['tick'],
