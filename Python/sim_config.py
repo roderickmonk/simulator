@@ -50,8 +50,6 @@ def init(config):
 
         partition_config = config
 
-        logging.error(f'partition_config: {partition_config}')
-
         if __debug__:
             logging.debug(f'partition_config: {partition_config}')
 
