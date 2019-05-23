@@ -438,7 +438,7 @@ def test_evol_a_cycler_real_time():
         assert False  # Must not be here
 
 
-def test_CO1_BUY_get_pv_and_rates_1():
+def test_CO1_BUY_get_pv_and_rates_allow_order_conflicts_false_1():
 
     try:
 
@@ -452,6 +452,46 @@ def test_CO1_BUY_get_pv_and_rates_1():
             'tick': 0.01,
             'pdf': "not-used",
             'allowOrderConflicts': False,
+        }
+
+        sim_config.pdf_x = np.array([0.01, 0.1])
+        sim_config.pdf_y = np.array([0.8,  0.2])
+
+        sim_config.init(sim_config.partition_config)
+
+        trader = co1.Trader(sim_config)
+
+        ob = np.array([
+            [0.4, 10],
+            [0.3, 20],
+            [0.2, 30],
+            [0.1, 40]])
+
+        pv, rates = trader.get_pv_and_rates(ob, is_buy=True)
+
+        assert np.array_equal(pv, np.array([0.0, 4.0, 10.0, 16.0]))
+        assert np.array_equal(
+            np.round(rates, 8),
+            np.array([0.41, 0.31, 0.21, 0.11]),
+        )
+
+    except:
+        assert False
+
+def test_CO1_BUY_get_pv_and_rates_allow_order_conflicts_true_1():
+
+    try:
+
+        sim_config.partition_config = {
+            '_id': "00000000",
+            'name': "config-name",
+            'quantityLimit': 0.1,
+            'inventoryLimit': 0.1,
+            'feeRate': 0.002,
+            'actualFeeRate': 0.002,
+            'tick': 0.01,
+            'pdf': "not-used",
+            'allowOrderConflicts': True,
         }
 
         sim_config.pdf_x = np.array([0.01, 0.1])
