@@ -12,7 +12,7 @@ source ./scripts/bash-functions
 source ./scripts/aliases
 
 # Give Python access to traders
-export PYTHONPATH=~/traders:.:$PYTHONPATH
+export PYTHONPATH=$SIMULATOR_PATH/Python:~/traders:.:$PYTHONPATH
 
 # Some pytest options
 # export PYTEST_ADDOPTS="--benchmark-columns=Mean,Median,Rounds"
