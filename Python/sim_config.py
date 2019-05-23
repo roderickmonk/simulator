@@ -36,7 +36,7 @@ partition_schema = Schema({
     'inventoryLimit': And(Use(float)),
     'feeRate': And(Use(float)),
     'actualFeeRate': And(Use(float)),
-    'allowOrderConflicts': And(Use(float)),
+    'allowOrderConflicts': And(Use(bool)),
     'tick': And(Use(float)),
     'pdf': And(Use(list)),
 }, ignore_extra_keys=True)
