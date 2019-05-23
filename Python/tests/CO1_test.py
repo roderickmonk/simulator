@@ -297,7 +297,7 @@ def test_co1_real_time():
     except:
         assert False  # Must not be here
 
-#@pytest.mark.skip(reason="Test Not Routinely Carried Out")
+@pytest.mark.skip(reason="Test Not Routinely Carried Out")
 def test_evol_a_cycler_real_time():
 
     fee = 0.0025
@@ -475,7 +475,7 @@ def test_CO1_BUY_get_pv_and_rates_1():
             np.array([0.41, 0.31, 0.21, 0.11]),
         )
 
-    except StopIteration:
+    except:
         assert False
 
 
@@ -520,7 +520,7 @@ def test_CO1_BUY_get_pv_and_rates_2():
         assert np.array_equal(pv, np.array([0]))
         assert np.array_equal(rates, np.array([0.5]))
 
-    except StopIteration:
+    except:
         assert False
 
 
@@ -559,7 +559,7 @@ def test_CO1_BUY_get_pv_and_rates_3():
         assert np.array_equal(pv, np.array([0]))
         assert np.array_equal(rates, np.array([0.11]))
 
-    except StopIteration:
+    except:
         assert False
 
 
@@ -600,7 +600,7 @@ def test_CO1_SELL_get_pv_and_rates_1():
             np.array([0.19, 0.29, 0.39, 0.49]),
         )
 
-    except StopIteration:
+    except:
         assert False
 
 
@@ -642,7 +642,7 @@ def test_CO1_SELL_get_pv_and_rates_2():
         assert np.array_equal(pv, np.array([0]))
         assert np.array_equal(rates, np.array([0.1]))
 
-    except StopIteration:
+    except:
         assert False
 
 
@@ -681,7 +681,7 @@ def test_CO1_SELL_get_pv_and_rates_3():
         assert np.array_equal(pv, np.array([0]))
         assert np.array_equal(np.around(rates, 8), np.array([0.09]))
 
-    except StopIteration:
+    except:
         assert False
 
 @pytest.mark.skip()
@@ -720,7 +720,7 @@ def test_evol_1():
 
         assert np.array_equal(evol, [0.1, 0, 0, 0])
 
-    except StopIteration:
+    except:
         assert False
 
 @pytest.mark.skip()
