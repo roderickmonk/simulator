@@ -122,10 +122,10 @@ def redis_get2 (r, cycle_time, field):
 @pytest.mark.skip(reason="Test Not Routinely Carried Out")
 def test_co1_real_time():
 
-    fee = 0.0027
-    QL = 0.2
+    fee = 0.0025
+    QL = 0.02
     tick = 1e-8
-    IL = 0.42
+    IL = 0.042
 
     try:
 
@@ -135,23 +135,18 @@ def test_co1_real_time():
             'quantityLimit': QL,
             'inventoryLimit': IL,
             'feeRate': fee,
-            'actualFeeRate': 0.002,
+            'actualFeeRate': 0.0027,
             'tick': tick,
             'pdf': "not-used",
             'allowOrderConflicts': False,
         }
 
-        import evol_a_cycler as Trader
+        import evol_a_cycler as trader_under_test
 
         r = redis.Redis(host='localhost', port=6379, encoding=u'utf-8', decode_responses=False, db=0)
 
         p = r.pubsub()  # See https://github.com/andymccurdy/redis-py/#publish--subscribe
         p.psubscribe('*')                                                 
-
-        # pdf_x = np.power(10, pdf_x)
-
-        rust_cpp_same_count = 0
-        rust_cpp_diff_count = 0
 
         rust_python_same_count = 0
         rust_python_diff_count = 0
@@ -168,23 +163,18 @@ def test_co1_real_time():
 
                     cycle_time, rust_buy_rate, rust_sell_rate = itemgetter('cycle_time', 'buy_rate', 'sell_rate')(rx_msg)
 
-                    logging.error ("%r, %f, %f", cycle_time, rust_buy_rate, rust_sell_rate)
-
+                    logging.error ("Cycle Time: %r", cycle_time);
                     # pdf_x
-                    
-                    sim_config.pdf_x, pdf_x_list = redis_get (r, cycle_time, "pdf_x")
+                    sim_config.pdf_x  = redis_get2 (r, cycle_time, "pdf_x")[0]
                     assert sim_config.pdf_x.size > 0
-                    assert sim_config.pdf_x.size == len(pdf_x_list)
 
                     logging.debug ("sim_config.pdf_x:\n%r", sim_config.pdf_x)
 
                     # pdf_y
-                    sim_config.pdf_y, pdf_y_list = redis_get (r, cycle_time, "pdf_y")
+                    sim_config.pdf_y = redis_get2 (r, cycle_time, "pdf_y")[0]
                     assert sim_config.pdf_y.size > 0
-                    assert sim_config.pdf_y.size == len(pdf_y_list)
 
                     assert sim_config.pdf_x.size == sim_config.pdf_y.size
-                    assert len(pdf_x_list) == len (pdf_y_list)
 
                     logging.debug ("sim_config.pdf_y:\n%r", sim_config.pdf_y)
 
@@ -194,88 +184,60 @@ def test_co1_real_time():
                     logging.debug('pdf_y:\n%r', sim_config.pdf_y)
 
                     # buyOB
-                    buy_rates, buy_rates_list = redis_get (r, cycle_time, "buy_rates")
-                    buy_quantities, buy_quantities_list = redis_get (r, cycle_time, "buy_quantities")
+                    buy_rates = redis_get2 (r, cycle_time, "buy_rates")
+                    buy_quantities = redis_get2 (r, cycle_time, "buy_quantities")
 
                     assert buy_rates.size == buy_quantities.size
-                    assert len(buy_rates_list) == len (buy_quantities_list)
-                    assert buy_rates.size == len (buy_rates_list)
 
                     buyob = np.vstack((buy_rates, buy_quantities)).T
-                    logging.error('buyob:\n%r', buyob)
+                    logging.debug('buyob:\n%r', buyob)
 
                     # sellOB
-                    sell_rates, sell_rates_list = redis_get (r, cycle_time, "sell_rates")
-                    sell_quantities, sell_quantities_list = redis_get (r, cycle_time, "sell_quantities")
+                    sell_rates = redis_get2 (r, cycle_time, "sell_rates")
+                    sell_quantities = redis_get2 (r, cycle_time, "sell_quantities")
 
                     assert sell_rates.size == sell_quantities.size
-                    assert len(sell_rates_list) == len (sell_quantities_list)
-                    assert sell_rates.size == len (sell_rates_list)
 
                     # buy_rates
-                    buy_candidate_rates_ref, _ = redis_get (r, cycle_time, "buy_candidate_rates")
+                    buy_candidate_rates_ref = redis_get2 (r, cycle_time, "buy_candidate_rates")
                     assert buy_candidate_rates_ref.size > 0
 
                     # sell_rates
-                    sell_candidate_rates_ref, _ = redis_get (r, cycle_time, "sell_candidate_rates")                    
+                    sell_candidate_rates_ref = redis_get2 (r, cycle_time, "sell_candidate_rates")                    
                     assert sell_candidate_rates_ref.size > 0
 
                     # buy_ev
-                    buy_ev_ref, _ = redis_get (r, cycle_time, "buy_ev")
+                    buy_ev_ref = redis_get2 (r, cycle_time, "buy_ev")
                     assert buy_ev_ref.size > 0
 
                     # sell_ev
-                    sell_ev_ref, _ = redis_get (r, cycle_time, "sell_ev")                    
+                    sell_ev_ref = redis_get2 (r, cycle_time, "sell_ev")                    
                     assert sell_ev_ref.size > 0
 
                     sellob = np.vstack((sell_rates, sell_quantities)).T
                     logging.debug('sellob:\n%r', sellob)
 
-                    trader = co1.Trader(sim_config)
+                    trader = trader_under_test.Trader(sim_config)
 
                     t1=datetime.utcnow()
-                    buy_rate, sell_rate = trader_under_test.compute_orders(
+                    buy_rate, sell_rate = trader.compute_orders(
                         buyob, 
                         sellob)
                         
-                    t2=datetime.utcnow()
-
-                    cpp_buy_rate, cpp_sell_rate = trader.compute_orders(
-                        fee,
-                        QL,
-                        tick,
-                        pdf_x_list,
-                        pdf_y_list,
-                        buy_rates_list,
-                        buy_quantities_list,
-                        sell_rates_list,
-                        sell_quantities_list,
-                    )
-
-                    cpp_buy_rate = round (cpp_buy_rate, sim_config.rate_precision)
-                    cpp_sell_rate = round (cpp_sell_rate, sim_config.rate_precision)
-
-                    logging.error ("Rate Precision: %d", sim_config.rate_precision)
-                    
+                    output_format = "{0:13}{1:10}, {2:6} {3:10}"
                     logging.error(
-                        f'BUY:  Python: {round(buy_rate, sim_config.rate_precision)}, Rust: {rust_buy_rate}, C++: {cpp_buy_rate}')
+                        output_format.format (
+                        "Python Buy:",
+                        '%.8f' % round(buy_rate, sim_config.rate_precision),
+                        "Sell:",
+                        '%.8f' % round(sell_rate, sim_config.rate_precision)))
+
                     logging.error(
-                        f'SELL: Python: {round(sell_rate, sim_config.rate_precision)}, Rust: {rust_sell_rate}, C++: {cpp_sell_rate}')
-
-                    rust_cpp_identical = \
-                        abs(rust_buy_rate - cpp_buy_rate) < tick and \
-                        abs(rust_sell_rate - cpp_sell_rate) < tick
-
-                    if rust_cpp_identical: 
-                        rust_cpp_same_count += 1
-                    else:                       
-                        rust_cpp_diff_count += 1
-
-                    logging.error(f'Rust / C++    Identical Count: {rust_cpp_same_count}, Different Count: {rust_cpp_diff_count}')
-
-                    if abs (rust_buy_rate - buy_rate) >= tick:
-                        logging.error ("Aborting...")
-                        os._exit(0)
+                        output_format.format (
+                        "Rust   Buy:",
+                        '%.8f' % rust_buy_rate,
+                        "Sell:",
+                        '%.8f' % rust_sell_rate))
 
                     rust_python_identical = \
                         abs (rust_buy_rate - buy_rate) < tick and \
@@ -286,7 +248,7 @@ def test_co1_real_time():
                     else:                       
                         rust_python_diff_count += 1
 
-                    logging.error(f'Rust / Python Identical Count: {rust_python_same_count}, Different Count: {rust_python_diff_count}')     
+                    logging.error(f'Rust / Python Same: {rust_python_same_count}, Diff: {rust_python_diff_count}')     
 
         assert round(buy_rate, sim_config.rate_precision) == -1
         assert round(sell_rate, sim_config.rate_precision) == -1
@@ -438,6 +400,7 @@ def test_evol_a_cycler_real_time():
         assert False  # Must not be here
 
 
+@pytest.mark.skip(reason="Test Not Routinely Carried Out")
 def test_CO1_BUY_get_pv_and_rates_allow_order_conflicts_false_1():
 
     try:
