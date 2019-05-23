@@ -38,6 +38,7 @@ def test_co1_test0():
             'inventoryLimit': 0.1,
             'feeRate': 0.002,
             'actualFeeRate': 0.002,
+            'allowOrderConflicts': False,
             'tick': 1e-8,
             'pdf': "not-used",
         }
