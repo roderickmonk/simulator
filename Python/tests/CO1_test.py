@@ -599,7 +599,7 @@ def test_CO1_BUY_get_pv_and_rates_allow_order_conflicts_true_2():
     logging.error ("pv: %r", pv)
     logging.error ("rates: %r", rates)
 
-    assert np.array_equal(pv, np.array([0]))
+    assert np.array_equal(pv, np.array([0.0, 4.0, 10.0, 16.0]))
     assert np.array_equal(rates, np.array([0.5]))
 
 
