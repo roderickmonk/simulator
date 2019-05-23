@@ -259,6 +259,7 @@ def simulate():
                         "s": sim_config.partition_config["simId"],
                         "p": sim_config.partition_config["_id"],
                         "depth": sim_config.partition_config["depth"],
+                        "allowOrderConflicts": sim_config.partition_config["allowOrderConflicts"],
                         "ob": orderbook['_id'],
                         "ts": datetime.now(),
                         "topBuy": orderbook['buy'][0][0],
