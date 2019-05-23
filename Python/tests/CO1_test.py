@@ -119,7 +119,7 @@ def redis_get2 (r, cycle_time, field):
     raw = [float(i) for i in raw]
     return np.array([raw])
 
-@pytest.mark.skip(reason="Test Not Routinely Carried Out")
+# @pytest.mark.skip(reason="Test Not Routinely Carried Out")
 def test_co1_real_time():
 
     fee = 0.0025
@@ -400,7 +400,6 @@ def test_evol_a_cycler_real_time():
         assert False  # Must not be here
 
 
-@pytest.mark.skip(reason="Test Not Routinely Carried Out")
 def test_CO1_BUY_get_pv_and_rates_allow_order_conflicts_false_1():
 
     try:
