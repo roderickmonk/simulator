@@ -78,6 +78,7 @@ def test_co1_test1():
             'actualFeeRate': 0.002,
             'tick': 1e-6,
             'pdf': "not-used",
+            'allowOrderConflicts': False,
         }
 
         sim_config.pdf_x = np.array([0.01, 0.1])
@@ -137,6 +138,7 @@ def test_co1_real_time():
             'actualFeeRate': 0.002,
             'tick': tick,
             'pdf': "not-used",
+            'allowOrderConflicts': False,
         }
 
         import evol_a_cycler as Trader
@@ -314,6 +316,7 @@ def test_evol_a_cycler_real_time():
             'actualFeeRate': 0.0027,
             'tick': tick,
             'pdf': "not-used",
+            'allowOrderConflicts': False,
         }
 
         import evol_a_cycler as trader_under_test
@@ -448,6 +451,7 @@ def test_CO1_BUY_get_pv_and_rates_1():
             'actualFeeRate': 0.002,
             'tick': 0.01,
             'pdf': "not-used",
+            'allowOrderConflicts': False,
         }
 
         sim_config.pdf_x = np.array([0.01, 0.1])
@@ -491,6 +495,7 @@ def test_CO1_BUY_get_pv_and_rates_2():
             'actualFeeRate': 0.002,
             'tick': 0.1,
             'pdf': "not-used",
+            'allowOrderConflicts': False,
         }
 
         sim_config.pdf_x = np.array([0.01, 0.1])
@@ -535,6 +540,7 @@ def test_CO1_BUY_get_pv_and_rates_3():
             'actualFeeRate': 0.002,
             'tick': 0.01,
             'pdf': "not-used",
+            'allowOrderConflicts': False,
         }
 
         sim_config.pdf_x = np.array([0.01, 0.1])
@@ -570,6 +576,7 @@ def test_CO1_SELL_get_pv_and_rates_1():
             'actualFeeRate': 0.002,
             'tick': 0.01,
             'pdf': "not-used",
+            'allowOrderConflicts': False,
         }
 
         sim_config.pdf_x = np.array([0.01, 0.1])
@@ -613,6 +620,7 @@ def test_CO1_SELL_get_pv_and_rates_2():
             'actualFeeRate': 0.002,
             'tick': 0.1,
             'pdf': "not-used",
+            'allowOrderConflicts': False,
         }
 
         sim_config.pdf_x = np.array([0.01, 0.1])
@@ -654,6 +662,7 @@ def test_CO1_SELL_get_pv_and_rates_3():
             'actualFeeRate': 0.002,
             'tick': 0.01,
             'pdf': "not-used",
+            'allowOrderConflicts': False,
         }
 
         sim_config.pdf_x = np.array([0.01, 0.1])
@@ -695,6 +704,7 @@ def test_evol_1():
             'actualFeeRate': 0.002,
             'tick': 1e-8,
             'pdf': "not-used",
+            'allowOrderConflicts': False,
         }
 
         sim_config.pdf_x = np.array([.1])
@@ -733,6 +743,7 @@ def test_evol_2():
             'actualFeeRate': 0.002,
             'tick': 1e-8,
             'pdf': "not-used",
+            'allowOrderConflicts': False,
         }
 
         sim_config.pdf_x = np.array([.1, 1.0])
@@ -772,6 +783,7 @@ def test_evol_3():
             'actualFeeRate': 0.002,
             'tick': 1e-8,
             'pdf': "not-used",
+            'allowOrderConflicts': False,
         }
 
         sim_config.pdf_x = np.array([0.1, 1.0, 2.0])
@@ -805,6 +817,7 @@ def test_evol_4():
             'actualFeeRate': 0.002,
             'tick': 1e-8,
             'pdf': "not-used",
+            'allowOrderConflicts': False,
         }
 
         sim_config.pdf_x = np.array([0.1, 1.0, 2.0])
@@ -839,6 +852,7 @@ def test_evol_5():
             'actualFeeRate': 0.002,
             'tick': 1e-8,
             'pdf': "not-used",
+            'allowOrderConflicts': False,
         }
 
         sim_config.pdf_x = np.array([0.1, 1.0])
@@ -876,6 +890,7 @@ def test_evol_6():
             'actualFeeRate': 0.002,
             'tick': 1e-8,
             'pdf': "not-used",
+            'allowOrderConflicts': False,
         }
 
         sim_config.pdf_x = np.array([0.1, 1., 2.0])
