@@ -568,8 +568,6 @@ def test_CO1_BUY_get_pv_and_rates_allow_order_conflicts_true_2():
     No room for a new order near the top
     """
 
-    try:
-
         sim_config.partition_config = {
             '_id': "00000000",
             'name': "config-name",
@@ -604,8 +602,6 @@ def test_CO1_BUY_get_pv_and_rates_allow_order_conflicts_true_2():
         assert np.array_equal(pv, np.array([0]))
         assert np.array_equal(rates, np.array([0.5]))
 
-    except:
-        assert False
 
 def test_CO1_BUY_get_pv_and_rates_3():
     """
