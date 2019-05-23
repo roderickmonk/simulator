@@ -26,6 +26,12 @@ const simParams = {
             type: "number",
         }
     },
+    allowOrderConflicts: {
+        type: "array",
+        items: {
+            type: "boolean",
+        }
+    },
     exchange: {
         type: "array",
         items: {

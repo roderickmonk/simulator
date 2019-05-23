@@ -28,6 +28,12 @@ const simParams = {
             type: "number",
         }
     },
+    allowOrderConflicts: {
+        type: "array",
+        items: {
+            type: "boolean",
+        }
+    },
     exchange: {
         type: "array",
         items: {
@@ -386,7 +392,7 @@ const getOrderbooks = async (params: IHistoryObject) => {
 
                 }
             } catch (err) {
-                
+
                 console.log({ err });
             }
         })
