@@ -277,7 +277,7 @@ def test_evol_a_cycler_real_time():
         bot_config = r.hgetall (bot_id.encode())
         logging.error ("bot_config: %r", bot_config)
 
-        os._exit(0)
+        # os._exit(0)
 
         allow_order_conflicts = False
         
@@ -290,7 +290,7 @@ def test_evol_a_cycler_real_time():
             'actualFeeRate': 0.0027,
             'tick': tick,
             'pdf': "not-used",
-            'allowOrderConflicts': allow_order_conflicts,
+            'allowOrderConflicts': bot_config["allow_order_conflicts"],
         }
 
         import evol_a_cycler as trader_under_test
