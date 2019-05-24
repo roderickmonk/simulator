@@ -143,7 +143,7 @@ def test_co1_real_time():
 
         import co1 as trader_under_test
 
-        r = redis.Redis(host='localhost', port=6379, encoding=u'utf-8', decode_responses=False, db=0)
+        r = redis.Redis(host='localhost', port=6379, encoding=u'utf-8', decode_responses=True, db=0)
 
         p = r.pubsub()  # See https://github.com/andymccurdy/redis-py/#publish--subscribe
         p.psubscribe('*')                                                 
