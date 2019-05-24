@@ -271,7 +271,7 @@ def test_evol_a_cycler_real_time():
 
         r = redis.Redis(host='localhost', port=6379, encoding=u'utf-8', decode_responses=False, db=0)
 
-        bot_id_ = r.get ("testBotId")
+        bot_id = r.get ("testBotId")
         logging.error ("bot_id: %s", bot_id)
         os._exit(0)
 
