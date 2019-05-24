@@ -138,7 +138,7 @@ def test_co1_real_time():
             'actualFeeRate': 0.0027,
             'tick': tick,
             'pdf': "not-used",
-            'allowOrderConflicts': False,
+            'allowOrderConflicts': True,
         }
 
         import co1 as trader_under_test
