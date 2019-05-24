@@ -119,6 +119,9 @@ def redis_get2 (r, cycle_time, field):
     raw = [float(i) for i in raw]
     return np.array([raw])
 
+def redis_get (r, key):
+    return r.get(key)
+
 @pytest.mark.skip(reason="Test Not Routinely Carried Out")
 def test_co1_real_time():
 
@@ -269,6 +272,10 @@ def test_evol_a_cycler_real_time():
 
     try:
 
+        bot_id_ = redis_get ("testBotId")
+        logging.error ("bot_id: %s", bot_id)
+        os._exit(0)
+
         allow_order_conflicts = False
         
         sim_config.partition_config = {
@@ -292,8 +299,6 @@ def test_evol_a_cycler_real_time():
 
         rust_python_same_count = 0
         rust_python_diff_count = 0
-
-
 
         while True:
             # print("Waiting...")
