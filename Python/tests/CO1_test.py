@@ -284,16 +284,19 @@ def test_evol_a_cycler_real_time():
         sim_config.partition_config = {
             '_id': "00000000",
             'name': "config-name",
-            'quantityLimit': QL,
-            'inventoryLimit': IL,
-            'feeRate': fee,
+            'quantityLimit': bot_config["quantityLimit"],
+            'inventoryLimit': bot_config["inventoryLimit"],
+            'feeRate': bot_config["feeRate"],
             'actualFeeRate': 0.0027,
-            'tick': tick,
+            'tick': bot_config["tick"],
             'pdf': "not-used",
             'allowOrderConflicts': bot_config["allowOrderConflicts"],
         }
 
-        import evol_a_cycler as trader_under_test
+        if "evol_a_cycler" in bot_config["trader"]
+            import evol_a_cycler as trader_under_test
+        elif "co1" in bot_config["trader"]:
+            import co1 as trader_under_test
 
         p = r.pubsub()  # See https://github.com/andymccurdy/redis-py/#publish--subscribe
         p.psubscribe('*')                                                 
