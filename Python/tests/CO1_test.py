@@ -262,11 +262,6 @@ def test_co1_real_time():
 #@pytest.mark.skip(reason="Test Not Routinely Carried Out")
 def test_evol_a_cycler_real_time():
 
-    fee = 0.0025
-    QL = 0.02
-    tick = 1e-8
-    IL = 0.042
-
     try:
 
         r = redis.Redis(host='localhost', port=6379, encoding=u'utf-8', decode_responses=True, db=0)
@@ -303,6 +298,7 @@ def test_evol_a_cycler_real_time():
             'allowOrderConflicts': bot_config["allowOrderConflicts"],
         }
 
+        logging.error ("Trader: %s", bot_config["trader"])
         if "evol_a_cycler" in bot_config["trader"]:
             import evol_a_cycler as trader_under_test
         elif "co1" in bot_config["trader"]:
