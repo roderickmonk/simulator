@@ -5,6 +5,7 @@ from numpy import ndarray
 import logging
 from schema import Schema, And, Use, Optional, SchemaError
 import numpy as np
+import math
 
 try:
     profile
@@ -62,7 +63,7 @@ def init(config):
 
         QL = partition_config["quantityLimit"]
         IL = partition_config["inventoryLimit"]
-        rate_precision = -int(np.log10(partition_config["tick"]))
+        rate_precision = -int(math.log10(partition_config["tick"]))
 
         return None
 
