@@ -293,10 +293,12 @@ def test_evol_a_cycler_real_time():
             'allowOrderConflicts': bot_config["allowOrderConflicts"],
         }
 
-        if "evol_a_cycler" in bot_config["trader"]
+        if "evol_a_cycler" in bot_config["trader"]:
             import evol_a_cycler as trader_under_test
         elif "co1" in bot_config["trader"]:
             import co1 as trader_under_test
+        else:
+            raise "Unknown Trader"
 
         p = r.pubsub()  # See https://github.com/andymccurdy/redis-py/#publish--subscribe
         p.psubscribe('*')                                                 
