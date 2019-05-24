@@ -119,7 +119,7 @@ def redis_get2 (r, cycle_time, field):
     raw = [float(i) for i in raw]
     return np.array([raw])
 
-# @pytest.mark.skip(reason="Test Not Routinely Carried Out")
+@pytest.mark.skip(reason="Test Not Routinely Carried Out")
 def test_co1_real_time():
 
     fee = 0.0025
@@ -259,7 +259,7 @@ def test_co1_real_time():
     except:
         assert False  # Must not be here
 
-@pytest.mark.skip(reason="Test Not Routinely Carried Out")
+#@pytest.mark.skip(reason="Test Not Routinely Carried Out")
 def test_evol_a_cycler_real_time():
 
     fee = 0.0025
@@ -268,6 +268,15 @@ def test_evol_a_cycler_real_time():
     IL = 0.042
 
     try:
+
+        while True:
+            allow_order_conflicts = input ("Allow Order Conflicts? [y/n]")
+            if allow_order_conflicts[0] == 'y':
+                allow_order_conflicts = True
+                break
+            elif allow_order_conflicts[0] == 'n':
+                allow_order_conflicts = False
+                break
 
         sim_config.partition_config = {
             '_id': "00000000",
@@ -278,7 +287,7 @@ def test_evol_a_cycler_real_time():
             'actualFeeRate': 0.0027,
             'tick': tick,
             'pdf': "not-used",
-            'allowOrderConflicts': False,
+            'allowOrderConflicts': allow_order_conflicts,
         }
 
         import evol_a_cycler as trader_under_test
@@ -290,6 +299,8 @@ def test_evol_a_cycler_real_time():
 
         rust_python_same_count = 0
         rust_python_diff_count = 0
+
+
 
         while True:
             # print("Waiting...")
