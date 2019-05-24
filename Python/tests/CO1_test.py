@@ -403,8 +403,8 @@ def test_evol_a_cycler_real_time():
                         '%.8f' % rust_sell_rate))
 
                     rust_python_identical = \
-                        abs (rust_buy_rate - buy_rate) < tick and \
-                        abs (rust_sell_rate - sell_rate) < tick
+                        abs (rust_buy_rate - buy_rate) < bot_config["tick"] and \
+                        abs (rust_sell_rate - sell_rate) < bot_config["tick"]
 
                     if rust_python_identical: 
                         rust_python_same_count += 1
