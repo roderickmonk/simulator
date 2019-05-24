@@ -290,7 +290,7 @@ def test_evol_a_cycler_real_time():
             'actualFeeRate': 0.0027,
             'tick': tick,
             'pdf': "not-used",
-            'allowOrderConflicts': bot_config["allow_order_conflicts"],
+            'allowOrderConflicts': bot_config["allowOrderConflicts"],
         }
 
         import evol_a_cycler as trader_under_test
