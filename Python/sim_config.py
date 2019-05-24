@@ -67,6 +67,9 @@ def init(config):
         partition_config["fee"] = float(partition_config["feeRate"])
         rate_precision = -int(np.log10(partition_config["tick"]))
 
+
+        partition_config["allowOrderConflicts"] = bool(partition_config["allowOrderConflicts"])
+
         logging.error(f'partition_config2: {partition_config}')
 
         return None
