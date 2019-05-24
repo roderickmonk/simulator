@@ -269,6 +269,8 @@ def test_evol_a_cycler_real_time():
 
     try:
 
+        r = redis.Redis(host='localhost', port=6379, encoding=u'utf-8', decode_responses=False, db=0)
+
         bot_id_ = r.get ("testBotId")
         logging.error ("bot_id: %s", bot_id)
         os._exit(0)
@@ -288,8 +290,6 @@ def test_evol_a_cycler_real_time():
         }
 
         import evol_a_cycler as trader_under_test
-
-        r = redis.Redis(host='localhost', port=6379, encoding=u'utf-8', decode_responses=False, db=0)
 
         p = r.pubsub()  # See https://github.com/andymccurdy/redis-py/#publish--subscribe
         p.psubscribe('*')                                                 
