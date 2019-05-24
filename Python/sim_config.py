@@ -68,7 +68,10 @@ def init(config):
         rate_precision = -int(np.log10(partition_config["tick"]))
 
 
-        partition_config["allowOrderConflicts"] = bool(partition_config["allowOrderConflicts"])
+        if partition_config["allowOrderConflicts"] == "true":
+            partition_config["allowOrderConflicts"] = True
+        else:
+            partition_config["allowOrderConflicts"] = False
 
         logging.error(f'partition_config2: {partition_config}')
 
