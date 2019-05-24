@@ -63,7 +63,7 @@ def init(config):
 
         QL = partition_config["quantityLimit"]
         IL = partition_config["inventoryLimit"]
-        rate_precision = -int(math.log10(partition_config["tick"]))
+        rate_precision = -int(math.log10(float(partition_config["tick"])))
 
         return None
 
