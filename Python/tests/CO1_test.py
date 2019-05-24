@@ -274,7 +274,7 @@ def test_evol_a_cycler_real_time():
         bot_id = r.get ("testBotId")
         logging.error ("bot_id: %s", bot_id)
 
-        bot_config = r.hgetall (bot_id)
+        bot_config = r.hgetall (bot_id.encode())
         logging.error ("bot_config: %r", bot_config)
 
         os._exit(0)
