@@ -281,6 +281,8 @@ def test_evol_a_cycler_real_time():
         bot_config["feeRate"] = float (bot_config["feeRate"])
         bot_config["tick"] = float (bot_config["tick"])
 
+        tick = bot_config["tick"]
+
         if bot_config["allowOrderConflicts"] == "true":
             bot_config["allowOrderConflicts"] = True
         else:
