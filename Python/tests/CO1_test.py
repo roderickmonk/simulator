@@ -106,14 +106,14 @@ def test_co1_test1():
 import redis
 
 def redis_get (r, cycle_time, field):
-    raw = r.get(":".join ([cycle_time, field])).decode()
+    raw = r.get(":".join ([cycle_time, field]))
     raw = raw[0:-1]  # Remove the dangling comma
     raw = raw.split(',')
     raw = [float(i) for i in raw]
     return np.array([raw]), raw
 
 def redis_get2 (r, cycle_time, field):
-    raw = r.get(":".join ([cycle_time, field])).decode()
+    raw = r.get(":".join ([cycle_time, field]))
     raw = raw[0:-1]  # Remove the dangling comma
     raw = raw.split(',')
     raw = [float(i) for i in raw]
@@ -159,7 +159,7 @@ def test_co1_real_time():
 
                 if message['type'] == 'pmessage':
 
-                    rx_msg = json.loads (message["data"].decode())
+                    rx_msg = json.loads (message["data"])
 
                     cycle_time, rust_buy_rate, rust_sell_rate = itemgetter('cycle_time', 'buy_rate', 'sell_rate')(rx_msg)
 
@@ -309,7 +309,7 @@ def test_evol_a_cycler_real_time():
 
                 if message['type'] == 'pmessage':
 
-                    rx_msg = json.loads (message["data"].decode())
+                    rx_msg = json.loads (message["data"])
 
                     cycle_time, rust_buy_rate, rust_sell_rate = itemgetter('cycle_time', 'buy_rate', 'sell_rate')(rx_msg)
 
