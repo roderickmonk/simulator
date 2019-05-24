@@ -280,6 +280,17 @@ def test_evol_a_cycler_real_time():
         # os._exit(0)
 
         allow_order_conflicts = False
+
+        bot_config["quantityLimit"] = float (bot_config["quantityLimit"])
+        bot_config["inventoryLimit"] = float (bot_config["quantityLimit"])
+        bot_config["feeRate"] = float (bot_config["feeRate"])
+        bot_config["tick"] = float (bot_config["tick"])
+
+        if partition_config["allowOrderConflicts"] == "true":
+            partition_config["allowOrderConflicts"] = True
+        else:
+            partition_config["allowOrderConflicts"] = False
+
         
         sim_config.partition_config = {
             '_id': "00000000",

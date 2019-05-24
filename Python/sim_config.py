@@ -63,17 +63,9 @@ def init(config):
 
         QL = partition_config["quantityLimit"]
         IL = partition_config["inventoryLimit"]
-        partition_config["tick"] = float(partition_config["tick"])
-        partition_config["fee"] = float(partition_config["feeRate"])
         rate_precision = -int(np.log10(partition_config["tick"]))
 
-
-        if partition_config["allowOrderConflicts"] == "true":
-            partition_config["allowOrderConflicts"] = True
-        else:
-            partition_config["allowOrderConflicts"] = False
-
-        logging.error(f'partition_config2: {partition_config}')
+        logging.error(f'partition_config__________2: {partition_config}')
 
         return None
 
