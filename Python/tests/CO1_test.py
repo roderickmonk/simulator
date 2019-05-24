@@ -286,10 +286,10 @@ def test_evol_a_cycler_real_time():
         bot_config["feeRate"] = float (bot_config["feeRate"])
         bot_config["tick"] = float (bot_config["tick"])
 
-        if partition_config["allowOrderConflicts"] == "true":
-            partition_config["allowOrderConflicts"] = True
+        if bot_config["allowOrderConflicts"] == "true":
+            bot_config["allowOrderConflicts"] = True
         else:
-            partition_config["allowOrderConflicts"] = False
+            bot_config["allowOrderConflicts"] = False
 
         
         sim_config.partition_config = {
