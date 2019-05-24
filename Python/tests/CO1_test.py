@@ -291,7 +291,6 @@ def test_evol_a_cycler_real_time():
         else:
             bot_config["allowOrderConflicts"] = False
 
-        
         sim_config.partition_config = {
             '_id': "00000000",
             'name': "config-name",

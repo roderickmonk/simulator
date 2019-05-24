@@ -50,7 +50,6 @@ def init(config):
     try:
 
         partition_config = config
-        logging.error(f'partition_config: {partition_config}')
 
         if __debug__:
             logging.debug(f'partition_config: {partition_config}')
@@ -64,8 +63,6 @@ def init(config):
         QL = partition_config["quantityLimit"]
         IL = partition_config["inventoryLimit"]
         rate_precision = -int(np.log10(partition_config["tick"]))
-
-        logging.error(f'partition_config__________2: {partition_config}')
 
         return None
 
