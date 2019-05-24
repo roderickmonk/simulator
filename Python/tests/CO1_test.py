@@ -273,6 +273,10 @@ def test_evol_a_cycler_real_time():
 
         bot_id = r.get ("testBotId").decode()
         logging.error ("bot_id: %s", bot_id)
+
+        bot_config = r.hgetall (bot_id)
+        logging.error ("bot_config: %r", bot_config)
+
         os._exit(0)
 
         allow_order_conflicts = False
