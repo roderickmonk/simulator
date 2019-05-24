@@ -269,15 +269,8 @@ def test_evol_a_cycler_real_time():
 
     try:
 
-        while True:
-            allow_order_conflicts = input ("Allow Order Conflicts? [y/n]")
-            if allow_order_conflicts[0] == 'y':
-                allow_order_conflicts = True
-                break
-            elif allow_order_conflicts[0] == 'n':
-                allow_order_conflicts = False
-                break
-
+        allow_order_conflicts = False
+        
         sim_config.partition_config = {
             '_id': "00000000",
             'name': "config-name",
