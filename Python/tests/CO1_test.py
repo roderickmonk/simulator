@@ -109,7 +109,7 @@ def redis_get (r, cycle_time, field):
     raw = r.get(":".join ([cycle_time, field]))
     logging.error ("raw: %r", raw)
     os._exit(0)
-    
+
     raw = raw[0:-1]  # Remove the dangling comma
     raw = raw.split(',')
     raw = [float(i) for i in raw]
@@ -182,7 +182,7 @@ def test_evol_a_cycler_real_time():
 
                     cycle_time, rust_buy_rate, rust_sell_rate = itemgetter('cycle_time', 'buy_rate', 'sell_rate')(rx_msg)
 
-                    logging.error ("Cycle Time: %r", cycle_time);
+                    logging.error ("Cycle Time: %r", cycle_time)
                     # pdf_x
                     sim_config.pdf_x  = redis_get (r, cycle_time, "pdf_x")[0]
                     assert sim_config.pdf_x.size > 0
