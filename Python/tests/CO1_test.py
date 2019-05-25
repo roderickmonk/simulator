@@ -107,9 +107,6 @@ import redis
 
 def redis_get (r, cycle_time, field):
     raw = r.get(":".join ([cycle_time, field]))
-    logging.error ("raw: %r", raw)
-    os._exit(0)
-
     raw = raw[0:-1]  # Remove the dangling comma
     raw = raw.split(',')
     raw = [float(i) for i in raw]
