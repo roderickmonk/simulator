@@ -105,13 +105,6 @@ def test_co1_test1():
 
 import redis
 
-def redis_get (r, cycle_time, field):
-    raw = r.get(":".join ([cycle_time, field]))
-    raw = raw[0:-1]  # Remove the dangling comma
-    raw = raw.split(',')
-    raw = [float(i) for i in raw]
-    return np.array([raw]), raw
-
 def redis_get2 (r, cycle_time, field):
     raw = r.get(":".join ([cycle_time, field]))
     raw = raw[0:-1]  # Remove the dangling comma
