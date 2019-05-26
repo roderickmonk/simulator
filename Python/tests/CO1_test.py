@@ -309,7 +309,7 @@ def test_traders_in_real_time():
 
                     logging.error('PVs_identical: %r', PVs_identical)
 
-                    if not EVs_identical:
+                    if not PVs_identical:
 
                         logging.error('local buy_pv: %r', trader.buy_pv)
                         logging.error('remote buy_pv: %r', buy_pv_ref)
