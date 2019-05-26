@@ -240,13 +240,15 @@ def test_traders_in_real_time():
                         buyob, 
                         sellob)
 
-                    EVs_same_structure = \
+                    evs_identicial = \
                         trader.buy_ev.size == buy_ev_ref.size and \
                         trader.sell_ev.size == sell_ev_ref.size and \
                         trader.buy_ev.shape == buy_ev_ref.shape and \
                         trader.sell_ev.shape == sell_ev_ref.shape and \
                         trader.buy_ev.dtype == buy_ev_ref.dtype and \
-                        trader.sell_ev.dtype == sell_ev_ref.dtype                       
+                        trader.sell_ev.dtype == sell_ev_ref.dtype and \
+                        np.allclose(trader.buy_ev, buy_ev_ref, atol=0.000000005) and \
+                        np.allclose(trader.sell_ev, sell_ev_ref, atol=0.000000005)        
 
                     np.set_printoptions(precision=12)
                     np.set_printoptions(suppress=True)
@@ -254,14 +256,15 @@ def test_traders_in_real_time():
                     logging.fatal("")
                     logging.error('ev sizes, shapes, and dtypes the same: %r', EVs_same_structure)
 
-                    if not np.allclose(trader.buy_ev, buy_ev_ref, atol=0.000000005) or \
-                       not np.allclose(trader.sell_ev, sell_ev_ref, atol=0.000000005):
+                    if not evs_identicial:
 
                         logging.error('local buy_ev: %r', trader.buy_ev)
                         logging.error('remote buy_ev: %r', buy_ev_ref)
 
                         logging.error('local sell_ev: %r', trader.sell_ev)
                         logging.error('remote sell_ev: %r', sell_ev_ref)
+
+                        ox._exit(0)
 
                     output_format = "{0:13}{1:10}, {2:6} {3:10}"
                     logging.error(
