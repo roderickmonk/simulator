@@ -239,6 +239,11 @@ def test_traders_in_real_time():
                     buy_rate, sell_rate = trader.compute_orders(
                         buyob, 
                         sellob)
+
+                    logging.error('local buy_ev:\n%r', trader.buy_ev)
+                    logging.error('local sell_ev:\n%r', trader.sell_ev)
+
+
                         
                     output_format = "{0:13}{1:10}, {2:6} {3:10}"
                     logging.error(
