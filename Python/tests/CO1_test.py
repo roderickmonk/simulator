@@ -215,12 +215,12 @@ def test_traders_in_real_time():
                     assert sell_rates.size == sell_quantities.size
 
                     # buy_rates
-                    buy_candidate_rates_ref = redis_get (r, cycle_time, "buy_candidate_rates")
-                    assert buy_candidate_rates_ref.size > 0
+                    buy_rates_ref = redis_get (r, cycle_time, "buy_candidate_rates")
+                    assert buy_rates_ref.size > 0
 
                     # sell_rates
-                    sell_candidate_rates_ref = redis_get (r, cycle_time, "sell_candidate_rates")                    
-                    assert sell_candidate_rates_ref.size > 0
+                    sell_rates_ref = redis_get (r, cycle_time, "sell_candidate_rates")                    
+                    assert sell_rates_ref.size > 0
 
                     # buy_ev
                     buy_ev_ref = np.flip(redis_get (r, cycle_time, "buy_ev")[0])
@@ -240,6 +240,26 @@ def test_traders_in_real_time():
                         buyob, 
                         sellob)
 
+                    rates_identical = \
+                        trader.buy_rates.size == buy_rates_ref.size and \
+                        trader.sell_rates.size == sell_rates_ref.size and \
+                        trader.buy_rates.shape == buy_rates_ref.shape and \
+                        trader.sell_rates.shape == sell_rates_ref.shape and \
+                        trader.buy_rates.dtype == buy_rates_ref.dtype and \
+                        trader.sell_rates.dtype == sell_rates_ref.dtype and \
+                        np.allclose(trader.buy_rates, buy_rates_ref, atol=0.000000005) and \
+                        np.allclose(trader.sell_rates, sell_rates_ref, atol=0.000000005)   
+
+                    if not rates_identical:
+
+                        logging.error('local buy_rates: %r', trader.buy_rates)
+                        logging.error('remote buy_rates_ref: %r', buy_rates_ref)
+
+                        logging.error('local sell_rates: %r', trader.sell_rates)
+                        logging.error('remote sell_rates_ref: %r', sell_rates_ref)
+
+                        ox._exit(0)     
+
                     EVs_identical = \
                         trader.buy_ev.size == buy_ev_ref.size and \
                         trader.sell_ev.size == sell_ev_ref.size and \
@@ -249,6 +269,7 @@ def test_traders_in_real_time():
                         trader.sell_ev.dtype == sell_ev_ref.dtype and \
                         np.allclose(trader.buy_ev, buy_ev_ref, atol=0.000000005) and \
                         np.allclose(trader.sell_ev, sell_ev_ref, atol=0.000000005)        
+
 
                     np.set_printoptions(precision=12)
                     np.set_printoptions(suppress=True)
