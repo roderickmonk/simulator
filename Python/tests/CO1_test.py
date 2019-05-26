@@ -215,11 +215,11 @@ def test_traders_in_real_time():
                     assert sell_rates.size == sell_quantities.size
 
                     # buy_rates
-                    buy_rates_ref = redis_get (r, cycle_time, "buy_candidate_rates")
+                    buy_rates_ref = np.flip(redis_get (r, cycle_time, "buy_candidate_rates")[0])
                     assert buy_rates_ref.size > 0
 
                     # sell_rates
-                    sell_rates_ref = redis_get (r, cycle_time, "sell_candidate_rates")                    
+                    sell_rates_ref = np.flip(redis_get (r, cycle_time, "sell_candidate_rates")[0])                 
                     assert sell_rates_ref.size > 0
 
                     # buy_ev
