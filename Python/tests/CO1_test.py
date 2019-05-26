@@ -240,7 +240,7 @@ def test_traders_in_real_time():
                         buyob, 
                         sellob)
 
-                    evs_identicial = \
+                    EVs_identical = \
                         trader.buy_ev.size == buy_ev_ref.size and \
                         trader.sell_ev.size == sell_ev_ref.size and \
                         trader.buy_ev.shape == buy_ev_ref.shape and \
@@ -254,9 +254,9 @@ def test_traders_in_real_time():
                     np.set_printoptions(suppress=True)
 
                     logging.fatal("")
-                    logging.error('ev sizes, shapes, and dtypes the same: %r', EVs_same_structure)
+                    logging.error('EVs_identical sizes, shapes, and dtypes the same: %r', EVs_identical)
 
-                    if not evs_identicial:
+                    if not EVs_identical:
 
                         logging.error('local buy_ev: %r', trader.buy_ev)
                         logging.error('remote buy_ev: %r', buy_ev_ref)
