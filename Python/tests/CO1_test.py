@@ -175,6 +175,8 @@ def test_traders_in_real_time():
 
                 if message['type'] == 'pmessage':
 
+                    logging.fatal("")
+
                     rx_msg = json.loads (message["data"])
 
                     cycle_time, rust_buy_rate, rust_sell_rate = itemgetter('cycle_time', 'buy_rate', 'sell_rate')(rx_msg)
@@ -276,7 +278,6 @@ def test_traders_in_real_time():
                     np.set_printoptions(precision=12)
                     np.set_printoptions(suppress=True)
 
-                    logging.fatal("")
                     logging.error('EVs_identical: %r', EVs_identical)
 
                     if not EVs_identical:
