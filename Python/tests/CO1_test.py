@@ -249,7 +249,8 @@ def test_traders_in_real_time():
                         trader.sell_ev.dtype == sell_ev_ref.dtype                       
 
                     np.set_printoptions(precision=12)
-
+                    np.set_printoptions(suppress=True)
+                    
                     logging.fatal("")
                     logging.error('ev sizes, shapes, and dtypes the same: %r', EVs_same_structure)
 
