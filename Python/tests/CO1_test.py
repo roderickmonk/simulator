@@ -223,11 +223,11 @@ def test_traders_in_real_time():
                     assert sell_candidate_rates_ref.size > 0
 
                     # buy_ev
-                    buy_ev_ref = redis_get (r, cycle_time, "buy_ev")
+                    buy_ev_ref = redis_get (r, cycle_time, "buy_ev")[0]
                     assert buy_ev_ref.size > 0
 
                     # sell_ev
-                    sell_ev_ref = redis_get (r, cycle_time, "sell_ev")                    
+                    sell_ev_ref = redis_get (r, cycle_time, "sell_ev")[0]                    
                     assert sell_ev_ref.size > 0
 
                     sellob = np.vstack((sell_rates, sell_quantities)).T
