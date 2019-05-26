@@ -175,6 +175,9 @@ def test_traders_in_real_time():
 
                 if message['type'] == 'pmessage':
 
+                    np.set_printoptions(precision=12)
+                    np.set_printoptions(suppress=True)
+
                     logging.fatal("")
 
                     rx_msg = json.loads (message["data"])
@@ -216,6 +219,9 @@ def test_traders_in_real_time():
 
                     assert sell_rates.size == sell_quantities.size
 
+                    sellob = np.vstack((sell_rates, sell_quantities)).T
+                    logging.debug('sellob:\n%r', sellob)
+
                     # buy_rates
                     buy_rates_ref = np.flip(redis_get (r, cycle_time, "buy_candidate_rates")[0])
                     assert buy_rates_ref.size > 0
@@ -232,8 +238,13 @@ def test_traders_in_real_time():
                     sell_ev_ref = np.flip(redis_get (r, cycle_time, "sell_ev")[0])                  
                     assert sell_ev_ref.size > 0
 
-                    sellob = np.vstack((sell_rates, sell_quantities)).T
-                    logging.debug('sellob:\n%r', sellob)
+                    # buy_pv
+                    buy_pv_ref = np.flip(redis_get (r, cycle_time, "buy_pv")[0])
+                    assert buy_ev_ref.size > 0
+
+                    # sell_pv
+                    sell_pv_ref = np.flip(redis_get (r, cycle_time, "sell_pv")[0])                  
+                    assert sell_pv_ref.size > 0
 
                     trader = trader_under_test.Trader(sim_config)
 
@@ -274,10 +285,6 @@ def test_traders_in_real_time():
                         np.allclose(trader.buy_ev, buy_ev_ref, atol=0.000000005) and \
                         np.allclose(trader.sell_ev, sell_ev_ref, atol=0.000000005)        
 
-
-                    np.set_printoptions(precision=12)
-                    np.set_printoptions(suppress=True)
-
                     logging.error('EVs_identical: %r', EVs_identical)
 
                     if not EVs_identical:
@@ -290,6 +297,28 @@ def test_traders_in_real_time():
 
                         ox._exit(0)
 
+                    PVs_identical = \
+                        trader.buy_pv.size == buy_pv_ref.size and \
+                        trader.sell_pv.size == sell_pv_ref.size and \
+                        trader.buy_pv.shape == buy_pv_ref.shape and \
+                        trader.sell_pv.shape == sell_pv_ref.shape and \
+                        trader.buy_pv.dtype == buy_pv_ref.dtype and \
+                        trader.sell_pv.dtype == sell_pv_ref.dtype and \
+                        np.allclose(trader.buy_pv, buy_pv_ref, atol=0.000000005) and \
+                        np.allclose(trader.sell_pv, sell_pv_ref, atol=0.000000005)  
+
+                    logging.error('PVs_identical: %r', PVs_identical)
+
+                    if not EVs_identical:
+
+                        logging.error('local buy_pv: %r', trader.buy_pv)
+                        logging.error('remote buy_pv: %r', buy_pv_ref)
+
+                        logging.error('local sell_pv: %r', trader.sell_pv)
+                        logging.error('remote sell_pv: %r', sell_pv_ref)
+
+                        ox._exit(0)
+    
                     output_format = "{0:13}{1:10}, {2:6} {3:10}"
                     logging.error(
                         output_format.format (
@@ -297,7 +326,6 @@ def test_traders_in_real_time():
                         '%.8f' % round(buy_rate, sim_config.rate_precision),
                         "Sell:",
                         '%.8f' % round(sell_rate, sim_config.rate_precision)))
-
 
                     logging.error(
                         output_format.format (
