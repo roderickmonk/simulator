@@ -252,7 +252,7 @@ def test_traders_in_real_time():
 
                     logging.error('rates_identical: %r', rates_identical)
 
-                    if not rates_identical or rates_identical:
+                    if not rates_identical:
 
                         logging.error('local buy_rates: %r', trader.buy_rates)
                         logging.error('remote buy_rates_ref: %r', buy_rates_ref)
