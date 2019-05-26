@@ -240,13 +240,13 @@ def test_traders_in_real_time():
                         buyob, 
                         sellob)
 
-                    logging.error(
-                        'ev.sizes & shapes the same: %r', 
-                        trader.buy_ev.size == buy_ev_ref.size and 
-                        trader.sell_ev.size == sell_ev_ref.size and
-                        trader.buy_ev.shape == buy_ev_ref.shape and 
-                        trader.sell_ev.shape == sell_ev_ref.shape
-                    )
+                    EVs_same_structure = \
+                        trader.buy_ev.size == buy_ev_ref.size and \
+                        trader.sell_ev.size == sell_ev_ref.size and \
+                        trader.buy_ev.shape == buy_ev_ref.shape and \
+                        trader.sell_ev.shape == sell_ev_ref.shape 
+
+                    logging.error('ev.sizes & shapes the same: %r', EVs_same_structure)
 
                     logging.error('local buy_ev: %r', trader.buy_ev)
                     logging.error('remote buy_ev: %r', buy_ev_ref)
