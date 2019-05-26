@@ -254,7 +254,7 @@ def test_traders_in_real_time():
                     np.set_printoptions(suppress=True)
 
                     logging.fatal("")
-                    logging.error('EVs_identical sizes, shapes, and dtypes the same: %r', EVs_identical)
+                    logging.error('EVs_identical: %r', EVs_identical)
 
                     if not EVs_identical:
 
