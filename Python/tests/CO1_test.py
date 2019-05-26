@@ -250,6 +250,8 @@ def test_traders_in_real_time():
                         np.allclose(trader.buy_rates, buy_rates_ref, atol=0.000000005) and \
                         np.allclose(trader.sell_rates, sell_rates_ref, atol=0.000000005)   
 
+                    logging.error('rates_identical: %r', rates_identical)
+
                     if not rates_identical:
 
                         logging.error('local buy_rates: %r', trader.buy_rates)
