@@ -244,7 +244,9 @@ def test_traders_in_real_time():
                         trader.buy_ev.size == buy_ev_ref.size and \
                         trader.sell_ev.size == sell_ev_ref.size and \
                         trader.buy_ev.shape == buy_ev_ref.shape and \
-                        trader.sell_ev.shape == sell_ev_ref.shape 
+                        trader.sell_ev.shape == sell_ev_ref.shape and \
+                        trader.buy_ev.dtype == buy_ev_ref.dtype and \
+                        trader.sell_ev.dtype == sell_ev_ref.dtype                       
 
                     logging.fatal("")
                     logging.error('ev.sizes & shapes the same: %r', EVs_same_structure)
