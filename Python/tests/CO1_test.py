@@ -248,6 +248,8 @@ def test_traders_in_real_time():
                         trader.buy_ev.dtype == buy_ev_ref.dtype and \
                         trader.sell_ev.dtype == sell_ev_ref.dtype                       
 
+                    np.set_printoptions(precision=12)
+
                     logging.fatal("")
                     logging.error('ev sizes, shapes, and dtypes the same: %r', EVs_same_structure)
 
@@ -266,6 +268,7 @@ def test_traders_in_real_time():
                         '%.8f' % round(buy_rate, sim_config.rate_precision),
                         "Sell:",
                         '%.8f' % round(sell_rate, sim_config.rate_precision)))
+
 
                     logging.error(
                         output_format.format (
