@@ -244,6 +244,9 @@ def test_traders_in_real_time():
                     logging.error('remote buy_ev:\n%r', buy_ev_ref)
                     logging.error('local sell_ev:\n%r', trader.sell_ev)
                     logging.error('remote sell_ev:\n%r', sell_ev_ref)
+
+                    logging.error ("buy_ev's Equal: %b", np.array_equal(trader.buy_ev, buy_ev_ref))
+                    logging.error ("sell_ev's Equal: %b", np.array_equal(trader.sell_ev, sell_ev_ref))
                         
                     output_format = "{0:13}{1:10}, {2:6} {3:10}"
                     logging.error(
