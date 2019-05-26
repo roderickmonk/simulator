@@ -258,7 +258,7 @@ def test_traders_in_real_time():
                         logging.error('local sell_rates: %r', trader.sell_rates)
                         logging.error('remote sell_rates_ref: %r', sell_rates_ref)
 
-                        ox._exit(0)     
+                        os._exit(0)     
 
                     EVs_identical = \
                         trader.buy_ev.size == buy_ev_ref.size and \
