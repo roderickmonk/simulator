@@ -241,13 +241,11 @@ def test_traders_in_real_time():
                         sellob)
 
                     logging.error(
-                        'ev.sizes the name: %r', 
-                        trader.buy_ev.size == buy_ev_ref.size and trader.sell_ev.size == sell_ev_ref.size
-                    )
-
-                    logging.error(
-                        'ev.shapes the name: %r', 
-                        trader.buy_ev.shape == buy_ev_ref.shape and trader.sell_ev.shape == sell_ev_ref.shape
+                        'ev.sizes & shapes the same: %r', 
+                        trader.buy_ev.size == buy_ev_ref.size and 
+                        trader.sell_ev.size == sell_ev_ref.size and
+                        trader.buy_ev.shape == buy_ev_ref.shape and 
+                        trader.sell_ev.shape == sell_ev_ref.shape
                     )
 
                     logging.error('local buy_ev: %r', trader.buy_ev)
@@ -258,7 +256,6 @@ def test_traders_in_real_time():
                     logging.error('remote sell_ev: %r', sell_ev_ref)
                     logging.error ("sell_ev's Equal: %r", np.array_equal(trader.sell_ev, sell_ev_ref))
 
-                        
                     output_format = "{0:13}{1:10}, {2:6} {3:10}"
                     logging.error(
                         output_format.format (
