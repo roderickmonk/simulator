@@ -248,6 +248,7 @@ def test_traders_in_real_time():
 
                     logging.fatal("")
                     logging.error('ev.sizes & shapes the same: %r', EVs_same_structure)
+                    logging.error('local buy_ev.dtype: %r', np.dtype(trader.buy_ev))
 
                     logging.error('local buy_ev: %r', trader.buy_ev)
                     logging.error('remote buy_ev: %r', buy_ev_ref)
