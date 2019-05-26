@@ -240,9 +240,18 @@ def test_traders_in_real_time():
                         buyob, 
                         sellob)
 
+                    logging.error(
+                        'ev.sizes the name: %r', 
+                        trader.buy_ev.size == buy_ev_ref.size and trader.sell_ev.size == sell_ev_ref.size
+                    )
+
+                    logging.error(
+                        'ev.shapes the name: %r', 
+                        trader.buy_ev.shape == buy_ev_ref.shape and trader.sell_ev.shape == sell_ev_ref.shape
+                    )
+
                     logging.error('local buy_ev: %r', trader.buy_ev)
                     logging.error('remote buy_ev: %r', buy_ev_ref)
-                    logging.error('buy_ev.sizes the name: %r', trader.buy_ev.size == buy_ev_ref.size)
                     logging.error ("buy_ev's Equal: %r", np.array_equal(trader.buy_ev, buy_ev_ref))
 
                     logging.error('local sell_ev: %r', trader.sell_ev)
