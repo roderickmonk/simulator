@@ -223,11 +223,11 @@ def test_traders_in_real_time():
                     assert sell_candidate_rates_ref.size > 0
 
                     # buy_ev
-                    buy_ev_ref = redis_get (r, cycle_time, "buy_ev")[0]
+                    buy_ev_ref = redis_get (r, cycle_time, "buy_ev")[0].flip()
                     assert buy_ev_ref.size > 0
 
                     # sell_ev
-                    sell_ev_ref = redis_get (r, cycle_time, "sell_ev")[0]                    
+                    sell_ev_ref = redis_get (r, cycle_time, "sell_ev")[0].flip()                    
                     assert sell_ev_ref.size > 0
 
                     sellob = np.vstack((sell_rates, sell_quantities)).T
@@ -249,7 +249,7 @@ def test_traders_in_real_time():
                         trader.sell_ev.dtype == sell_ev_ref.dtype                       
 
                     logging.fatal("")
-                    logging.error('ev.sizes, shapes, and dtypes the same: %r', EVs_same_structure)
+                    logging.error('ev sizes, shapes, and dtypes the same: %r', EVs_same_structure)
 
                     logging.error('local buy_ev: %r', trader.buy_ev)
                     logging.error('remote buy_ev: %r', buy_ev_ref)
