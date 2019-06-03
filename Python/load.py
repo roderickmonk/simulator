@@ -143,7 +143,7 @@ if __name__ == '__main__':
             {"_id": ObjectId(load_id)}
         )
         assert config, 'Unknown Configuration'
-        logging.debug("Load Configuration...\n%s", pformat(config, indent=4))
+        logging.error("Load Configuration...\n%s", pformat(config, indent=4))
 
         input_orderbooks = remote_mongo_client.history.orderbooks
 
@@ -348,7 +348,10 @@ if __name__ == '__main__':
                     logging.debug('len(buy_trades): ' + str(len(buy_trades)))
                     logging.debug('len(sell_trades): ' + str(len(sell_trades)))
 
-                if len(buy_trades) > 0 or len(sell_trades) > 0:
+                if config["onlyOrderbooksWithTrades"] and (
+                    len(buy_trades) > 0 or 
+                    len(sell_trades) > 0
+                    ):
 
                     saved_orderbook_count += 1
 
@@ -389,81 +392,82 @@ if __name__ == '__main__':
                     except pymongo.errors.DuplicateKeyError:
                         pass
 
-                    redis_key = str(orderbook['e']) + ':' + orderbook['x'] + ':' + orderbook['m']
-                    redis_score = int(orderbook["ts"].timestamp()*1000)
+                    if config["saveRedis"]:
+                        redis_key = str(orderbook['e']) + ':' + orderbook['x'] + ':' + orderbook['m']
+                        redis_score = int(orderbook["ts"].timestamp()*1000)
 
-                    r.zadd (redis_key, {str(orderbook['_id']): redis_score} )
+                        r.zadd (redis_key, {str(orderbook['_id']): redis_score} )
 
-                    # load buy_trades
-                    score = 0
-                    for t in buy_trades:
-                        hmset_key = ":".join([str(orderbook['_id']), str(score), "buy_trades"])
-                        r.hmset (
-                            hmset_key, {
-                            "_id": str(t["_id"]).encode(),
-                            "e": t['e'],
-                            "x": t['x'].encode(),
-                            "m": t['m'].encode(),
-                            "ts": str(t['ts']).encode(),
-                            "ob": str(t['ob']).encode(),
-                            "r": t['r'],
-                            "q": t['q'],
-                        }) 
-                        r.zadd (
-                            ":".join([
-                                str(orderbook['_id']), 
-                                "buy_trades",
-                                ]), 
-                            {hmset_key : score} )
-                        score += 1
+                        # load buy_trades
+                        score = 0
+                        for t in buy_trades:
+                            hmset_key = ":".join([str(orderbook['_id']), str(score), "buy_trades"])
+                            r.hmset (
+                                hmset_key, {
+                                "_id": str(t["_id"]).encode(),
+                                "e": t['e'],
+                                "x": t['x'].encode(),
+                                "m": t['m'].encode(),
+                                "ts": str(t['ts']).encode(),
+                                "ob": str(t['ob']).encode(),
+                                "r": t['r'],
+                                "q": t['q'],
+                            }) 
+                            r.zadd (
+                                ":".join([
+                                    str(orderbook['_id']), 
+                                    "buy_trades",
+                                    ]), 
+                                {hmset_key : score} )
+                            score += 1
 
-                    # load sell_trades
-                    score = 0
-                    for t in sell_trades:
-                        hmset_key = ":".join([str(orderbook['_id']), str(score), "sell_trades"])
-                        r.hmset (
-                            hmset_key, {
-                            "_id": str(t["_id"]).encode(),
-                            "e": t['e'],
-                            "x": t['x'].encode(),
-                            "m": t['m'].encode(),
-                            "ts": str(t['ts']).encode(),
-                            "ob": str(t['ob']).encode(),
-                            "r": t['r'],
-                            "q": t['q'],
-                        }) 
-                        r.zadd (
-                            ":".join([
-                                str(orderbook['_id']), 
-                                "sell_trades",
-                                ]), 
-                            {hmset_key : score} )
-                        score += 1
+                        # load sell_trades
+                        score = 0
+                        for t in sell_trades:
+                            hmset_key = ":".join([str(orderbook['_id']), str(score), "sell_trades"])
+                            r.hmset (
+                                hmset_key, {
+                                "_id": str(t["_id"]).encode(),
+                                "e": t['e'],
+                                "x": t['x'].encode(),
+                                "m": t['m'].encode(),
+                                "ts": str(t['ts']).encode(),
+                                "ob": str(t['ob']).encode(),
+                                "r": t['r'],
+                                "q": t['q'],
+                            }) 
+                            r.zadd (
+                                ":".join([
+                                    str(orderbook['_id']), 
+                                    "sell_trades",
+                                    ]), 
+                                {hmset_key : score} )
+                            score += 1
 
-                    r.hmset (str(orderbook['_id']), {
-                        "e": orderbook['e'],
-                        "x": orderbook['x'].encode(),
-                        "m": orderbook['m'].encode(),
-                        "ts": str(orderbook['ts']).encode(),
-                        "N": orderbook['N'],
-                        "V": str(orderbook['V']).encode(),
-                    })
+                        r.hmset (str(orderbook['_id']), {
+                            "e": orderbook['e'],
+                            "x": orderbook['x'].encode(),
+                            "m": orderbook['m'].encode(),
+                            "ts": str(orderbook['ts']).encode(),
+                            "N": orderbook['N'],
+                            "V": str(orderbook['V']).encode(),
+                        })
 
-                    buy_rates_key = ":".join([str(orderbook['_id']),"buy_rates"])
-                    r.delete (buy_rates_key)
-                    r.rpush (buy_rates_key, *orderbook['buy'][:, 0])
+                        buy_rates_key = ":".join([str(orderbook['_id']),"buy_rates"])
+                        r.delete (buy_rates_key)
+                        r.rpush (buy_rates_key, *orderbook['buy'][:, 0])
 
-                    buy_quantities_key = ":".join([str(orderbook['_id']),"buy_quantities"])
-                    r.delete (buy_quantities_key)
-                    r.rpush (buy_quantities_key, *orderbook['buy'][:, 1])
+                        buy_quantities_key = ":".join([str(orderbook['_id']),"buy_quantities"])
+                        r.delete (buy_quantities_key)
+                        r.rpush (buy_quantities_key, *orderbook['buy'][:, 1])
 
-                    sell_rates_key = ":".join([str(orderbook['_id']),"sell_rates"])
-                    r.delete (sell_rates_key)
-                    r.rpush (sell_rates_key, *orderbook['sell'][:, 0])
+                        sell_rates_key = ":".join([str(orderbook['_id']),"sell_rates"])
+                        r.delete (sell_rates_key)
+                        r.rpush (sell_rates_key, *orderbook['sell'][:, 0])
 
-                    sell_quantities_key = ":".join([str(orderbook['_id']),"sell_quantities"])
-                    r.delete (sell_quantities_key)
-                    r.rpush (sell_quantities_key, *orderbook['sell'][:, 1])
+                        sell_quantities_key = ":".join([str(orderbook['_id']),"sell_quantities"])
+                        r.delete (sell_quantities_key)
+                        r.rpush (sell_quantities_key, *orderbook['sell'][:, 1])
 
 
         except StopIteration:
