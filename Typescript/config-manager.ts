@@ -25,7 +25,12 @@ const simSchema = {
         "parallelSimulations": {
             "type": "number",
         },
-        /*
+        "saveRedis": {
+            "type": "boolean",
+        },
+        "onlyOrderbooksWithTrades": {
+            "type": "boolean",
+        },        /*
         "simConfig": {
             "type": "array",
             "items": {
@@ -40,6 +45,8 @@ const simSchema = {
         "minNotional",
         "trim",
         "parallelSimulations",
+        "saveRedis",
+        "onlyOrderbooksWithTrades",
         "simConfig",
     ]
 }
@@ -51,6 +58,8 @@ export interface ISimConfiguration {
     readonly trim: boolean;
     readonly minNotional: number;
     readonly parallelSimulations: number;
+    readonly redisSave: boolean;
+    readonly onlyOrderbooksWithTrades: boolean;
     readonly simConfig: any;
 }
 

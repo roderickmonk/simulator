@@ -20,6 +20,12 @@ const simSchema = {
         "parallelSimulations": {
             "type": "number",
         },
+        "saveRedis": {
+            "type": "boolean",
+        },
+        "onlyOrderbooksWithTrades": {
+            "type": "boolean",
+        },
     },
     "required": [
         "name",
@@ -27,6 +33,8 @@ const simSchema = {
         "minNotional",
         "trim",
         "parallelSimulations",
+        "saveRedis",
+        "onlyOrderbooksWithTrades",
         "simConfig",
     ]
 };
