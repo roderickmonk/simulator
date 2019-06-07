@@ -307,7 +307,7 @@ def test_traders_in_real_time():
                         np.allclose(trader.buy_pv, buy_pv_ref, atol=0.000000005) and \
                         np.allclose(trader.sell_pv, sell_pv_ref, atol=0.000000005)  
 
-                    logging.error('PVs_identical: %r', PVs_identical)
+                    logging.debug('PVs_identical: %r', PVs_identical)
 
                     if not PVs_identical:
 
