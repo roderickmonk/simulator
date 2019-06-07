@@ -263,7 +263,7 @@ def test_traders_in_real_time():
                         np.allclose(trader.buy_rates, buy_rates_ref, atol=0.000000005) and \
                         np.allclose(trader.sell_rates, sell_rates_ref, atol=0.000000005)   
 
-                    logging.error('rates_identical: %r', rates_identical)
+                    logging.debug('rates_identical: %r', rates_identical)
 
                     if not rates_identical:
 
@@ -285,7 +285,7 @@ def test_traders_in_real_time():
                         np.allclose(trader.buy_ev, buy_ev_ref, atol=0.000000005) and \
                         np.allclose(trader.sell_ev, sell_ev_ref, atol=0.000000005)        
 
-                    logging.error('EVs_identical: %r', EVs_identical)
+                    logging.debug('EVs_identical: %r', EVs_identical)
 
                     if not EVs_identical:
 
