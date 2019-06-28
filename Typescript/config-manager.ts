@@ -3,7 +3,6 @@
 import * as _ from 'lodash';
 import * as assert from "assert";
 import * as Ajv from "ajv";
-// const Ajv = require('ajv');
 const ajv = new Ajv;
 
 const simSchema = {
