@@ -61,6 +61,7 @@ export interface ISimConfiguration {
     readonly parallelSimulations: number;
     readonly redisSave: boolean;
     readonly onlyOrderbooksWithTrades: boolean;
+    readonly saveRedis: boolean;
     readonly simConfig: any;
 }
 

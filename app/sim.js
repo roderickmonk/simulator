@@ -37,6 +37,7 @@ const start = (simConfig, simDb) => __awaiter(this, void 0, void 0, function* ()
                 envId: simConfig.config.envId,
                 minNotional: simConfig.config.minNotional ? simConfig.config.minNotional : 0.0005,
                 trim: simConfig.config.trim,
+                saveRedis: simConfig.config.saveRedis,
             }, nextSimConfig);
             debug_1.debug('taskObj:\n', JSON.stringify(taskObj, null, 4));
             const { insertedId: simId } = yield simDb.collection('simulations')

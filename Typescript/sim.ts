@@ -53,6 +53,7 @@ const start = async (
                     envId: simConfig.config!.envId,
                     minNotional: simConfig.config!.minNotional ? simConfig.config!.minNotional : 0.0005,
                     trim: simConfig.config!.trim,
+                    saveRedis: simConfig.config!.saveRedis,
                 }, ...nextSimConfig
             }
 
