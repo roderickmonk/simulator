@@ -70,6 +70,7 @@ const start = (simConfig, simDb) => __awaiter(this, void 0, void 0, function* ()
                 envId: simConfig.config.envId,
                 trim: simConfig.config.trim,
                 onlyOrderbooksWithTrades: simConfig.config.onlyOrderbooksWithTrades,
+                saveRedis: simConfig.config.saveRedis
             }, loadConfig);
             taskObjs.push(taskObj);
         }

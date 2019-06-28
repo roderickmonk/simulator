@@ -105,6 +105,7 @@ const start = async (
                     envId: simConfig.config!.envId,
                     trim: simConfig.config!.trim,
                     onlyOrderbooksWithTrades: simConfig.config!.onlyOrderbooksWithTrades,
+                    saveRedis: simConfig.config!.saveRedis
                 }, ...loadConfig
             }
 
