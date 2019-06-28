@@ -113,8 +113,6 @@ if __name__ == '__main__':
     total_size_of_python_objects = 0
 
     try:
-
-        logging.error ("Hello 3")
         
         logging.basicConfig(
             format='[%(levelname)-5s] %(message)s',

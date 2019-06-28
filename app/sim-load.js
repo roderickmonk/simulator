@@ -143,21 +143,17 @@ const copyPDFs = (pdfsRemote, pdfsLocal) => __awaiter(this, void 0, void 0, func
 });
 (() => __awaiter(this, void 0, void 0, function* () {
     try {
-        console.log("Hello 1");
         configName = process.argv[2];
         assert(process.env.MONGODB, 'MONGODB Not Defined');
         assert(process.env.SIMULATOR_DB, 'SIMULATOR_DB Not Defined');
         const mongoRemote = yield mongodb_1.MongoClient.connect(process.env.MONGODB, { useNewUrlParser: true });
-        console.log("Hello 5", process.env.LOCALDB);
         assert(process.env.LOCALDB, 'LOCALDB Not Defined');
         const mongoLocal = yield mongodb_1.MongoClient.connect(process.env.LOCALDB, { useNewUrlParser: true });
         const remoteSimDb = mongoRemote.db(process.env.SIMULATOR_DB);
         const localSimDb = mongoLocal.db("sim");
-        console.log("Hello 4");
         yield copyPDFs(remoteSimDb.collection("PDFs"), localSimDb.collection("PDFs"));
         const simConfig = new config_generator_1.ConfigGenerator(configName, remoteSimDb);
         yield start(simConfig, remoteSimDb);
-        console.log("Hello 0");
     }
     catch (err) {
         console.log(err);

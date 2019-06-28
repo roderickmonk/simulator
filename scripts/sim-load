@@ -1,3 +1,2 @@
 #!/usr/bin/env bash
-echo "Hello 2"
 node app/sim-load $1
