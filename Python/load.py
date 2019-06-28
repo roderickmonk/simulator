@@ -114,6 +114,8 @@ if __name__ == '__main__':
 
     try:
 
+        logging.error ("Hello 3")
+        
         logging.basicConfig(
             format='[%(levelname)-5s] %(message)s',
             level=logging.INFO,
