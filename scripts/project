@@ -14,9 +14,6 @@ source ./scripts/aliases
 # Give Python access to traders
 export PYTHONPATH=$SIMULATOR_PATH/Python:~/traders:.:$PYTHONPATH
 
-# Some pytest options
-# export PYTEST_ADDOPTS="--benchmark-columns=Mean,Median,Rounds"
-
 source ./bin/activate
 
 # export the version
