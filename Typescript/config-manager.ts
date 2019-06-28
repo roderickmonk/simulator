@@ -27,6 +27,7 @@ const simSchema = {
         },
         "saveRedis": {
             "type": "boolean",
+            "default": false,
         },
         "onlyOrderbooksWithTrades": {
             "type": "boolean",
