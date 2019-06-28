@@ -147,7 +147,7 @@ const copyPDFs = (pdfsRemote, pdfsLocal) => __awaiter(this, void 0, void 0, func
         assert(process.env.MONGODB, 'MONGODB Not Defined');
         assert(process.env.SIMULATOR_DB, 'SIMULATOR_DB Not Defined');
         const mongoRemote = yield mongodb_1.MongoClient.connect(process.env.MONGODB, { useNewUrlParser: true });
-        console.log("Hello 5");
+        console.log("Hello 5", process.env.LOCALDB);
         assert(process.env.LOCALDB, 'LOCALDB Not Defined');
         const mongoLocal = yield mongodb_1.MongoClient.connect(process.env.LOCALDB, { useNewUrlParser: true });
         const remoteSimDb = mongoRemote.db(process.env.SIMULATOR_DB);

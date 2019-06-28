@@ -240,7 +240,7 @@ const copyPDFs = async (
                 { useNewUrlParser: true },
             );
 
-        console.log("Hello 5");
+        console.log("Hello 5", process.env.LOCALDB);
 
         assert(process.env.LOCALDB, 'LOCALDB Not Defined');
 
