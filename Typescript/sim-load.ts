@@ -227,6 +227,8 @@ const copyPDFs = async (
 
     try {
 
+        console.log ("Hello 1");
+
         configName = process.argv[2];
 
         assert(process.env.MONGODB, 'MONGODB Not Defined');

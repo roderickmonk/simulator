@@ -142,6 +142,7 @@ const copyPDFs = (pdfsRemote, pdfsLocal) => __awaiter(this, void 0, void 0, func
 });
 (() => __awaiter(this, void 0, void 0, function* () {
     try {
+        console.log("Hello 1");
         configName = process.argv[2];
         assert(process.env.MONGODB, 'MONGODB Not Defined');
         assert(process.env.SIMULATOR_DB, 'SIMULATOR_DB Not Defined');
