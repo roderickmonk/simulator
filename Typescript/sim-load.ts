@@ -257,6 +257,8 @@ const copyPDFs = async (
         const simConfig = new ConfigGenerator(configName, remoteSimDb);
         await start(simConfig, remoteSimDb);
 
+        console.log ("Hello 0");
+
     } catch (err) {
 
         console.log(err);

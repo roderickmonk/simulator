@@ -153,6 +153,7 @@ const copyPDFs = (pdfsRemote, pdfsLocal) => __awaiter(this, void 0, void 0, func
         yield copyPDFs(remoteSimDb.collection("PDFs"), localSimDb.collection("PDFs"));
         const simConfig = new config_generator_1.ConfigGenerator(configName, remoteSimDb);
         yield start(simConfig, remoteSimDb);
+        console.log("Hello 0");
     }
     catch (err) {
         console.log(err);
