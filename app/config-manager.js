@@ -26,6 +26,7 @@ const simSchema = {
         },
         "onlyOrderbooksWithTrades": {
             "type": "boolean",
+            "default": true,
         },
     },
     "required": [
