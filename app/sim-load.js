@@ -151,6 +151,7 @@ const copyPDFs = (pdfsRemote, pdfsLocal) => __awaiter(this, void 0, void 0, func
         const mongoLocal = yield mongodb_1.MongoClient.connect(process.env.LOCALDB, { useNewUrlParser: true });
         const remoteSimDb = mongoRemote.db(process.env.SIMULATOR_DB);
         const localSimDb = mongoLocal.db("sim");
+        console.log("Hello 4");
         yield copyPDFs(remoteSimDb.collection("PDFs"), localSimDb.collection("PDFs"));
         const simConfig = new config_generator_1.ConfigGenerator(configName, remoteSimDb);
         yield start(simConfig, remoteSimDb);

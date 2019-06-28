@@ -251,6 +251,8 @@ const copyPDFs = async (
         const remoteSimDb: Db = mongoRemote.db(process.env.SIMULATOR_DB);
         const localSimDb: Db = mongoLocal.db("sim");
 
+        console.log ("Hello 4");
+
         await copyPDFs(
             remoteSimDb.collection("PDFs"),
             localSimDb.collection("PDFs")
