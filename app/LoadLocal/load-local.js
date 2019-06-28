@@ -291,6 +291,7 @@ const getOrderbooks = (params) => __awaiter(this, void 0, void 0, function* () {
                 status: "STARTED",
                 envId: config.envId,
                 minNotional: config.minNotional ? config.minNotional : 0.0005,
+                saveRedis: config.saveRedis,
             }, nextSimConfig);
             debug_1.debug(JSON.stringify(simulationObj, null, 4));
             const { insertedId: sim_id } = yield simDb.collection('simulations')

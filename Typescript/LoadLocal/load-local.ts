@@ -478,6 +478,7 @@ const getOrderbooks = async (params: IHistoryObject) => {
                     envId: config.envId,
                     // minNotional defaults to 0.0005
                     minNotional: config.minNotional ? config.minNotional : 0.0005,
+                    saveRedis: config.saveRedis,
                 }, ...nextSimConfig
             }
 
