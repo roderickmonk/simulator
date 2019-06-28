@@ -227,7 +227,7 @@ const copyPDFs = async (
 
     try {
 
-        console.log ("Hello 1");
+        console.log("Hello 1");
 
         configName = process.argv[2];
 
@@ -240,6 +240,8 @@ const copyPDFs = async (
                 { useNewUrlParser: true },
             );
 
+        console.log("Hello 5");
+
         assert(process.env.LOCALDB, 'LOCALDB Not Defined');
 
         const mongoLocal =
@@ -251,7 +253,7 @@ const copyPDFs = async (
         const remoteSimDb: Db = mongoRemote.db(process.env.SIMULATOR_DB);
         const localSimDb: Db = mongoLocal.db("sim");
 
-        console.log ("Hello 4");
+        console.log("Hello 4");
 
         await copyPDFs(
             remoteSimDb.collection("PDFs"),
@@ -261,7 +263,7 @@ const copyPDFs = async (
         const simConfig = new ConfigGenerator(configName, remoteSimDb);
         await start(simConfig, remoteSimDb);
 
-        console.log ("Hello 0");
+        console.log("Hello 0");
 
     } catch (err) {
 
