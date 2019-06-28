@@ -131,12 +131,15 @@ if __name__ == '__main__':
         assert os.environ['SIMULATOR_DB'], 'SIMULATOR_DB Not Defined'
         sim_db = remote_mongo_client[os.environ['SIMULATOR_DB']]
         if sim_db == None:
-            raise Exception('Unable to Connect to Database')
+            raise Exception('Unable to Connect to Main MongoDB')
 
         # Prep for local mongodb access
-        local_mongo_client = MongoClient()
+        assert os.environ['LOCALDB'], 'LOCALDB Not Defined'
+        local_mongo_client = MongoClient(os.environ['LOCALDB'])
         assert local_mongo_client, 'Unable to Connect to Local MongoDB'
         local_sim_db = local_mongo_client['sim']
+        if local_sim_db == None:
+            raise Exception('Unable to Connect to Local MongoDB')
 
         # Load and check configuration
         config = sim_db.loads.find_one(
