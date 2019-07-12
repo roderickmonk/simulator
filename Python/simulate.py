@@ -97,11 +97,20 @@ def simulate():
         assert os.environ['SIMULATOR_DB'], 'SIMULATOR_DB Not Defined'
         sim_db = remote_mongo_client[os.environ['SIMULATOR_DB']]
 
-        # Prep for local mongodb access
+        """
         local_mongo_client = MongoClient()
         assert local_mongo_client, 'Unable to Connect to Local MongoDB Database'
         local_sim_db = local_mongo_client['sim']
+        """
 
+        # Prep for local mongodb access
+        assert os.environ['LOCALDB'], 'LOCALDB Not Defined'
+        local_mongo_client = MongoClient(os.environ['LOCALDB'])
+        assert local_mongo_client, 'Unable to Connect to Local MongoDB'
+        local_sim_db = local_mongo_client['sim']
+        if local_sim_db == None:
+            raise Exception('Unable to Connect to Local MongoDB')
+ 
         sim_config.partition_config = sim_db.partitions.find_one({"_id": partition_id })
         assert sim_config.partition_config, 'Unknown Trader Configuration'
 
