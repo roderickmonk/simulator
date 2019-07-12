@@ -203,6 +203,7 @@ if __name__ == '__main__':
 
         sim_id = sys.argv[1]
 
+        """
         local_mongo_client = MongoClient()
         if local_mongo_client == None:
             raise Exception('Unable to Connect to Local MongoDB Database')
@@ -210,6 +211,15 @@ if __name__ == '__main__':
         local_db = local_mongo_client['sim']
         if local_db == None:
             raise Exception('Unable to Connect to Local Database')
+        """
+        
+        # Prep for local mongodb access
+        assert os.environ['LOCALDB'], 'LOCALDB Not Defined'
+        local_mongo_client = MongoClient(os.environ['LOCALDB'])
+        assert local_mongo_client, 'Unable to Connect to Local MongoDB'
+        local_sim_db = local_mongo_client['sim']
+        if local_sim_db == None:
+            raise Exception('Unable to Connect to Local MongoDB')
             
         assert os.environ['MONGODB'], 'MONGODB Not Defined'
         remote_mongo_client = MongoClient(os.environ['MONGODB'])
