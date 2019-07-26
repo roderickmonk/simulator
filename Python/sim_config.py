@@ -34,6 +34,7 @@ def check(conf_schema, conf):
 partition_schema = Schema({
     '_id': And(Use(str)),
     'quantityLimit': And(Use(float)),
+    'priceDepthLimit': And(Use(float)),
     'inventoryLimit': And(Use(float)),
     'feeRate': And(Use(float)),
     'actualFeeRate': And(Use(float)),

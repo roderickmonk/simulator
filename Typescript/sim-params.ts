@@ -40,25 +40,31 @@ export const simParams = {
         type: "array",
         items: {
             type: "string",
-        }
+        },
     },
     partitions: {
         type: "array",
         items: {
             type: "number",
-        }
+        },
     },
     pdf: {
         type: "array",
         items: {
             type: "string",
-        }
+        },
+    },
+    priceDepthLimit: {
+        type: "array",
+        items: {
+            type: "number",
+        },
     },
     quantityLimit: {
         type: "array",
         items: {
             type: "number",
-        }
+        },
     },
     timeFrame: {
         type: "array",
@@ -71,9 +77,9 @@ export const simParams = {
                 },
                 endTime: {
                     type: "string",
-                }
-            }
-        }
+                },
+            },
+        },
     },
     tick: {
         type: "array",
