@@ -392,6 +392,8 @@ def test_compare_bots():
             'priceDepthLimit': bot_config["priceDepthLimit"],
         }
 
+        print ("priceDepthLimit: %f", priceDepthLimit)
+
         logging.error ("Trader: %s", bot_config["trader"])
         if "evol_a_cycler" in bot_config["trader"]:
             import evol_a_cycler as trader_under_test
