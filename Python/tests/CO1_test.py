@@ -364,13 +364,16 @@ def test_compare_bots():
         bot_config = r.hgetall (bot_id.encode())
         logging.error ("bot_config: %r", bot_config)
 
+        # Float fields need an explicit conversion from string to float
         bot_config["quantityLimit"] = float (bot_config["quantityLimit"])
         bot_config["inventoryLimit"] = float (bot_config["quantityLimit"])
         bot_config["feeRate"] = float (bot_config["feeRate"])
         bot_config["tick"] = float (bot_config["tick"])
+        bot_config["priceDepthLimit"] = float (bot_config["priceDepthLimit"])
 
         tick = bot_config["tick"]
 
+        # Boolean fields need an explicit conversion from string to boolean
         if bot_config["allowOrderConflicts"] == "true":
             bot_config["allowOrderConflicts"] = True
         else:
@@ -386,6 +389,7 @@ def test_compare_bots():
             'tick': bot_config["tick"],
             'pdf': "not-used",
             'allowOrderConflicts': bot_config["allowOrderConflicts"],
+            'priceDepthLimit': bot_config["priceDepthLimit"],
         }
 
         logging.error ("Trader: %s", bot_config["trader"])
