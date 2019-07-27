@@ -391,6 +391,8 @@ def test_compare_bots():
         logging.error ("Trader: %s", bot_config["trader"])
         if "evol_a_cycler" in bot_config["trader"]:
             import evol_a_cycler as trader_under_test
+        elif "co1_pdepth1" in bot_config["trader"]:
+            import co1_pdepth1 as trader_under_test        
         elif "co1" in bot_config["trader"]:
             import co1 as trader_under_test
         else:
