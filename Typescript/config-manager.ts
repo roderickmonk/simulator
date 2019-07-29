@@ -52,20 +52,19 @@ const simSchema = {
     ]
 }
 
-export interface ISimConfiguration {
+export interface SimConfiguration {
 
     readonly name: string;
     readonly envId: number;
     readonly trim: boolean;
     readonly minNotional: number;
     readonly parallelSimulations: number;
-    readonly redisSave: boolean;
     readonly onlyOrderbooksWithTrades: boolean;
     readonly saveRedis: boolean;
     readonly simConfig: any;
 }
 
-export const configValidator = (simConfig: ISimConfiguration):
+export const configValidator = (simConfig: SimConfiguration):
 
     Promise<boolean> => {
 

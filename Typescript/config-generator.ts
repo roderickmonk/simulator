@@ -17,7 +17,7 @@ import {
 
 import {
     configValidator,
-    ISimConfiguration,
+    SimConfiguration,
 } from "./config-manager";
 
 const GenerateSchema = require('generate-schema')
@@ -29,7 +29,7 @@ export class ConfigGenerator {
     private propertyData = new Map();
     private propertySchema = new Map();
 
-    public config: ISimConfiguration | null = null;
+    public config: SimConfiguration | null = null;
 
     constructor(
         private configName: string,

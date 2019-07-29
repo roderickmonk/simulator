@@ -579,8 +579,11 @@ def test_compare_bots():
                         '%.8f' % rust_sell_rate))
 
                     rust_python_identical = \
-                        abs (rust_buy_rate - buy_rate) < bot_config["tick"] and \
-                        abs (rust_sell_rate - sell_rate) < bot_config["tick"]
+                        rust_buy_rate <= 0 and buy_rate <= 0 or \
+                        (
+                            abs (rust_buy_rate - buy_rate) < bot_config["tick"] and \
+                            abs (rust_sell_rate - sell_rate) < bot_config["tick"] 
+                        )
 
                     if rust_python_identical: 
                         rust_python_same_count += 1

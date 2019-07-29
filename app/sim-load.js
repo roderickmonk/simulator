@@ -45,12 +45,11 @@ const removeRedundantPDFs = (arr) => arr.reduce((acc, current) => {
     acc.push(current);
     return acc;
 }, []);
-const start = (simConfig, simDb) => __awaiter(this, void 0, void 0, function* () {
+const start = (configGenerator, simDb) => __awaiter(this, void 0, void 0, function* () {
     const startProcessTime = process.hrtime();
     try {
-        const generator = yield simConfig.getGenerator();
+        const generator = yield configGenerator.getGenerator();
         const tasks = [];
-        const runId = new mongodb_1.ObjectId();
         let loadConfigs = [];
         while (true) {
             const { value: next, done } = generator.next();
@@ -67,10 +66,10 @@ const start = (simConfig, simDb) => __awaiter(this, void 0, void 0, function* ()
         yield simDb.collection('loads').deleteMany({});
         for (const loadConfig of loadConfigs) {
             const taskObj = Object.assign({
-                envId: simConfig.config.envId,
-                trim: simConfig.config.trim,
-                onlyOrderbooksWithTrades: simConfig.config.onlyOrderbooksWithTrades,
-                saveRedis: simConfig.config.saveRedis
+                envId: configGenerator.config.envId,
+                trim: configGenerator.config.trim,
+                onlyOrderbooksWithTrades: configGenerator.config.onlyOrderbooksWithTrades,
+                saveRedis: configGenerator.config.saveRedis
             }, loadConfig);
             taskObjs.push(taskObj);
         }
@@ -96,7 +95,7 @@ const start = (simConfig, simDb) => __awaiter(this, void 0, void 0, function* ()
                 }
             });
         }
-        async_1.parallelLimit(tasks, simConfig.config.parallelSimulations, (err, stdoutArray) => __awaiter(this, void 0, void 0, function* () {
+        async_1.parallelLimit(tasks, configGenerator.config.parallelSimulations, (err, stdoutArray) => __awaiter(this, void 0, void 0, function* () {
             try {
                 if (err) {
                     console.log({ err });
@@ -153,8 +152,8 @@ const copyPDFs = (pdfsRemote, pdfsLocal) => __awaiter(this, void 0, void 0, func
         const remoteSimDb = mongoRemote.db(process.env.SIMULATOR_DB);
         const localSimDb = mongoLocal.db("sim");
         yield copyPDFs(remoteSimDb.collection("PDFs"), localSimDb.collection("PDFs"));
-        const simConfig = new config_generator_1.ConfigGenerator(configName, remoteSimDb);
-        yield start(simConfig, remoteSimDb);
+        const configGenerator = new config_generator_1.ConfigGenerator(configName, remoteSimDb);
+        yield start(configGenerator, remoteSimDb);
     }
     catch (err) {
         console.log(err);

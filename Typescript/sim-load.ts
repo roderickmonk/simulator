@@ -62,7 +62,7 @@ const removeRedundantPDFs = (arr: object[]) =>
     }, []);
 
 const start = async (
-    simConfig: ConfigGenerator,
+    configGenerator: ConfigGenerator,
     simDb: Db)
     : Promise<void> => {
 
@@ -70,14 +70,11 @@ const start = async (
 
     try {
 
-        const generator = await simConfig.getGenerator();
+        const generator = await configGenerator.getGenerator();
 
         const tasks = [];
 
-        // runId links all output documents
-        const runId = new ObjectId();
-
-        let loadConfigs: object[] = [];
+        let loadConfigs: Array<object> = [];
 
         while (true) {
 
@@ -93,7 +90,7 @@ const start = async (
             });
         }
 
-        let taskObjs: object[] = [];
+        let taskObjs: Array<object> = [];
 
         // Clear out from previous load
         await simDb.collection('loads').deleteMany({});
@@ -102,10 +99,10 @@ const start = async (
 
             const taskObj = {
                 ...{
-                    envId: simConfig.config!.envId,
-                    trim: simConfig.config!.trim,
-                    onlyOrderbooksWithTrades: simConfig.config!.onlyOrderbooksWithTrades,
-                    saveRedis: simConfig.config!.saveRedis
+                    envId: configGenerator.config!.envId,
+                    trim: configGenerator.config!.trim,
+                    onlyOrderbooksWithTrades: configGenerator.config!.onlyOrderbooksWithTrades,
+                    saveRedis: configGenerator.config!.saveRedis
                 }, ...loadConfig
             }
 
@@ -155,7 +152,7 @@ const start = async (
         parallelLimit(
 
             tasks,
-            simConfig.config!.parallelSimulations,
+            configGenerator.config!.parallelSimulations,
             async (err, stdoutArray: undefined | Array<string>) => {
 
                 try {
@@ -256,8 +253,8 @@ const copyPDFs = async (
             localSimDb.collection("PDFs")
         );
 
-        const simConfig = new ConfigGenerator(configName, remoteSimDb);
-        await start(simConfig, remoteSimDb);
+        const configGenerator = new ConfigGenerator(configName, remoteSimDb);
+        await start(configGenerator, remoteSimDb);
 
     } catch (err) {
 
