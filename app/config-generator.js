@@ -26,6 +26,8 @@ class ConfigGenerator {
         this.propertySchema = new Map();
         this.config = null;
         this.validateSimConfig = (multiplyConfig) => {
+            console.log(JSON.stringify(multiplyConfig));
+            process.exit(1);
             let schema = GenerateSchema.json('Product', multiplyConfig).items.oneOf;
             console.log("schema: ", JSON.stringify(schema, null, 4));
             schema.shift();
