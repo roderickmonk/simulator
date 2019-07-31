@@ -48,7 +48,7 @@ const simSchema = {
         "parallelSimulations",
         "saveRedis",
         "onlyOrderbooksWithTrades",
-        "simConfig",
+        "multiplyConfig",
     ]
 }
 
