@@ -38,9 +38,8 @@ export class ConfigGenerator {
 
     public validateSimConfig = (multiplyConfig: MultiplyConfig) => {
 
-        console.log (JSON.stringify (multiplyConfig));
+        console.log ("multipleConfig:\n", JSON.stringify (multiplyConfig, null, 4));
 
-        process.exit(1);
         // Capture Schema Output
         let schema: any = GenerateSchema.json('Product', multiplyConfig).items.oneOf;
 
