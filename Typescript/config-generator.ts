@@ -4,7 +4,6 @@ const assert = require('assert');
 import * as _ from "lodash";
 const chalk = require('chalk');
 import { debug } from "./debug";
-import { multiplyConfigSchema } from "./sim-params"
 
 import {
     Collection,
@@ -37,7 +36,7 @@ export class ConfigGenerator {
         private simDb: Db) { }
 
     public validateMultiplyConfig = (
-        multiplyConfigSchema: object,
+        schema: object,
         multiplyConfig: MultiplyConfig) => {
 
         console.log(
@@ -45,15 +44,15 @@ export class ConfigGenerator {
             JSON.stringify(multiplyConfig, null, 4));
 
         // Capture Schema Output
-        let schema: Array<{ properties: any }> =
+        let config: Array<{ properties: any }> =
             GenerateSchema.json('Product', multiplyConfig).items.oneOf;
 
-        console.log("schema: ", JSON.stringify(schema, null, 4));
+        console.log("multipleConfig: ", JSON.stringify(config, null, 4));
 
-        schema.shift(); // Skip first one
+        config.shift(); // Skip first one
 
         let properties: Array<string> = [];
-        for (const level of schema) {
+        for (const level of config) {
 
             debug('level:\n', JSON.stringify(level, null, 4));
 
@@ -69,7 +68,7 @@ export class ConfigGenerator {
 
             assert(entry.type === 'array', `Multiply Parameter "${prop}" Data Not Array`);
 
-            if (multiplyConfigSchema.hasOwnProperty(prop)) {
+            if (schema.hasOwnProperty(prop)) {
 
                 // This test only applies if it is a known parameter
                 assert(
@@ -80,7 +79,7 @@ export class ConfigGenerator {
             }
 
             // Ensure required params 
-            Object.keys(multiplyConfigSchema).forEach(property => {
+            Object.keys(schema).forEach(property => {
 
                 assert(
                     this.propertySchema.has(property),
@@ -145,7 +144,7 @@ export class ConfigGenerator {
             );
         }
 
-        debug('levels: ', schema.length);
+        debug('levels: ', config.length);
 
     }
 

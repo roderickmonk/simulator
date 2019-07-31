@@ -24,13 +24,13 @@ class ConfigGenerator {
         this.propertyData = new Map();
         this.propertySchema = new Map();
         this.config = null;
-        this.validateMultiplyConfig = (multiplyConfigSchema, multiplyConfig) => {
+        this.validateMultiplyConfig = (schema, multiplyConfig) => {
             console.log("multipleConfig:\n", JSON.stringify(multiplyConfig, null, 4));
-            let schema = GenerateSchema.json('Product', multiplyConfig).items.oneOf;
-            console.log("schema: ", JSON.stringify(schema, null, 4));
-            schema.shift();
+            let config = GenerateSchema.json('Product', multiplyConfig).items.oneOf;
+            console.log("multipleConfig: ", JSON.stringify(config, null, 4));
+            config.shift();
             let properties = [];
-            for (const level of schema) {
+            for (const level of config) {
                 debug_1.debug('level:\n', JSON.stringify(level, null, 4));
                 for (const prop of Object.keys(level.properties)) {
                     properties.push(prop);
@@ -39,10 +39,10 @@ class ConfigGenerator {
             }
             for (const [prop, entry] of this.propertySchema.entries()) {
                 assert(entry.type === 'array', `Multiply Parameter "${prop}" Data Not Array`);
-                if (multiplyConfigSchema.hasOwnProperty(prop)) {
+                if (schema.hasOwnProperty(prop)) {
                     assert(multiplyConfigSchema[prop].items.type === entry.items.type, `Multiply Parameter "${prop}" Wrong Type`);
                 }
-                Object.keys(multiplyConfigSchema).forEach(property => {
+                Object.keys(schema).forEach(property => {
                     assert(this.propertySchema.has(property), `Required Multiply Parameter "${property}" Not Found`);
                 });
             }
@@ -75,7 +75,7 @@ class ConfigGenerator {
                     .every((val, i, arr) => val === arr[0]);
                 assert(levelPropertiesSameLength, 'Mismatched Parameter Array Lengths');
             }
-            debug_1.debug('levels: ', schema.length);
+            debug_1.debug('levels: ', config.length);
         };
         this.getGenerator = () => __awaiter(this, void 0, void 0, function* () {
             try {
