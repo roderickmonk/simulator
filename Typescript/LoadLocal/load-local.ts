@@ -20,7 +20,7 @@ import {
 
 const GenerateSchema = require('generate-schema')
 
-const multiplyConfigParams = {
+const multiplyConfigSchema = {
 
     actualFeeRate: {
         type: "array",
@@ -140,18 +140,18 @@ const validateMultiplyConfig = (simConfig: Array<Array<object> | object>) => {
 
         assert(entry.type === 'array', `Parameter "${prop}" Data Not Array`);
 
-        if (multiplyConfigParams.hasOwnProperty(prop)) {
+        if (multiplyConfigSchema.hasOwnProperty(prop)) {
 
             // This test only applies if it is a known parameter
             assert(
                 //@ts-ignore
-                multiplyConfigParams[prop].items.type === entry.items.type,
+                multiplyConfigSchema[prop].items.type === entry.items.type,
                 `Parameter "${prop}" Wrong Type`
             );
         }
 
         // Ensure required params 
-        Object.keys(multiplyConfigParams).forEach(property => {
+        Object.keys(multiplyConfigSchema).forEach(property => {
 
             assert(
                 propertySchema.has(property),

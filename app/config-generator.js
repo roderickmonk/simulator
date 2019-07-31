@@ -13,7 +13,6 @@ const assert = require('assert');
 const _ = require("lodash");
 const chalk = require('chalk');
 const debug_1 = require("./debug");
-const sim_params_1 = require("./sim-params");
 const config_manager_1 = require("./config-manager");
 const GenerateSchema = require('generate-schema');
 class ConfigGenerator {
@@ -25,7 +24,7 @@ class ConfigGenerator {
         this.propertyData = new Map();
         this.propertySchema = new Map();
         this.config = null;
-        this.validateMultiplyConfig = (multiplyConfig) => {
+        this.validateMultiplyConfig = (multiplyConfigSchema, multiplyConfig) => {
             console.log("multipleConfig:\n", JSON.stringify(multiplyConfig, null, 4));
             let schema = GenerateSchema.json('Product', multiplyConfig).items.oneOf;
             console.log("schema: ", JSON.stringify(schema, null, 4));
@@ -40,10 +39,10 @@ class ConfigGenerator {
             }
             for (const [prop, entry] of this.propertySchema.entries()) {
                 assert(entry.type === 'array', `Multiply Parameter "${prop}" Data Not Array`);
-                if (sim_params_1.multiplyConfigParams.hasOwnProperty(prop)) {
-                    assert(sim_params_1.multiplyConfigParams[prop].items.type === entry.items.type, `Multiply Parameter "${prop}" Wrong Type`);
+                if (multiplyConfigSchema.hasOwnProperty(prop)) {
+                    assert(multiplyConfigSchema[prop].items.type === entry.items.type, `Multiply Parameter "${prop}" Wrong Type`);
                 }
-                Object.keys(sim_params_1.multiplyConfigParams).forEach(property => {
+                Object.keys(multiplyConfigSchema).forEach(property => {
                     assert(this.propertySchema.has(property), `Required Multiply Parameter "${property}" Not Found`);
                 });
             }
@@ -85,11 +84,16 @@ class ConfigGenerator {
                     .collection('configurations')
                     .findOne({ name: this.configName });
                 if (this.config) {
+                    const multiplyConfigSchema = (yield this.simDb
+                        .collection('multiple.config.schemas')
+                        .findOne({ name: this.config.multiplyConfigSchema })).schema;
+                    console.log(JSON.stringify(multiplyConfigSchema, null, 4));
+                    process.exit(1);
                     const validConfig = yield config_manager_1.configValidator(this.config);
                     if (validConfig) {
                         console.log(JSON.stringify(this.config, null, 4));
                         console.log(JSON.stringify(this.config.multiplyConfig, null, 4));
-                        this.validateMultiplyConfig(this.config.multiplyConfig);
+                        this.validateMultiplyConfig(multiplyConfigSchema, this.config.multiplyConfig);
                         return this.generate(0);
                     }
                     else {

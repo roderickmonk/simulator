@@ -4,7 +4,7 @@ const assert = require('assert');
 import * as _ from "lodash";
 const chalk = require('chalk');
 import { debug } from "./debug";
-import { multiplyConfigParams } from "./sim-params"
+import { multiplyConfigSchema } from "./sim-params"
 
 import {
     Collection,
@@ -36,7 +36,9 @@ export class ConfigGenerator {
         private configName: string,
         private simDb: Db) { }
 
-    public validateMultiplyConfig = (multiplyConfig: MultiplyConfig) => {
+    public validateMultiplyConfig = (
+        multiplyConfigSchema: object,
+        multiplyConfig: MultiplyConfig) => {
 
         console.log(
             "multipleConfig:\n",
@@ -67,18 +69,18 @@ export class ConfigGenerator {
 
             assert(entry.type === 'array', `Multiply Parameter "${prop}" Data Not Array`);
 
-            if (multiplyConfigParams.hasOwnProperty(prop)) {
+            if (multiplyConfigSchema.hasOwnProperty(prop)) {
 
                 // This test only applies if it is a known parameter
                 assert(
                     //@ts-ignore
-                    multiplyConfigParams[prop].items.type === entry.items.type,
+                    multiplyConfigSchema[prop].items.type === entry.items.type,
                     `Multiply Parameter "${prop}" Wrong Type`
                 );
             }
 
             // Ensure required params 
-            Object.keys(multiplyConfigParams).forEach(property => {
+            Object.keys(multiplyConfigSchema).forEach(property => {
 
                 assert(
                     this.propertySchema.has(property),
@@ -199,6 +201,14 @@ export class ConfigGenerator {
 
             if (this.config) {
 
+                const multiplyConfigSchema = (await this.simDb
+                    .collection('multiple.config.schemas')
+                    .findOne({ name: this.config.multiplyConfigSchema })).schema;
+
+                console.log (JSON.stringify (multiplyConfigSchema, null, 4));
+
+                process.exit(1);
+
                 const validConfig = await configValidator(this.config);
 
                 if (validConfig) {
@@ -206,7 +216,7 @@ export class ConfigGenerator {
                     console.log(JSON.stringify(this.config, null, 4));
                     console.log(JSON.stringify(this.config.multiplyConfig, null, 4));
 
-                    this.validateMultiplyConfig(this.config.multiplyConfig);
+                    this.validateMultiplyConfig(multiplyConfigSchema, this.config.multiplyConfig);
                     return this.generate(0);
 
                 } else {

@@ -62,6 +62,7 @@ export interface SimConfiguration {
     readonly onlyOrderbooksWithTrades: boolean;
     readonly saveRedis: boolean;
     readonly multiplyConfig: MultiplyConfig;
+    readonly multiplyConfigSchema: string;
 }
 
 export const configValidator = (simConfig: SimConfiguration):

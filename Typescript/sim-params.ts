@@ -1,4 +1,4 @@
-export const multiplyConfigParams = {
+export const multiplyConfigSchema = {
 
     actualFeeRate: {
         type: "array",
