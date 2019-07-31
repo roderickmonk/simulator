@@ -32,7 +32,7 @@ const simSchema = {
             "type": "boolean",
             "default": true,
         },
-        "multiplySchema": {
+        "multipleConfigSchema": {
             "type": "string",
             "default": true,           
         }
@@ -46,7 +46,7 @@ const simSchema = {
         "saveRedis",
         "onlyOrderbooksWithTrades",
         "multiplyConfig",
-        "multipleSchema"
+        "multipleConfigSchema"
     ]
 }
 
