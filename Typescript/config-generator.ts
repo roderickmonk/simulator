@@ -210,11 +210,17 @@ export class ConfigGenerator {
 
                 const multiplyConfigSchema = await this.simDb
                     .collection('multiply.config.schemas')
-                    .findOne({ name: this.config.multiplyConfigSchema });
+                    .findOne({ name: this.config.multiplyConfigSchema }) as {schema: Array<object>}
 
                 console.log (JSON.stringify (multiplyConfigSchema, null, 4));
 
+                const schema = multiplyConfigSchema.schema;
+
+                console.log (JSON.stringify (schema, null, 4));
+
+
                 process.exit(1);
+
 
                 const validConfig = await configValidator(this.config);
 

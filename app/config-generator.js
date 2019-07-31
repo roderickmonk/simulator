@@ -92,6 +92,8 @@ class ConfigGenerator {
                         .collection('multiply.config.schemas')
                         .findOne({ name: this.config.multiplyConfigSchema });
                     console.log(JSON.stringify(multiplyConfigSchema, null, 4));
+                    const schema = multiplyConfigSchema.schema;
+                    console.log(JSON.stringify(schema, null, 4));
                     process.exit(1);
                     const validConfig = yield config_manager_1.configValidator(this.config);
                     if (validConfig) {
