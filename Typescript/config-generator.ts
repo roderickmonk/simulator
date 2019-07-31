@@ -221,7 +221,7 @@ export class ConfigGenerator {
 
                 const validConfig = await configValidator(this.config);
 
-                console.log(JSON.stringify(validConfig, null, 4));
+                console.log(JSON.stringify(this.config, null, 4));
                
                 process.exit(1);
 
