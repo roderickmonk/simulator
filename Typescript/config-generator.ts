@@ -71,11 +71,13 @@ export class ConfigGenerator {
             if (referenceSchema.hasOwnProperty(prop)) {
 
                 // This test only applies if it is a known parameter
+                /*
                 assert(
                     //@ts-ignore
                     multiplyConfigSchema[prop].items.type === entry.items.type,
                     `Multiply Parameter "${prop}" Wrong Type`
                 );
+                */
             }
 
             // Ensure required params 

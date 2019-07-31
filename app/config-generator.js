@@ -40,7 +40,6 @@ class ConfigGenerator {
             for (const [prop, entry] of this.propertySchema.entries()) {
                 assert(entry.type === 'array', `Multiply Parameter "${prop}" Data Not Array`);
                 if (referenceSchema.hasOwnProperty(prop)) {
-                    assert(multiplyConfigSchema[prop].items.type === entry.items.type, `Multiply Parameter "${prop}" Wrong Type`);
                 }
                 Object.keys(referenceSchema).forEach(property => {
                     assert(this.propertySchema.has(property), `Required Multiply Parameter "${property}" Not Found`);
