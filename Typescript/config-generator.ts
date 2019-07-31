@@ -40,7 +40,7 @@ export class ConfigGenerator {
         // Capture Schema Output
         let schema: any = GenerateSchema.json('Product', simConfig).items.oneOf;
 
-        console.log("schema: ", JSON.stringify(schema));
+        console.log("schema: ", JSON.stringify(schema, null, 4));
 
         schema.shift(); // Skip first one
 
