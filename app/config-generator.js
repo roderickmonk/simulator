@@ -24,10 +24,10 @@ class ConfigGenerator {
         this.propertyData = new Map();
         this.propertySchema = new Map();
         this.config = null;
-        this.validateMultiplyConfig = (referenceSchema, multiplyConfig) => {
-            console.log("multipleConfig:\n", JSON.stringify(multiplyConfig, null, 4));
-            let actualSchema = GenerateSchema.json('Product', multiplyConfig).items.oneOf;
-            console.log("multipleConfig: ", JSON.stringify(actualSchema, null, 4));
+        this.validateMultiplyConfig = (referenceSchema, simConfig) => {
+            console.log("multipleConfig:\n", JSON.stringify(simConfig, null, 4));
+            let actualSchema = GenerateSchema.json('Product', simConfig.multiplyConfig).items.oneOf;
+            console.log("actualSchema: ", JSON.stringify(actualSchema, null, 4));
             actualSchema.shift();
             let properties = [];
             for (const level of actualSchema) {
@@ -46,7 +46,7 @@ class ConfigGenerator {
                 });
             }
             assert((new Set(properties)).size === properties.length, 'Duplicate Multiply Parameters Detected');
-            for (const [i, config] of multiplyConfig.entries()) {
+            for (const [i, config] of simConfig.multiplyConfig.entries()) {
                 const levelConfig = i === 0 ?
                     config["0"] :
                     config;
@@ -62,9 +62,9 @@ class ConfigGenerator {
             debug_1.debug(this.propertyData);
             debug_1.debug(this.propertyLevel);
             debug_1.debug(this.propertyLength);
-            const levels = multiplyConfig.length;
+            const levels = simConfig.multiplyConfig.length;
             debug_1.debug({ levels });
-            for (let i = 0; i < multiplyConfig.length; ++i) {
+            for (let i = 0; i < simConfig.multiplyConfig.length; ++i) {
                 const levelProperties = Array.from(this.propertyLevel)
                     .filter(level => level[1] === i)
                     .map(level => level[0]);
@@ -100,7 +100,7 @@ class ConfigGenerator {
                     if (validConfig) {
                         console.log(JSON.stringify(this.config, null, 4));
                         console.log(JSON.stringify(this.config.multiplyConfig, null, 4));
-                        this.validateMultiplyConfig(referenceSchema, this.config.multiplyConfig);
+                        this.validateMultiplyConfig(referenceSchema, this.config);
                         return this.generate(0);
                     }
                     else {
