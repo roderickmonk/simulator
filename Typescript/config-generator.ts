@@ -36,7 +36,7 @@ export class ConfigGenerator {
         private simDb: Db) { }
 
     public validateMultiplyConfig = (
-        schema: object,
+        referenceSchema: object,
         multiplyConfig: MultiplyConfig) => {
 
         console.log(
@@ -44,15 +44,15 @@ export class ConfigGenerator {
             JSON.stringify(multiplyConfig, null, 4));
 
         // Capture Schema Output
-        let config: Array<{ properties: any }> =
+        let actualSchema: Array<{ properties: any }> =
             GenerateSchema.json('Product', multiplyConfig).items.oneOf;
 
-        console.log("multipleConfig: ", JSON.stringify(config, null, 4));
+        console.log("multipleConfig: ", JSON.stringify(actualSchema, null, 4));
 
-        config.shift(); // Skip first one
+        actualSchema.shift(); // Skip first one
 
         let properties: Array<string> = [];
-        for (const level of config) {
+        for (const level of actualSchema) {
 
             debug('level:\n', JSON.stringify(level, null, 4));
 
@@ -68,7 +68,7 @@ export class ConfigGenerator {
 
             assert(entry.type === 'array', `Multiply Parameter "${prop}" Data Not Array`);
 
-            if (schema.hasOwnProperty(prop)) {
+            if (referenceSchema.hasOwnProperty(prop)) {
 
                 // This test only applies if it is a known parameter
                 assert(
@@ -79,7 +79,7 @@ export class ConfigGenerator {
             }
 
             // Ensure required params 
-            Object.keys(schema).forEach(property => {
+            Object.keys(referenceSchema).forEach(property => {
 
                 assert(
                     this.propertySchema.has(property),
@@ -144,7 +144,7 @@ export class ConfigGenerator {
             );
         }
 
-        debug('levels: ', config.length);
+        debug('levels: ', actualSchema.length);
 
     }
 
@@ -213,9 +213,9 @@ export class ConfigGenerator {
                         name: this.config.multiplyConfigSchema
                     }) as { schema: Array<object> }
 
-                const schema = multiplyConfigSchema.schema;
+                const referenceSchema = multiplyConfigSchema.schema;
 
-                console.log(JSON.stringify(schema, null, 4));
+                console.log(JSON.stringify(referenceSchema, null, 4));
 
                 const validConfig = await configValidator(this.config);
 
@@ -224,7 +224,9 @@ export class ConfigGenerator {
                     console.log(JSON.stringify(this.config, null, 4));
                     console.log(JSON.stringify(this.config.multiplyConfig, null, 4));
 
-                    this.validateMultiplyConfig(schema, this.config.multiplyConfig);
+                    this.validateMultiplyConfig(
+                        referenceSchema, 
+                        this.config.multiplyConfig);
                     return this.generate(0);
 
                 } else {

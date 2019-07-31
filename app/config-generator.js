@@ -24,13 +24,13 @@ class ConfigGenerator {
         this.propertyData = new Map();
         this.propertySchema = new Map();
         this.config = null;
-        this.validateMultiplyConfig = (schema, multiplyConfig) => {
+        this.validateMultiplyConfig = (referenceSchema, multiplyConfig) => {
             console.log("multipleConfig:\n", JSON.stringify(multiplyConfig, null, 4));
-            let config = GenerateSchema.json('Product', multiplyConfig).items.oneOf;
-            console.log("multipleConfig: ", JSON.stringify(config, null, 4));
-            config.shift();
+            let actualSchema = GenerateSchema.json('Product', multiplyConfig).items.oneOf;
+            console.log("multipleConfig: ", JSON.stringify(actualSchema, null, 4));
+            actualSchema.shift();
             let properties = [];
-            for (const level of config) {
+            for (const level of actualSchema) {
                 debug_1.debug('level:\n', JSON.stringify(level, null, 4));
                 for (const prop of Object.keys(level.properties)) {
                     properties.push(prop);
@@ -39,10 +39,10 @@ class ConfigGenerator {
             }
             for (const [prop, entry] of this.propertySchema.entries()) {
                 assert(entry.type === 'array', `Multiply Parameter "${prop}" Data Not Array`);
-                if (schema.hasOwnProperty(prop)) {
+                if (referenceSchema.hasOwnProperty(prop)) {
                     assert(multiplyConfigSchema[prop].items.type === entry.items.type, `Multiply Parameter "${prop}" Wrong Type`);
                 }
-                Object.keys(schema).forEach(property => {
+                Object.keys(referenceSchema).forEach(property => {
                     assert(this.propertySchema.has(property), `Required Multiply Parameter "${property}" Not Found`);
                 });
             }
@@ -75,7 +75,7 @@ class ConfigGenerator {
                     .every((val, i, arr) => val === arr[0]);
                 assert(levelPropertiesSameLength, 'Mismatched Parameter Array Lengths');
             }
-            debug_1.debug('levels: ', config.length);
+            debug_1.debug('levels: ', actualSchema.length);
         };
         this.getGenerator = () => __awaiter(this, void 0, void 0, function* () {
             try {
@@ -93,13 +93,13 @@ class ConfigGenerator {
                         .findOne({
                         name: this.config.multiplyConfigSchema
                     });
-                    const schema = multiplyConfigSchema.schema;
-                    console.log(JSON.stringify(schema, null, 4));
+                    const referenceSchema = multiplyConfigSchema.schema;
+                    console.log(JSON.stringify(referenceSchema, null, 4));
                     const validConfig = yield config_manager_1.configValidator(this.config);
                     if (validConfig) {
                         console.log(JSON.stringify(this.config, null, 4));
                         console.log(JSON.stringify(this.config.multiplyConfig, null, 4));
-                        this.validateMultiplyConfig(schema, this.config.multiplyConfig);
+                        this.validateMultiplyConfig(referenceSchema, this.config.multiplyConfig);
                         return this.generate(0);
                     }
                     else {
