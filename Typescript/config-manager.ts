@@ -52,6 +52,8 @@ const simSchema = {
     ]
 }
 
+export type MultiplyConfig = Array<Array<object> | object>;
+
 export interface SimConfiguration {
 
     readonly name: string;
@@ -61,7 +63,7 @@ export interface SimConfiguration {
     readonly parallelSimulations: number;
     readonly onlyOrderbooksWithTrades: boolean;
     readonly saveRedis: boolean;
-    readonly simConfig: any;
+    readonly multiplyConfig: MultiplyConfig;
 }
 
 export const configValidator = (simConfig: SimConfiguration):

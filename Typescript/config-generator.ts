@@ -18,6 +18,7 @@ import {
 import {
     configValidator,
     SimConfiguration,
+    MultiplyConfig,
 } from "./config-manager";
 
 const GenerateSchema = require('generate-schema')
@@ -35,10 +36,10 @@ export class ConfigGenerator {
         private configName: string,
         private simDb: Db) { }
 
-    public validateSimConfig = (simConfig: Array<Array<object> | object>) => {
+    public validateSimConfig = (multiplyConfig: MultiplyConfig) => {
 
         // Capture Schema Output
-        let schema: any = GenerateSchema.json('Product', simConfig).items.oneOf;
+        let schema: any = GenerateSchema.json('Product', multiplyConfig).items.oneOf;
 
         console.log("schema: ", JSON.stringify(schema, null, 4));
 
@@ -86,7 +87,7 @@ export class ConfigGenerator {
             'Duplicate Parameters Detected',
         );
 
-        for (const [i, config] of simConfig.entries()) {
+        for (const [i, config] of multiplyConfig.entries()) {
 
             const levelConfig = i === 0 ?
                 //@ts-ignore
@@ -114,10 +115,10 @@ export class ConfigGenerator {
         debug(this.propertyLevel);
         debug(this.propertyLength);
 
-        const levels = simConfig.length;
+        const levels = multiplyConfig.length;
         debug({ levels });
 
-        for (let i = 0; i < simConfig.length; ++i) {
+        for (let i = 0; i < multiplyConfig.length; ++i) {
 
             const levelProperties = Array.from(this.propertyLevel)
                 .filter(level => level[1] === i)
@@ -157,11 +158,12 @@ export class ConfigGenerator {
 
             for (let i = 0; i < levelDepth; ++i) {
 
-                const returnObj = {};
+                const returnObj: {
+                    [key: string]: unknown
+                } = {};
 
                 for (const prop of levelProperties) {
 
-                    //@ts-ignore
                     returnObj[prop] = this.propertyData.get(prop)[i];
                 }
 
@@ -190,18 +192,21 @@ export class ConfigGenerator {
                 .collection('configurations')
                 .findOne({ name: this.configName });
 
-            assert(this.config, 'Unknown Configuration');
+            if (this.config) {
 
-            const validConfig = await configValidator(this.config!);
+                const validConfig = await configValidator(this.config);
 
-            if (validConfig) {
-                this.validateSimConfig(this.config!.simConfig);
-                return this.generate(0);
+                if (validConfig) {
+                    this.validateSimConfig(this.config.multiplyConfig);
+                    return this.generate(0);
+
+                } else {
+                    return Promise.reject(new Error('Invalid Configuration'));
+                }
 
             } else {
-                return Promise.reject(new Error('Invalid Configuration'));
+                return Promise.reject(new Error('Unknown Configuration'));
             }
-
 
         } catch (err) {
             return Promise.reject(err);
