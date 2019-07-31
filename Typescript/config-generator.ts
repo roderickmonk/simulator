@@ -200,6 +200,10 @@ export class ConfigGenerator {
                 const validConfig = await configValidator(this.config);
 
                 if (validConfig) {
+
+                    console.log (JSON.stringify (this.config, null, 4));
+                    console.log (JSON.stringify (this.config.multiplyConfig, null, 4));
+
                     this.validateSimConfig(this.config.multiplyConfig);
                     return this.generate(0);
 

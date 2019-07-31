@@ -88,6 +88,8 @@ class ConfigGenerator {
                 if (this.config) {
                     const validConfig = yield config_manager_1.configValidator(this.config);
                     if (validConfig) {
+                        console.log(JSON.stringify(this.config, null, 4));
+                        console.log(JSON.stringify(this.config.multiplyConfig, null, 4));
                         this.validateSimConfig(this.config.multiplyConfig);
                         return this.generate(0);
                     }
