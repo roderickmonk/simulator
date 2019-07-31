@@ -223,8 +223,6 @@ export class ConfigGenerator {
 
                 console.log(JSON.stringify(this.config, null, 4));
                
-                process.exit(1);
-
                 if (validConfig) {
 
                     console.log(JSON.stringify(this.config, null, 4));

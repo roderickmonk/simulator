@@ -96,7 +96,6 @@ class ConfigGenerator {
                     console.log(JSON.stringify(referenceSchema, null, 4));
                     const validConfig = yield config_manager_1.configValidator(this.config);
                     console.log(JSON.stringify(this.config, null, 4));
-                    process.exit(1);
                     if (validConfig) {
                         console.log(JSON.stringify(this.config, null, 4));
                         console.log(JSON.stringify(this.config.multiplyConfig, null, 4));
