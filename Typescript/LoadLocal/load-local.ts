@@ -117,7 +117,7 @@ const propertyData = new Map();
 const propertyType = new Map();
 const propertySchema = new Map();
 
-const validateSimConfig = (simConfig: Array<Array<object> | object>) => {
+const validateMultiplyConfig = (simConfig: Array<Array<object> | object>) => {
 
     // Capture Schema Output
     let schema: any = GenerateSchema.json('Product', simConfig).items.oneOf;
@@ -437,7 +437,7 @@ const getOrderbooks = async (params: IHistoryObject) => {
 
         debug({ config });
 
-        validateSimConfig(config.simConfig);
+        validateMultiplyConfig(config.simConfig);
 
         const trades = await getTrades({
             mongoClient: mainMongoClient,

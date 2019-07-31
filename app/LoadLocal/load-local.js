@@ -112,7 +112,7 @@ const propertyLevel = new Map();
 const propertyData = new Map();
 const propertyType = new Map();
 const propertySchema = new Map();
-const validateSimConfig = (simConfig) => {
+const validateMultiplyConfig = (simConfig) => {
     let schema = GenerateSchema.json('Product', simConfig).items.oneOf;
     schema.shift();
     let properties = [];
@@ -261,7 +261,7 @@ const getOrderbooks = (params) => __awaiter(this, void 0, void 0, function* () {
         const config = yield simDb.collection('configurations').findOne({ name: configName });
         assert(config, 'Unknown Configuration');
         debug_1.debug({ config });
-        validateSimConfig(config.simConfig);
+        validateMultiplyConfig(config.simConfig);
         const trades = yield getTrades({
             mongoClient: mainMongoClient,
             exchange: 'bittrex',

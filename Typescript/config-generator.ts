@@ -36,18 +36,21 @@ export class ConfigGenerator {
         private configName: string,
         private simDb: Db) { }
 
-    public validateSimConfig = (multiplyConfig: MultiplyConfig) => {
+    public validateMultiplyConfig = (multiplyConfig: MultiplyConfig) => {
 
-        console.log ("multipleConfig:\n", JSON.stringify (multiplyConfig, null, 4));
+        console.log(
+            "multipleConfig:\n",
+            JSON.stringify(multiplyConfig, null, 4));
 
         // Capture Schema Output
-        let schema: any = GenerateSchema.json('Product', multiplyConfig).items.oneOf;
+        let schema: Array<{ properties: any }> =
+            GenerateSchema.json('Product', multiplyConfig).items.oneOf;
 
         console.log("schema: ", JSON.stringify(schema, null, 4));
 
         schema.shift(); // Skip first one
 
-        let properties: string[] = [];
+        let properties: Array<string> = [];
         for (const level of schema) {
 
             debug('level:\n', JSON.stringify(level, null, 4));
@@ -62,7 +65,7 @@ export class ConfigGenerator {
 
         for (const [prop, entry] of this.propertySchema.entries()) {
 
-            assert(entry.type === 'array', `Parameter "${prop}" Data Not Array`);
+            assert(entry.type === 'array', `Multiply Parameter "${prop}" Data Not Array`);
 
             if (simParams.hasOwnProperty(prop)) {
 
@@ -70,7 +73,7 @@ export class ConfigGenerator {
                 assert(
                     //@ts-ignore
                     simParams[prop].items.type === entry.items.type,
-                    `Parameter "${prop}" Wrong Type`
+                    `Multiply Parameter "${prop}" Wrong Type`
                 );
             }
 
@@ -79,14 +82,14 @@ export class ConfigGenerator {
 
                 assert(
                     this.propertySchema.has(property),
-                    `Required Parameter "${property}" Not Found`
+                    `Required Multiply Parameter "${property}" Not Found`
                 );
             })
         }
 
         assert(
             (new Set(properties)).size === properties.length,
-            'Duplicate Parameters Detected',
+            'Duplicate Multiply Parameters Detected',
         );
 
         for (const [i, config] of multiplyConfig.entries()) {
@@ -200,10 +203,10 @@ export class ConfigGenerator {
 
                 if (validConfig) {
 
-                    console.log (JSON.stringify (this.config, null, 4));
-                    console.log (JSON.stringify (this.config.multiplyConfig, null, 4));
+                    console.log(JSON.stringify(this.config, null, 4));
+                    console.log(JSON.stringify(this.config.multiplyConfig, null, 4));
 
-                    this.validateSimConfig(this.config.multiplyConfig);
+                    this.validateMultiplyConfig(this.config.multiplyConfig);
                     return this.generate(0);
 
                 } else {

@@ -25,7 +25,7 @@ class ConfigGenerator {
         this.propertyData = new Map();
         this.propertySchema = new Map();
         this.config = null;
-        this.validateSimConfig = (multiplyConfig) => {
+        this.validateMultiplyConfig = (multiplyConfig) => {
             console.log("multipleConfig:\n", JSON.stringify(multiplyConfig, null, 4));
             let schema = GenerateSchema.json('Product', multiplyConfig).items.oneOf;
             console.log("schema: ", JSON.stringify(schema, null, 4));
@@ -39,15 +39,15 @@ class ConfigGenerator {
                 }
             }
             for (const [prop, entry] of this.propertySchema.entries()) {
-                assert(entry.type === 'array', `Parameter "${prop}" Data Not Array`);
+                assert(entry.type === 'array', `Multiply Parameter "${prop}" Data Not Array`);
                 if (sim_params_1.simParams.hasOwnProperty(prop)) {
-                    assert(sim_params_1.simParams[prop].items.type === entry.items.type, `Parameter "${prop}" Wrong Type`);
+                    assert(sim_params_1.simParams[prop].items.type === entry.items.type, `Multiply Parameter "${prop}" Wrong Type`);
                 }
                 Object.keys(sim_params_1.simParams).forEach(property => {
-                    assert(this.propertySchema.has(property), `Required Parameter "${property}" Not Found`);
+                    assert(this.propertySchema.has(property), `Required Multiply Parameter "${property}" Not Found`);
                 });
             }
-            assert((new Set(properties)).size === properties.length, 'Duplicate Parameters Detected');
+            assert((new Set(properties)).size === properties.length, 'Duplicate Multiply Parameters Detected');
             for (const [i, config] of multiplyConfig.entries()) {
                 const levelConfig = i === 0 ?
                     config["0"] :
@@ -89,7 +89,7 @@ class ConfigGenerator {
                     if (validConfig) {
                         console.log(JSON.stringify(this.config, null, 4));
                         console.log(JSON.stringify(this.config.multiplyConfig, null, 4));
-                        this.validateSimConfig(this.config.multiplyConfig);
+                        this.validateMultiplyConfig(this.config.multiplyConfig);
                         return this.generate(0);
                     }
                     else {
