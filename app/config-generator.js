@@ -85,7 +85,7 @@ class ConfigGenerator {
                     .findOne({ name: this.configName });
                 if (this.config) {
                     const multiplyConfigSchema = (yield this.simDb
-                        .collection('multiple.config.schemas')
+                        .collection('multiply.config.schemas')
                         .findOne({ name: this.config.multiplyConfigSchema })).schema;
                     console.log(JSON.stringify(multiplyConfigSchema, null, 4));
                     process.exit(1);

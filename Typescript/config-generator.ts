@@ -202,7 +202,7 @@ export class ConfigGenerator {
             if (this.config) {
 
                 const multiplyConfigSchema = (await this.simDb
-                    .collection('multiple.config.schemas')
+                    .collection('multiply.config.schemas')
                     .findOne({ name: this.config.multiplyConfigSchema })).schema;
 
                 console.log (JSON.stringify (multiplyConfigSchema, null, 4));
