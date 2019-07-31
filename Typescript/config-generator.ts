@@ -199,6 +199,9 @@ export class ConfigGenerator {
                 .collection('configurations')
                 .findOne({ name: this.configName });
 
+                console.log (JSON.stringify (this.config, null, 4));
+           
+
             if (this.config) {
 
                 const multiplyConfigSchema = await this.simDb
