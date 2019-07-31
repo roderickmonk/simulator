@@ -40,10 +40,10 @@ class ConfigGenerator {
             }
             for (const [prop, entry] of this.propertySchema.entries()) {
                 assert(entry.type === 'array', `Multiply Parameter "${prop}" Data Not Array`);
-                if (sim_params_1.simParams.hasOwnProperty(prop)) {
-                    assert(sim_params_1.simParams[prop].items.type === entry.items.type, `Multiply Parameter "${prop}" Wrong Type`);
+                if (sim_params_1.multiplyConfigParams.hasOwnProperty(prop)) {
+                    assert(sim_params_1.multiplyConfigParams[prop].items.type === entry.items.type, `Multiply Parameter "${prop}" Wrong Type`);
                 }
-                Object.keys(sim_params_1.simParams).forEach(property => {
+                Object.keys(sim_params_1.multiplyConfigParams).forEach(property => {
                     assert(this.propertySchema.has(property), `Required Multiply Parameter "${property}" Not Found`);
                 });
             }

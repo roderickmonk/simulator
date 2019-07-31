@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.simParams = {
+exports.multiplyConfigParams = {
     actualFeeRate: {
         type: "array",
         items: {

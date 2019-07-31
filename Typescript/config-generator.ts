@@ -4,7 +4,7 @@ const assert = require('assert');
 import * as _ from "lodash";
 const chalk = require('chalk');
 import { debug } from "./debug";
-import { simParams } from "./sim-params"
+import { multiplyConfigParams } from "./sim-params"
 
 import {
     Collection,
@@ -67,18 +67,18 @@ export class ConfigGenerator {
 
             assert(entry.type === 'array', `Multiply Parameter "${prop}" Data Not Array`);
 
-            if (simParams.hasOwnProperty(prop)) {
+            if (multiplyConfigParams.hasOwnProperty(prop)) {
 
                 // This test only applies if it is a known parameter
                 assert(
                     //@ts-ignore
-                    simParams[prop].items.type === entry.items.type,
+                    multiplyConfigParams[prop].items.type === entry.items.type,
                     `Multiply Parameter "${prop}" Wrong Type`
                 );
             }
 
             // Ensure required params 
-            Object.keys(simParams).forEach(property => {
+            Object.keys(multiplyConfigParams).forEach(property => {
 
                 assert(
                     this.propertySchema.has(property),

@@ -1,4 +1,4 @@
-export const simParams = {
+export const multiplyConfigParams = {
 
     actualFeeRate: {
         type: "array",

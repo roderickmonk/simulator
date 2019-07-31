@@ -4,7 +4,6 @@ const assert = require('assert');
 const chalk = require('chalk');
 import { parallelLimit } from 'async';
 import { ConfigGenerator } from "./config-generator"
-import { simParams } from "./sim-params"
 import { debug } from "./debug";
 import { exec, } from 'child_process';
 
