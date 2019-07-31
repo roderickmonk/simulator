@@ -42,7 +42,7 @@ const simSchema = {
         "saveRedis",
         "onlyOrderbooksWithTrades",
         "multiplyConfig",
-        "multipleConfigSchema"
+        "multiplyConfigSchema"
     ]
 };
 exports.configValidator = (simConfig) => {

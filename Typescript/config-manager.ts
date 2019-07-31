@@ -46,7 +46,7 @@ const simSchema = {
         "saveRedis",
         "onlyOrderbooksWithTrades",
         "multiplyConfig",
-        "multipleConfigSchema"
+        "multiplyConfigSchema"
     ]
 }
 
