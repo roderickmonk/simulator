@@ -199,25 +199,24 @@ export class ConfigGenerator {
                 .collection('configurations')
                 .findOne({ name: this.configName });
 
-                console.log (JSON.stringify (this.config, null, 4));
-           
+            console.log(JSON.stringify(this.config, null, 4));
+
 
             if (this.config) {
 
-                if (_.isUndefined (this.config.multiplyConfigSchema)) {
+                if (_.isUndefined(this.config.multiplyConfigSchema)) {
                     this.config.multiplyConfigSchema = "original";
                 }
 
                 const multiplyConfigSchema = await this.simDb
                     .collection('multiply.config.schemas')
-                    .findOne({ name: this.config.multiplyConfigSchema }) as {schema: Array<object>}
-
-                console.log (JSON.stringify (multiplyConfigSchema, null, 4));
+                    .findOne({
+                        name: this.config.multiplyConfigSchema
+                    }) as { schema: Array<object> }
 
                 const schema = multiplyConfigSchema.schema;
 
-                console.log (JSON.stringify (schema, null, 4));
-
+                console.log(JSON.stringify(schema, null, 4));
 
                 process.exit(1);
 
