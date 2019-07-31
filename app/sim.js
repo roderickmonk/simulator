@@ -17,11 +17,11 @@ const debug_1 = require("./debug");
 const child_process_1 = require("child_process");
 const mongodb_1 = require("mongodb");
 let configName = "";
-const start = (simConfig, simDb) => __awaiter(this, void 0, void 0, function* () {
+const start = (configGenerator, simDb) => __awaiter(this, void 0, void 0, function* () {
     const startProcessTime = process.hrtime();
     const startTime = new Date();
     try {
-        const generator = yield simConfig.getGenerator();
+        const generator = yield configGenerator.getGenerator();
         const tasks = [];
         const runId = new mongodb_1.ObjectId();
         while (true) {
@@ -34,10 +34,10 @@ const start = (simConfig, simDb) => __awaiter(this, void 0, void 0, function* ()
                 configName,
                 ts: new Date(),
                 status: "STARTED",
-                envId: simConfig.config.envId,
-                minNotional: simConfig.config.minNotional ? simConfig.config.minNotional : 0.0005,
-                trim: simConfig.config.trim,
-                saveRedis: simConfig.config.saveRedis,
+                envId: configGenerator.config.envId,
+                minNotional: configGenerator.config.minNotional ? configGenerator.config.minNotional : 0.0005,
+                trim: configGenerator.config.trim,
+                saveRedis: configGenerator.config.saveRedis,
             }, nextSimConfig);
             debug_1.debug('taskObj:\n', JSON.stringify(taskObj, null, 4));
             const { insertedId: simId } = yield simDb.collection('simulations')
@@ -54,8 +54,8 @@ const start = (simConfig, simDb) => __awaiter(this, void 0, void 0, function* ()
                 }
             });
         }
-        assert(simConfig.config, "simConfig.config Not Defined");
-        async_1.parallelLimit(tasks, simConfig.config.parallelSimulations, (err, stdoutArray) => __awaiter(this, void 0, void 0, function* () {
+        assert(configGenerator.config, "configGenerator.config Not Defined");
+        async_1.parallelLimit(tasks, configGenerator.config.parallelSimulations, (err, stdoutArray) => __awaiter(this, void 0, void 0, function* () {
             try {
                 if (err) {
                     console.log({ err });
@@ -112,7 +112,5 @@ const start = (simConfig, simDb) => __awaiter(this, void 0, void 0, function* ()
     catch (err) {
         console.log(err);
         process.exit(1);
-    }
-    finally {
     }
 }))();

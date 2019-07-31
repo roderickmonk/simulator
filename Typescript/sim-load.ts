@@ -120,8 +120,7 @@ const start = async (
         for (const taskObj of taskObjs) {
 
             const { insertedId: taskId } =
-                await simDb.collection('loads')
-                    .insertOne(taskObj);
+                await simDb.collection('loads').insertOne(taskObj);
 
             // Accumulate all tasks into one structure
             tasks.push(

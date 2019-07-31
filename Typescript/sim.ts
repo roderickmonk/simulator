@@ -20,7 +20,7 @@ import {
 let configName = "";
 
 const start = async (
-    simConfig: ConfigGenerator,
+    configGenerator: ConfigGenerator,
     simDb: Db)
     : Promise<void> => {
 
@@ -29,7 +29,7 @@ const start = async (
 
     try {
 
-        const generator = await simConfig.getGenerator();
+        const generator = await configGenerator.getGenerator();
 
         const tasks = [];
 
@@ -50,10 +50,10 @@ const start = async (
                     configName,
                     ts: new Date(),
                     status: "STARTED",
-                    envId: simConfig.config!.envId,
-                    minNotional: simConfig.config!.minNotional ? simConfig.config!.minNotional : 0.0005,
-                    trim: simConfig.config!.trim,
-                    saveRedis: simConfig.config!.saveRedis,
+                    envId: configGenerator.config!.envId,
+                    minNotional: configGenerator.config!.minNotional ? configGenerator.config!.minNotional : 0.0005,
+                    trim: configGenerator.config!.trim,
+                    saveRedis: configGenerator.config!.saveRedis,
                 }, ...nextSimConfig
             }
 
@@ -90,12 +90,12 @@ const start = async (
         // Now carry out the tasks, parallelizing according 
         // to the extent permitted by the configuration.
 
-        assert (simConfig.config, "simConfig.config Not Defined");
+        assert(configGenerator.config, "configGenerator.config Not Defined");
 
         parallelLimit(
 
             tasks,
-            simConfig.config!.parallelSimulations,
+            configGenerator.config!.parallelSimulations,
             async (err, stdoutArray: undefined | Array<string>) => {
 
                 try {
@@ -178,16 +178,11 @@ const start = async (
 
         const simConfig = new ConfigGenerator(configName, remoteSimDb);
 
-        // await start(configName, simConfig);
-
         await start(simConfig, remoteSimDb);
 
     } catch (err) {
 
         console.log(err);
         process.exit(1);
-
-    } finally {
-
     }
 })();

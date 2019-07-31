@@ -38,6 +38,10 @@ export class ConfigGenerator {
 
     public validateMultiplyConfig = (multiplyConfig: MultiplyConfig) => {
 
+        console.log(JSON.stringify(simParams, null, 4));
+
+        process.exit(1);
+
         console.log(
             "multipleConfig:\n",
             JSON.stringify(multiplyConfig, null, 4));

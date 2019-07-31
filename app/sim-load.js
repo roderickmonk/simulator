@@ -81,8 +81,7 @@ const start = (configGenerator, simDb) => __awaiter(this, void 0, void 0, functi
         taskObjs = removeRedundantPDFs(taskObjs);
         debug_1.debug({ taskObjs });
         for (const taskObj of taskObjs) {
-            const { insertedId: taskId } = yield simDb.collection('loads')
-                .insertOne(taskObj);
+            const { insertedId: taskId } = yield simDb.collection('loads').insertOne(taskObj);
             tasks.push((callback) => {
                 try {
                     console.log(chalk.blue(`Load (${configName}) ${taskId} Activated`));
