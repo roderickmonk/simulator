@@ -28,9 +28,9 @@ const simSchema = {
             "type": "boolean",
             "default": true,
         },
-        "multipleConfigSchema": {
+        "multiplyConfigSchema": {
             "type": "string",
-            "default": true,
+            "default": "original",
         }
     },
     "required": [
