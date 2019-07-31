@@ -27,6 +27,7 @@ class ConfigGenerator {
         this.config = null;
         this.validateSimConfig = (simConfig) => {
             let schema = GenerateSchema.json('Product', simConfig).items.oneOf;
+            console.log({ schema });
             schema.shift();
             let properties = [];
             for (const level of schema) {
