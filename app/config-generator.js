@@ -87,7 +87,7 @@ class ConfigGenerator {
                         this.config.multiplyConfigParams = "original";
                     }
                     const multiplyConfigParams = yield this.simDb
-                        .collection('multiply.config.schemas')
+                        .collection('multiply.config.params')
                         .findOne({
                         name: this.config.multiplyConfigParams
                     });

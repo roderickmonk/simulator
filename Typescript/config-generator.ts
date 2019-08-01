@@ -207,7 +207,7 @@ export class ConfigGenerator {
                 }
 
                 const multiplyConfigParams = await this.simDb
-                    .collection('multiply.config.schemas')
+                    .collection('multiply.config.params')
                     .findOne({
                         name: this.config.multiplyConfigParams
                     }) as { schema: Array<object> }
