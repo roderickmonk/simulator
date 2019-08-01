@@ -202,12 +202,7 @@ export class ConfigGenerator {
 
             debug(JSON.stringify(this.config, null, 4));
 
-
             if (this.config) {
-
-                if (_.isUndefined(this.config.multiplyConfigSchema)) {
-                    this.config.multiplyConfigSchema = "original";
-                }
 
                 const multiplyConfigSchema = await this.simDb
                     .collection('multiply.config.schemas')
