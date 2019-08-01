@@ -364,6 +364,7 @@ if __name__ == '__main__':
                 'pdf': simulation['pdf'],
                 'startTime': dateutil.parser.parse(partitions[i]),
                 'endTime': dateutil.parser.parse(partitions[i+1]),
+                'priceDepthLimit': simulation['priceDepthLimit'],
             }
 
             sim_db.partitions.insert_one(partition_config)
