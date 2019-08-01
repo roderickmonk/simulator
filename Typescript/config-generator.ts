@@ -47,7 +47,7 @@ export class ConfigGenerator {
         let actualSchema: Array<{ properties: any }> =
             GenerateSchema.json('Product', simConfig.multiplyConfig).items.oneOf;
 
-        debug("actualSchema: ", JSON.stringify(actualSchema, null, 4));
+        console.log("actualSchema: ", JSON.stringify(actualSchema, null, 4));
 
         actualSchema.shift(); // Skip first one
 
@@ -202,7 +202,12 @@ export class ConfigGenerator {
 
             debug(JSON.stringify(this.config, null, 4));
 
+
             if (this.config) {
+
+                if (_.isUndefined(this.config.multiplyConfigSchema)) {
+                    this.config.multiplyConfigSchema = "original";
+                }
 
                 const multiplyConfigSchema = await this.simDb
                     .collection('multiply.config.schemas')
