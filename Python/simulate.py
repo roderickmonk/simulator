@@ -117,8 +117,6 @@ def simulate():
         logging.error('sim_config.partition_config:\n' +
                       str(sim_config.partition_config))
 
-        # start = sim_config.partition_config["startTime"]
-        # end = sim_config.partition_config["endTime"]
         depth = sim_config.partition_config["depth"]
 
         # Load PDF
