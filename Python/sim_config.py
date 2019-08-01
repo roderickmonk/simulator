@@ -31,18 +31,14 @@ def check(conf_schema, conf):
         return False
 
 
-partition_schema = Schema({
+min_partition_schema = Schema({
     '_id': And(Use(str)),
     'quantityLimit': And(Use(float)),
-    'priceDepthLimit': And(Use(float)),
     'inventoryLimit': And(Use(float)),
     'feeRate': And(Use(float)),
     'actualFeeRate': And(Use(float)),
-    # 'allowOrderConflicts': And(Use(bool)),
     'tick': And(Use(float)),
-    'pdf': And(Use(list)),
 }, ignore_extra_keys=True)
-
 
 def init(config):
 
@@ -55,13 +51,10 @@ def init(config):
         if __debug__:
             logging.debug(f'partition_config: {partition_config}')
 
-        if not check(partition_schema, partition_config):
-            raise Exception('Invalid Trader Configuration')
+        if not check(min_partition_schema, partition_config):
+            raise Exception('Invalid Partition Configuration')
 
-        # if pdf_x.size == None:
-        #    get_pdf(partition_config["pdf"])
-
-        QL = partition_config["quantityLimit"]
+        # QL = partition_config["quantityLimit"]
         IL = partition_config["inventoryLimit"]
         rate_precision = -int(np.log10(partition_config["tick"]))
 
