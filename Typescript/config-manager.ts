@@ -32,10 +32,6 @@ const simSchema = {
             "type": "boolean",
             "default": true,
         },
-        "multiplyConfigParams": {
-            "type": "string",
-            "default": "original",
-        }
     },
     "required": [
         "name",
@@ -46,7 +42,6 @@ const simSchema = {
         "saveRedis",
         "onlyOrderbooksWithTrades",
         "multiplyConfig",
-        "multiplyConfigParams"
     ]
 }
 

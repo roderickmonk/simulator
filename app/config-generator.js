@@ -25,7 +25,7 @@ class ConfigGenerator {
         this.propertySchema = new Map();
         this.config = null;
         this.validateMultiplyConfig = (multipleParams, simConfig) => {
-            debug_1.debug("multipleConfig:\n", JSON.stringify(simConfig, null, 4));
+            debug_1.debug("simConfig:\n", JSON.stringify(simConfig, null, 4));
             let schema = GenerateSchema.json('Product', simConfig.multiplyConfig).items.oneOf;
             schema.shift();
             let properties = [];
@@ -83,11 +83,8 @@ class ConfigGenerator {
                     .findOne({ name: this.configName });
                 debug_1.debug(JSON.stringify(this.config, null, 4));
                 if (this.config) {
-                    if (_.isUndefined(this.config.multiplyConfigParams)) {
-                        this.config.multiplyConfigParams = "original";
-                    }
                     const multiplyConfigParams = yield this.simDb
-                        .collection('multiply.config.params')
+                        .collection('trader.multiply.params')
                         .findOne({
                         name: this.config.multiplyConfigParams
                     });

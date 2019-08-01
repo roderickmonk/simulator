@@ -40,7 +40,7 @@ export class ConfigGenerator {
         simConfig: SimConfiguration) => {
 
         debug(
-            "multipleConfig:\n",
+            "simConfig:\n",
             JSON.stringify(simConfig, null, 4));
 
         // Capture Schema Output
@@ -201,12 +201,8 @@ export class ConfigGenerator {
 
             if (this.config) {
 
-                if (_.isUndefined(this.config.multiplyConfigParams)) {
-                    this.config.multiplyConfigParams = "original";
-                }
-
                 const multiplyConfigParams = await this.simDb
-                    .collection('multiply.config.params')
+                    .collection('trader.multiply.params')
                     .findOne({
                         name: this.config.multiplyConfigParams
                     }) as { params: Array<object> }
