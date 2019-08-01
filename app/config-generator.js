@@ -25,9 +25,9 @@ class ConfigGenerator {
         this.propertySchema = new Map();
         this.config = null;
         this.validateMultiplyConfig = (referenceSchema, simConfig) => {
-            console.log("multipleConfig:\n", JSON.stringify(simConfig, null, 4));
+            debug_1.debug("multipleConfig:\n", JSON.stringify(simConfig, null, 4));
             let actualSchema = GenerateSchema.json('Product', simConfig.multiplyConfig).items.oneOf;
-            console.log("actualSchema: ", JSON.stringify(actualSchema, null, 4));
+            debug_1.debug("actualSchema: ", JSON.stringify(actualSchema, null, 4));
             actualSchema.shift();
             let properties = [];
             for (const level of actualSchema) {
@@ -82,7 +82,7 @@ class ConfigGenerator {
                 this.config = yield this.simDb
                     .collection('configurations')
                     .findOne({ name: this.configName });
-                console.log(JSON.stringify(this.config, null, 4));
+                debug_1.debug(JSON.stringify(this.config, null, 4));
                 if (this.config) {
                     if (_.isUndefined(this.config.multiplyConfigSchema)) {
                         this.config.multiplyConfigSchema = "original";
@@ -93,12 +93,10 @@ class ConfigGenerator {
                         name: this.config.multiplyConfigSchema
                     });
                     const referenceSchema = multiplyConfigSchema.schema;
-                    console.log(JSON.stringify(referenceSchema, null, 4));
+                    debug_1.debug(JSON.stringify(referenceSchema, null, 4));
                     const validConfig = yield config_manager_1.configValidator(this.config);
-                    console.log(JSON.stringify(this.config, null, 4));
+                    debug_1.debug(JSON.stringify(this.config, null, 4));
                     if (validConfig) {
-                        console.log(JSON.stringify(this.config, null, 4));
-                        console.log(JSON.stringify(this.config.multiplyConfig, null, 4));
                         this.validateMultiplyConfig(referenceSchema, this.config);
                         return this.generate(0);
                     }

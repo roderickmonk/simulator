@@ -39,7 +39,7 @@ export class ConfigGenerator {
         referenceSchema: object,
         simConfig: SimConfiguration) => {
 
-        console.log(
+        debug(
             "multipleConfig:\n",
             JSON.stringify(simConfig, null, 4));
 
@@ -47,7 +47,7 @@ export class ConfigGenerator {
         let actualSchema: Array<{ properties: any }> =
             GenerateSchema.json('Product', simConfig.multiplyConfig).items.oneOf;
 
-        console.log("actualSchema: ", JSON.stringify(actualSchema, null, 4));
+        debug("actualSchema: ", JSON.stringify(actualSchema, null, 4));
 
         actualSchema.shift(); // Skip first one
 
@@ -200,7 +200,7 @@ export class ConfigGenerator {
                 .collection('configurations')
                 .findOne({ name: this.configName });
 
-            console.log(JSON.stringify(this.config, null, 4));
+            debug(JSON.stringify(this.config, null, 4));
 
 
             if (this.config) {
@@ -217,16 +217,13 @@ export class ConfigGenerator {
 
                 const referenceSchema = multiplyConfigSchema.schema;
 
-                console.log(JSON.stringify(referenceSchema, null, 4));
+                debug(JSON.stringify(referenceSchema, null, 4));
 
                 const validConfig = await configValidator(this.config);
 
-                console.log(JSON.stringify(this.config, null, 4));
+                debug(JSON.stringify(this.config, null, 4));
                
                 if (validConfig) {
-
-                    console.log(JSON.stringify(this.config, null, 4));
-                    console.log(JSON.stringify(this.config.multiplyConfig, null, 4));
 
                     this.validateMultiplyConfig(
                         referenceSchema, 
