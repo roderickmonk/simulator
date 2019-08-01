@@ -97,12 +97,6 @@ def simulate():
         assert os.environ['SIMULATOR_DB'], 'SIMULATOR_DB Not Defined'
         sim_db = remote_mongo_client[os.environ['SIMULATOR_DB']]
 
-        """
-        local_mongo_client = MongoClient()
-        assert local_mongo_client, 'Unable to Connect to Local MongoDB Database'
-        local_sim_db = local_mongo_client['sim']
-        """
-
         # Prep for local mongodb access
         assert os.environ['LOCALDB'], 'LOCALDB Not Defined'
         local_mongo_client = MongoClient(os.environ['LOCALDB'])
@@ -119,19 +113,22 @@ def simulate():
 
         depth = sim_config.partition_config["depth"]
 
-        # Load PDF
-        pdf = sim_db.PDFs.find_one(
-            filter={
-                "name": sim_config.partition_config["pdf"]
-            }
-        )
-        assert "x" in pdf and "y" in pdf
-        pdf["x"] = list(map(lambda x:pow(10,x),pdf["x"]))
-        sim_config.pdf_x = np.array(pdf["x"])
-        assert len(sim_config.pdf_x) > 0
-        sim_config.pdf_y = np.array(pdf["y"])
-        assert len(sim_config.pdf_y) > 0
-        assert sim_config.pdf_x.shape == sim_config.pdf_y.shape
+        # Load optional PDF data
+        if sim_config.partition_config["pdf"]:
+
+            # Load PDF
+            pdf = sim_db.PDFs.find_one(
+                filter={
+                    "name": sim_config.partition_config["pdf"]
+                }
+            )
+            assert "x" in pdf and "y" in pdf
+            pdf["x"] = list(map(lambda x:pow(10,x),pdf["x"]))
+            sim_config.pdf_x = np.array(pdf["x"])
+            assert len(sim_config.pdf_x) > 0
+            sim_config.pdf_y = np.array(pdf["y"])
+            assert len(sim_config.pdf_y) > 0
+            assert sim_config.pdf_x.shape == sim_config.pdf_y.shape
 
         # Rate Precision
         sim_config.rate_precision = - \

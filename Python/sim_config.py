@@ -54,7 +54,7 @@ def init(config):
     except:
         raise
 
-
+"""
 def get_pdf(sim_db, pdf: str):
 
     global pdf_x
@@ -83,3 +83,4 @@ def get_pdf(sim_db, pdf: str):
 
     except:
         raise
+"""
