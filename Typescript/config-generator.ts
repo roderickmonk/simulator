@@ -47,8 +47,6 @@ export class ConfigGenerator {
         let actualSchema: Array<{ properties: any }> =
             GenerateSchema.json('Product', simConfig.multiplyConfig).items.oneOf;
 
-        console.log("actualSchema: ", JSON.stringify(actualSchema, null, 4));
-
         actualSchema.shift(); // Skip first one
 
         let properties: Array<string> = [];

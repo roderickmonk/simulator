@@ -27,7 +27,6 @@ class ConfigGenerator {
         this.validateMultiplyConfig = (referenceSchema, simConfig) => {
             debug_1.debug("multipleConfig:\n", JSON.stringify(simConfig, null, 4));
             let actualSchema = GenerateSchema.json('Product', simConfig.multiplyConfig).items.oneOf;
-            console.log("actualSchema: ", JSON.stringify(actualSchema, null, 4));
             actualSchema.shift();
             let properties = [];
             for (const level of actualSchema) {
