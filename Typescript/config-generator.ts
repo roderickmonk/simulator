@@ -72,7 +72,7 @@ export class ConfigGenerator {
                 /*
                 assert(
                     //@ts-ignore
-                    multiplyConfigSchema[prop].items.type === entry.items.type,
+                    multiplyConfigParams[prop].items.type === entry.items.type,
                     `Multiply Parameter "${prop}" Wrong Type`
                 );
                 */
@@ -200,20 +200,19 @@ export class ConfigGenerator {
 
             debug(JSON.stringify(this.config, null, 4));
 
-
             if (this.config) {
 
-                if (_.isUndefined(this.config.multiplyConfigSchema)) {
-                    this.config.multiplyConfigSchema = "original";
+                if (_.isUndefined(this.config.multiplyConfigParams)) {
+                    this.config.multiplyConfigParams = "original";
                 }
 
-                const multiplyConfigSchema = await this.simDb
+                const multiplyConfigParams = await this.simDb
                     .collection('multiply.config.schemas')
                     .findOne({
-                        name: this.config.multiplyConfigSchema
+                        name: this.config.multiplyConfigParams
                     }) as { schema: Array<object> }
 
-                const referenceSchema = multiplyConfigSchema.schema;
+                const referenceSchema = multiplyConfigParams.schema;
 
                 debug(JSON.stringify(referenceSchema, null, 4));
 

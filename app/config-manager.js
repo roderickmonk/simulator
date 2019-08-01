@@ -28,7 +28,7 @@ const simSchema = {
             "type": "boolean",
             "default": true,
         },
-        "multiplyConfigSchema": {
+        "multiplyConfigParams": {
             "type": "string",
             "default": "original",
         }
@@ -42,7 +42,7 @@ const simSchema = {
         "saveRedis",
         "onlyOrderbooksWithTrades",
         "multiplyConfig",
-        "multiplyConfigSchema"
+        "multiplyConfigParams"
     ]
 };
 exports.configValidator = (simConfig) => {

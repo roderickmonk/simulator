@@ -19,7 +19,7 @@ const { promisify } = require("util");
 const setTimeoutPromise = promisify(setTimeout);
 const mongodb_1 = require("mongodb");
 const GenerateSchema = require('generate-schema');
-const multiplyConfigSchema = {
+const multiplyConfigParams = {
     actualFeeRate: {
         type: "array",
         items: {
@@ -125,10 +125,10 @@ const validateMultiplyConfig = (simConfig) => {
     }
     for (const [prop, entry] of propertySchema.entries()) {
         assert(entry.type === 'array', `Parameter "${prop}" Data Not Array`);
-        if (multiplyConfigSchema.hasOwnProperty(prop)) {
-            assert(multiplyConfigSchema[prop].items.type === entry.items.type, `Parameter "${prop}" Wrong Type`);
+        if (multiplyConfigParams.hasOwnProperty(prop)) {
+            assert(multiplyConfigParams[prop].items.type === entry.items.type, `Parameter "${prop}" Wrong Type`);
         }
-        Object.keys(multiplyConfigSchema).forEach(property => {
+        Object.keys(multiplyConfigParams).forEach(property => {
             assert(propertySchema.has(property), `Required Parameter "${property}" Not Found`);
         });
     }
