@@ -330,28 +330,17 @@ if __name__ == '__main__':
         for i in range(len(partitions)-1):
 
             partition_id = ObjectId()
-            partition_config = {
+
+            partition_config.update (simulation)
+
+            partition_config.update ({
                 "_id": partition_id,
-                "runId": simulation['runId'],
-                "simVersion": simulation['simVersion'],
                 "simId": ObjectId(sim_id),
-                "envId": simulation['envId'],
-                "minNotional": simulation['minNotional'],
                 "partition": i,
-                "exchange": simulation['exchange'],
-                "market": simulation['market'],
-                "depth": simulation['depth'],
                 "trader": simulation['trader']['name'],
-                'quantityLimit': simulation['quantityLimit'],
-                'inventoryLimit': simulation['inventoryLimit'],
-                'allowOrderConflicts': simulation['allowOrderConflicts'],
-                'feeRate': simulation['feeRate'],
-                'actualFeeRate': simulation['actualFeeRate'],
-                'tick': simulation['tick'],
-                'pdf': simulation['pdf'],
                 'startTime': dateutil.parser.parse(partitions[i]),
                 'endTime': dateutil.parser.parse(partitions[i+1]),
-            }
+            })
 
             sim_db.partitions.insert_one(partition_config)
             local_db.partitions.insert_one(partition_config)
