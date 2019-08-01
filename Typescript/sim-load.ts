@@ -203,17 +203,17 @@ const start = async (
     }
 }
 
-const copyPDFs = async (
-    pdfsRemote: Collection,
-    pdfsLocal: Collection,
+const copyTunings = async (
+    tuningsRemote: Collection,
+    tuningsLocal: Collection,
 ): Promise<void> => {
 
     try {
-        // Clear out all local PDFs
-        await pdfsLocal.deleteMany({});
+        // Clear out all local Tunings
+        await tuningsLocal.deleteMany({});
 
-        pdfsRemote.find({}).forEach(async (pdf) => {
-            await pdfsLocal.insertOne(pdf);
+        tuningsRemote.find({}).forEach(async (pdf) => {
+            await tuningsLocal.insertOne(pdf);
         }, (err) => {
             return Promise.reject(err);
         });
@@ -249,9 +249,9 @@ const copyPDFs = async (
         const remoteSimDb: Db = mongoRemote.db(process.env.SIMULATOR_DB);
         const localSimDb: Db = mongoLocal.db("sim");
 
-        await copyPDFs(
-            remoteSimDb.collection("PDFs"),
-            localSimDb.collection("PDFs")
+        await copyTunings(
+            remoteSimDb.collection("tunings"),
+            localSimDb.collection("tunings")
         );
 
         const configGenerator = new ConfigGenerator(configName, remoteSimDb);

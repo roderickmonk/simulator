@@ -117,7 +117,7 @@ def simulate():
         if sim_config.partition_config["pdf"]:
 
             # Load PDF
-            pdf = sim_db.PDFs.find_one(
+            pdf = sim_db.tunings.find_one(
                 filter={
                     "name": sim_config.partition_config["pdf"]
                 }

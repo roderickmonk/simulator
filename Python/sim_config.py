@@ -65,7 +65,7 @@ def get_pdf(sim_db, pdf: str):
         remote_mongo_client = MongoClient(os.environ['MONGODB'])
         sim_db = remote_mongo_client.sim
 
-        PDFs_collection = sim_db.PDFs
+        PDFs_collection = sim_db.tunings
 
         pdf = PDFs_collection.find_one({"name": pdf})
 

@@ -128,11 +128,11 @@ const start = (configGenerator, simDb) => __awaiter(this, void 0, void 0, functi
         return Promise.reject(err);
     }
 });
-const copyPDFs = (pdfsRemote, pdfsLocal) => __awaiter(this, void 0, void 0, function* () {
+const copyTunings = (tuningsRemote, tuningsLocal) => __awaiter(this, void 0, void 0, function* () {
     try {
-        yield pdfsLocal.deleteMany({});
-        pdfsRemote.find({}).forEach((pdf) => __awaiter(this, void 0, void 0, function* () {
-            yield pdfsLocal.insertOne(pdf);
+        yield tuningsLocal.deleteMany({});
+        tuningsRemote.find({}).forEach((pdf) => __awaiter(this, void 0, void 0, function* () {
+            yield tuningsLocal.insertOne(pdf);
         }), (err) => {
             return Promise.reject(err);
         });
@@ -151,7 +151,7 @@ const copyPDFs = (pdfsRemote, pdfsLocal) => __awaiter(this, void 0, void 0, func
         const mongoLocal = yield mongodb_1.MongoClient.connect(process.env.LOCALDB, { useNewUrlParser: true });
         const remoteSimDb = mongoRemote.db(process.env.SIMULATOR_DB);
         const localSimDb = mongoLocal.db("sim");
-        yield copyPDFs(remoteSimDb.collection("PDFs"), localSimDb.collection("PDFs"));
+        yield copyTunings(remoteSimDb.collection("tunings"), localSimDb.collection("tunings"));
         const configGenerator = new config_generator_1.ConfigGenerator(configName, remoteSimDb);
         yield start(configGenerator, remoteSimDb);
     }

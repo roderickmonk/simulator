@@ -29,7 +29,7 @@ def init():
         if config_db == None:
             raise Exception('Unable to Open "configuration" Database')
 
-        PDFs_collection = config_db.PDFs
+        tunings_collection = config_db.tunings
 
         # Load and check the pdf
         pdf = PDFs_collection.find_one({"name": "pdf1"})
