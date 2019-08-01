@@ -114,7 +114,7 @@ def simulate():
         sim_config.partition_config = sim_db.partitions.find_one({"_id": partition_id })
         assert sim_config.partition_config, 'Unknown Trader Configuration'
 
-        logging.debug('sim_config.partition_config:\n' +
+        logging.error('sim_config.partition_config:\n' +
                       str(sim_config.partition_config))
 
         # Convenience Destructuring
