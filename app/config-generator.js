@@ -24,12 +24,12 @@ class ConfigGenerator {
         this.propertyData = new Map();
         this.propertySchema = new Map();
         this.config = null;
-        this.validateMultiplyConfig = (referenceSchema, simConfig) => {
+        this.validateMultiplyConfig = (multipleParams, simConfig) => {
             debug_1.debug("multipleConfig:\n", JSON.stringify(simConfig, null, 4));
-            let actualSchema = GenerateSchema.json('Product', simConfig.multiplyConfig).items.oneOf;
-            actualSchema.shift();
+            let schema = GenerateSchema.json('Product', simConfig.multiplyConfig).items.oneOf;
+            schema.shift();
             let properties = [];
-            for (const level of actualSchema) {
+            for (const level of schema) {
                 debug_1.debug('level:\n', JSON.stringify(level, null, 4));
                 for (const prop of Object.keys(level.properties)) {
                     properties.push(prop);
@@ -38,9 +38,9 @@ class ConfigGenerator {
             }
             for (const [prop, entry] of this.propertySchema.entries()) {
                 assert(entry.type === 'array', `Multiply Parameter "${prop}" Data Not Array`);
-                if (referenceSchema.hasOwnProperty(prop)) {
+                if (multipleParams.hasOwnProperty(prop)) {
                 }
-                Object.keys(referenceSchema).forEach(property => {
+                Object.keys(multipleParams).forEach(property => {
                     assert(this.propertySchema.has(property), `Required Multiply Parameter "${property}" Not Found`);
                 });
             }
@@ -73,7 +73,7 @@ class ConfigGenerator {
                     .every((val, i, arr) => val === arr[0]);
                 assert(levelPropertiesSameLength, 'Mismatched Parameter Array Lengths');
             }
-            debug_1.debug('levels: ', actualSchema.length);
+            debug_1.debug('levels: ', simConfig.multiplyConfig.length);
         };
         this.getGenerator = () => __awaiter(this, void 0, void 0, function* () {
             try {
@@ -91,12 +91,12 @@ class ConfigGenerator {
                         .findOne({
                         name: this.config.multiplyConfigParams
                     });
-                    const referenceSchema = multiplyConfigParams.schema;
-                    debug_1.debug(JSON.stringify(referenceSchema, null, 4));
+                    const multiplyParams = multiplyConfigParams.params;
+                    debug_1.debug(JSON.stringify(multiplyParams, null, 4));
                     const validConfig = yield config_manager_1.configValidator(this.config);
                     debug_1.debug(JSON.stringify(this.config, null, 4));
                     if (validConfig) {
-                        this.validateMultiplyConfig(referenceSchema, this.config);
+                        this.validateMultiplyConfig(multiplyParams, this.config);
                         return this.generate(0);
                     }
                     else {
