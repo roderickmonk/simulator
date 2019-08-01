@@ -55,6 +55,7 @@ const start = (configGenerator, simDb) => __awaiter(this, void 0, void 0, functi
             const { value: next, done } = generator.next();
             if (done)
                 break;
+            debug_1.debug({ next });
             loadConfigs.push({
                 exchange: next.exchange,
                 market: next.market,

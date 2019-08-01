@@ -82,6 +82,8 @@ const start = async (
 
             if (done) break;
 
+            debug({ next });
+
             loadConfigs.push({
                 exchange: next.exchange,
                 market: next.market,
