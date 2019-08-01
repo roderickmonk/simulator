@@ -52,7 +52,6 @@ stsim_config_schema = Schema({
     'actualFeeRate': And(Use(float)),
     'tick': And(Use(float)),
     'pdf': And(Use(list)),
-    'allowOrderConflicts': And(Use(bool)),
 }, ignore_extra_keys=True)
 
 trader_config_schema = Schema({
@@ -63,8 +62,6 @@ trader_config_schema = Schema({
     'feeRate': And(Use(float)),
     'actualFeeRate': And(Use(float)),
     'tick': And(Use(float)),
-    'pdf': And(Use(list)),
-    'allowOrderConflicts': And(Use(bool)),
 }, ignore_extra_keys=True)
 
 
