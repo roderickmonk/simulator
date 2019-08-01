@@ -333,8 +333,10 @@ if __name__ == '__main__':
 
             partition_config: dict = {}
 
+            # Subsume all params from simulation
             partition_config.update (simulation)
 
+            # Now add a few more and modify a few others
             partition_config.update ({
                 "_id": partition_id,
                 "simId": ObjectId(sim_id),
@@ -343,6 +345,8 @@ if __name__ == '__main__':
                 'startTime': dateutil.parser.parse(partitions[i]),
                 'endTime': dateutil.parser.parse(partitions[i+1]),
             })
+
+            logging.error ("partition_config:\n %r", partition_config)
 
             sim_db.partitions.insert_one(partition_config)
             local_db.partitions.insert_one(partition_config)
