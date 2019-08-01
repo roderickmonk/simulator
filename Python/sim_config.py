@@ -20,7 +20,6 @@ partition_config: dict = {}
 pdf_x: ndarray = None
 pdf_y: ndarray = None
 
-
 def check(conf_schema, conf):
 
     try:
@@ -29,7 +28,6 @@ def check(conf_schema, conf):
     except SchemaError as err:
         logging.warn(err)
         return False
-
 
 min_partition_schema = Schema({
     '_id': And(Use(str)),
@@ -54,8 +52,6 @@ def init(config):
         if not check(min_partition_schema, partition_config):
             raise Exception('Invalid Partition Configuration')
 
-        # QL = partition_config["quantityLimit"]
-        IL = partition_config["inventoryLimit"]
         rate_precision = -int(np.log10(partition_config["tick"]))
 
         return None
