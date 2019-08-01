@@ -14,7 +14,6 @@ except NameError:
     
 sim_id: str = None
 orderbook_id: str = None
-#rate_precision: int = None
 quantity_precision: int = None
 partition_config: dict = {}
 pdf_x: ndarray = None
@@ -39,8 +38,6 @@ min_partition_schema = Schema({
 }, ignore_extra_keys=True)
 
 def init(config):
-
-    # global rate_precision
  
     try:
 
@@ -51,8 +48,6 @@ def init(config):
 
         if not check(min_partition_schema, partition_config):
             raise Exception('Invalid Partition Configuration')
-
-        # rate_precision = -int(np.log10(partition_config["tick"]))
 
         return None
 
