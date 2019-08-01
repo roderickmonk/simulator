@@ -28,6 +28,7 @@ const start = (configGenerator, simDb) => __awaiter(this, void 0, void 0, functi
             const { value: nextSimConfig, done } = generator.next();
             if (done)
                 break;
+            debug_1.debug({ nextSimConfig });
             const taskObj = Object.assign({
                 runId,
                 simVersion: process.env.SIM_VERSION,

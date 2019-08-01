@@ -41,6 +41,8 @@ const start = async (
 
             if (done) break;
 
+            debug ({nextSimConfig});
+
             // Bundle up an object to be recorded to the db
             const taskObj = {
                 ...{
