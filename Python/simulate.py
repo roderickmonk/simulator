@@ -152,8 +152,8 @@ def simulate():
         matching_engine = MatchingEngine(
 
             assets=np.array([math.inf, 0], dtype=float),
-            QL=QL,
-            IL=IL,
+            QL=sim_config.partition_config['quantityLimit'],
+            IL=sim_config.partition_config['inventoryLimit'],
             actual_fee_rate=sim_config.partition_config["actualFeeRate"],
             min_notional=sim_config.partition_config["minNotional"],
             trades_collection=sim_db.trades,
