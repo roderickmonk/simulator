@@ -331,6 +331,8 @@ if __name__ == '__main__':
 
             partition_id = ObjectId()
 
+            partition_config: dict = {}
+
             partition_config.update (simulation)
 
             partition_config.update ({
