@@ -119,12 +119,12 @@ def simulate():
 
         # Convenience Destructuring
         env_id = sim_config.partition_config["envId"]
-        exchange = sim_config.partition_config["exchange"]
+        # exchange = sim_config.partition_config["exchange"]
         market = sim_config.partition_config["market"]
         fee = sim_config.partition_config['feeRate']
         QL = sim_config.partition_config['quantityLimit']
         IL = sim_config.partition_config['inventoryLimit']
-        price_depth_limit = sim_config.partition_config['priceDepthLimit']
+        # price_depth_limit = sim_config.partition_config['priceDepthLimit']
         tick = sim_config.partition_config['tick']
         start = sim_config.partition_config["startTime"]
         end = sim_config.partition_config["endTime"]
