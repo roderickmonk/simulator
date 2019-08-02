@@ -203,7 +203,7 @@ def simulate():
 
                 CO_calls += 1
 
-                depth = sim_config.partition_config["depth"]
+                # depth = sim_config.partition_config["depth"]
 
                 buyob = Orderbooks.apply_depth(depth, orderbook['buy']) \
                     if depth > 0 else orderbook['buy']
