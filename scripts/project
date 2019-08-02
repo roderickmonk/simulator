@@ -12,7 +12,7 @@ source ./scripts/bash-functions
 source ./scripts/aliases
 
 # Give Python access to traders
-export PYTHONPATH=$SIMULATOR_PATH/Python:~/traders:.:$PYTHONPATH
+export PYTHONPATH=$SIMULATOR_PATH/Python:~/traders:.:..:$PYTHONPATH
 
 source ./bin/activate
 
