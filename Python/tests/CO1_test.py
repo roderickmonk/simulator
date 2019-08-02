@@ -618,12 +618,12 @@ def test_CO1_BUY_get_pv_and_rates_allow_order_conflicts_false_1():
             'allowOrderConflicts': False,
         }
 
-        sim_config.pdf_x = np.array([0.01, 0.1])
-        sim_config.pdf_y = np.array([0.8,  0.2])
+        pdf_x = np.array([0.01, 0.1])
+        pdf_y = np.array([0.8,  0.2])
 
         sim_config.init(sim_config.partition_config)
 
-        trader = co1.Trader(sim_config)
+        trader = co1.Trader(sim_config, pdf_x, pdf_y)
 
         ob = np.array([
             [0.4, 10],
@@ -658,12 +658,12 @@ def test_CO1_BUY_get_pv_and_rates_allow_order_conflicts_true_1():
             'allowOrderConflicts': True,
         }
 
-        sim_config.pdf_x = np.array([0.01, 0.1])
-        sim_config.pdf_y = np.array([0.8,  0.2])
+        pdf_x = np.array([0.01, 0.1])
+        pdf_y = np.array([0.8,  0.2])
 
         sim_config.init(sim_config.partition_config)
 
-        trader = co1.Trader(sim_config)
+        trader = co1.Trader(sim_config, pdf_x, pdf_y)
 
         ob = np.array([
             [0.4, 10],
@@ -702,12 +702,12 @@ def test_CO1_BUY_get_pv_and_rates_allow_order_conflicts_false_2():
             'allowOrderConflicts': False,
         }
 
-        sim_config.pdf_x = np.array([0.01, 0.1])
-        sim_config.pdf_y = np.array([0.8,  0.2])
+        pdf_x = np.array([0.01, 0.1])
+        pdf_y = np.array([0.8,  0.2])
 
         sim_config.init(sim_config.partition_config)
 
-        trader = co1.Trader(sim_config)
+        trader = co1.Trader(sim_config, pdf_x, pdf_y)
 
         ob = np.array([
             [0.4, 10],
@@ -744,12 +744,12 @@ def test_CO1_BUY_get_pv_and_rates_allow_order_conflicts_true_2():
         'allowOrderConflicts': True,
     }
 
-    sim_config.pdf_x = np.array([0.01, 0.1])
-    sim_config.pdf_y = np.array([0.8,  0.2])
+    pdf_x = np.array([0.01, 0.1])
+    pdf_y = np.array([0.8,  0.2])
 
     sim_config.init(sim_config.partition_config)
 
-    trader = co1.Trader(sim_config)
+    trader = co1.Trader(sim_config, pdf_x, pdf_y)
 
     ob = np.array([
         [0.4, 10],
@@ -786,12 +786,12 @@ def test_CO1_BUY_get_pv_and_rates_3():
             'allowOrderConflicts': False,
         }
 
-        sim_config.pdf_x = np.array([0.01, 0.1])
-        sim_config.pdf_y = np.array([0.8,  0.2])
+        pdf_x = np.array([0.01, 0.1])
+        pdf_y = np.array([0.8,  0.2])
 
         sim_config.init(sim_config.partition_config)
 
-        trader = co1.Trader(sim_config)
+        trader = co1.Trader(sim_config, pdf_x, pdf_y)
 
         ob = np.array([
             [0.1, 10],
@@ -822,12 +822,12 @@ def test_CO1_SELL_get_pv_and_rates_1():
             'allowOrderConflicts': False,
         }
 
-        sim_config.pdf_x = np.array([0.01, 0.1])
-        sim_config.pdf_y = np.array([0.8,  0.2])
+        pdf_x = np.array([0.01, 0.1])
+        pdf_y = np.array([0.8,  0.2])
 
         sim_config.init(sim_config.partition_config)
 
-        trader = co1.Trader(sim_config)
+        trader = co1.Trader(sim_config, pdf_x, pdf_y)
 
         ob = np.array([
             [0.2, 10],
@@ -866,12 +866,12 @@ def test_CO1_SELL_get_pv_and_rates_2():
             'allowOrderConflicts': False,
         }
 
-        sim_config.pdf_x = np.array([0.01, 0.1])
-        sim_config.pdf_y = np.array([0.8,  0.2])
+        pdf_x = np.array([0.01, 0.1])
+        pdf_y = np.array([0.8,  0.2])
 
         sim_config.init(sim_config.partition_config)
 
-        trader = co1.Trader(sim_config)
+        trader = co1.Trader(sim_config, pdf_x, pdf_y)
 
         ob = np.array([
             [0.2, 10],
@@ -908,12 +908,12 @@ def test_CO1_SELL_get_pv_and_rates_3():
             'allowOrderConflicts': False,
         }
 
-        sim_config.pdf_x = np.array([0.01, 0.1])
-        sim_config.pdf_y = np.array([0.8,  0.2])
+        pdf_x = np.array([0.01, 0.1])
+        pdf_y = np.array([0.8,  0.2])
 
         sim_config.init(sim_config.partition_config)
 
-        trader = co1.Trader(sim_config)
+        trader = co1.Trader(sim_config, pdf_x, pdf_y)
 
         ob = np.array([
             [0.1, 10],
@@ -950,12 +950,12 @@ def test_evol_1():
             'allowOrderConflicts': False,
         }
 
-        sim_config.pdf_x = np.array([.1])
-        sim_config.pdf_y = np.array([1])
+        pdf_x = np.array([.1])
+        pdf_y = np.array([1])
 
         sim_config.init(sim_config.partition_config)
 
-        trader = co1.Trader(sim_config)
+        trader = co1.Trader(sim_config, pdf_x, pdf_y)
 
         pv = np.array([0, 10, 20, 30])
 
@@ -989,12 +989,12 @@ def test_evol_2():
             'allowOrderConflicts': False,
         }
 
-        sim_config.pdf_x = np.array([.1, 1.0])
-        sim_config.pdf_y = np.array([.9, .1])
+        pdf_x = np.array([.1, 1.0])
+        pdf_y = np.array([.9, .1])
 
         sim_config.init(sim_config.partition_config)
 
-        trader = co1.Trader(sim_config)
+        trader = co1.Trader(sim_config, pdf_x, pdf_y)
 
         pv = np.array([0, 10, 20, 30])
 
@@ -1029,12 +1029,12 @@ def test_evol_3():
             'allowOrderConflicts': False,
         }
 
-        sim_config.pdf_x = np.array([0.1, 1.0, 2.0])
-        sim_config.pdf_y = np.array([0.8, 0.1, 0.1])
+        pdf_x = np.array([0.1, 1.0, 2.0])
+        pdf_y = np.array([0.8, 0.1, 0.1])
 
         sim_config.init(sim_config.partition_config)
 
-        trader = co1.Trader(sim_config)
+        trader = co1.Trader(sim_config, pdf_x, pdf_y)
 
         pv = np.array([0, 10, 20, 30])
         evol = trader.evol(pv)
@@ -1063,12 +1063,12 @@ def test_evol_4():
             'allowOrderConflicts': False,
         }
 
-        sim_config.pdf_x = np.array([0.1, 1.0, 2.0])
-        sim_config.pdf_y = np.array([0.8, 0.1, 0.1])
+        pdf_x = np.array([0.1, 1.0, 2.0])
+        pdf_y = np.array([0.8, 0.1, 0.1])
 
         sim_config.init(sim_config.partition_config)
 
-        trader = co1.Trader(sim_config)
+        trader = co1.Trader(sim_config, pdf_x, pdf_y)
 
         pv = np.array([0, 10, 20, 30])
 
@@ -1098,12 +1098,12 @@ def test_evol_5():
             'allowOrderConflicts': False,
         }
 
-        sim_config.pdf_x = np.array([0.1, 1.0])
-        sim_config.pdf_y = np.array([0.5, 0.5])
+        pdf_x = np.array([0.1, 1.0])
+        pdf_y = np.array([0.5, 0.5])
 
         sim_config.init(sim_config.partition_config)
 
-        trader = co1.Trader(sim_config)
+        trader = co1.Trader(sim_config, pdf_x, pdf_y)
 
         pv = np.array([0, 0.05, 0.10, 0.15])
 
@@ -1136,12 +1136,12 @@ def test_evol_6():
             'allowOrderConflicts': False,
         }
 
-        sim_config.pdf_x = np.array([0.1, 1., 2.0])
-        sim_config.pdf_y = np.array([0.5, 0.25])
+        pdf_x = np.array([0.1, 1., 2.0])
+        pdf_y = np.array([0.5, 0.25])
 
         sim_config.init(sim_config.partition_config)
 
-        trader = co1.Trader(sim_config)
+        trader = co1.Trader(sim_config, pdf_x, pdf_y)
 
         pv = np.array([0, 0.05, 0.10, 0.15])
 
