@@ -40,15 +40,15 @@ def test_co1_test0():
             'actualFeeRate': 0.002,
             'allowOrderConflicts': False,
             'tick': 1e-8,
-            'pdf': "not-used",
+            'pdf': None,
         }
 
-        sim_config.pdf_x = np.array([0.01, 0.1])
-        sim_config.pdf_y = np.array([0.8,  0.2])
+        pdf_x = np.array([0.01, 0.1])
+        pdf_y = np.array([0.8,  0.2])
 
         sim_config.init(sim_config.partition_config)
 
-        trader = co1.Trader(sim_config)
+        trader = co1.Trader(sim_config, pdf_x, pdf_y)
 
         buyob = np.array([[0.011, 0.05], [0.010, 0.1]])
         sellob = np.array([[0.012, 0.05], [0.013, 0.1]])
