@@ -17,10 +17,7 @@ orderbook_id: str = None
 rate_precision: int = None
 quantity_precision: int = None
 partition_config: dict = {}
-pdf_x: ndarray = None
-pdf_y: ndarray = None
 sim_db = None
-local_sim_db = None
 
 def check(conf_schema, conf):
 
