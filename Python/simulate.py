@@ -157,6 +157,7 @@ def simulate():
             trader = importlib.import_module(
                 sim_config.partition_config["trader"].lower()
                 ).Trader(sim_config)
+            logging.error (sim_config)
 
         try:
             orderbooks = Orderbooks(
