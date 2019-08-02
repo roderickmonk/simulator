@@ -14,7 +14,7 @@ except NameError:
     
 sim_id: str = None
 orderbook_id: str = None
-rate_precison: int = None
+rate_precision: int = None
 quantity_precision: int = None
 partition_config: dict = {}
 pdf_x: ndarray = None
@@ -40,6 +40,8 @@ min_partition_schema = Schema({
 
 def init(config):
  
+    global rate_precision
+
     try:
 
         partition_config = config
