@@ -149,6 +149,8 @@ def simulate():
 
         assert sim_config.partition_config["minNotional"], "Min Notional Missing"
 
+        logging.error ("Hello")
+        logging.error (sim_config.rate_precision)
         logging.error (sim_config)
 
         if __debug__:
