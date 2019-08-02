@@ -97,8 +97,8 @@ def simulate():
         assert os.environ['SIMULATOR_DB'], 'SIMULATOR_DB Not Defined'
         sim_config.sim_db = remote_mongo_client[os.environ['SIMULATOR_DB']]
 
-        sim_config.sim_configuraation_db = \
-            remote_mongo_client[os.environ['sim_configuration']
+        sim_config.sim_configuration_db = \
+            remote_mongo_client[os.environ['sim_configuration']]
 
         # Prep for local mongodb access
         assert os.environ['LOCALDB'], 'LOCALDB Not Defined'
