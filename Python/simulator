@@ -346,8 +346,6 @@ if __name__ == '__main__':
                 'endTime': dateutil.parser.parse(partitions[i+1]),
             })
 
-            logging.error ("partition_config:\n %r", partition_config)
-
             sim_db.partitions.insert_one(partition_config)
             local_db.partitions.insert_one(partition_config)
 
