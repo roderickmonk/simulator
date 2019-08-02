@@ -149,6 +149,8 @@ def simulate():
 
         assert sim_config.partition_config["minNotional"], "Min Notional Missing"
 
+        logging.error (sim_config)
+
         if __debug__:
             from co1 import Trader
             trader = Trader(sim_config)
@@ -157,7 +159,6 @@ def simulate():
             trader = importlib.import_module(
                 sim_config.partition_config["trader"].lower()
                 ).Trader(sim_config)
-            logging.error (sim_config)
 
         try:
             orderbooks = Orderbooks(
