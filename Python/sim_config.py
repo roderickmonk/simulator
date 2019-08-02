@@ -50,7 +50,7 @@ def init(config):
             raise Exception('Invalid Partition Configuration')
 
         sim_config.rate_precision = - \
-            int(numpy.log10(sim_config.partition_config['tick']))
+            int(np.log10(sim_config.partition_config['tick']))
 
         return None
 

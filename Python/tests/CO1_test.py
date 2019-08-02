@@ -43,9 +43,6 @@ def test_co1_test0():
             'pdf': "not-used",
         }
 
-        sim_config.rate_precision = - \
-            int(numpy.log10(sim_config.partition_config['tick']))
-            
         sim_config.pdf_x = np.array([0.01, 0.1])
         sim_config.pdf_y = np.array([0.8,  0.2])
 
