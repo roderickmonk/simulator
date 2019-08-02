@@ -14,6 +14,7 @@ except NameError:
     
 sim_id: str = None
 orderbook_id: str = None
+rate_precison: int = None
 quantity_precision: int = None
 partition_config: dict = {}
 pdf_x: ndarray = None
