@@ -131,8 +131,10 @@ def simulate():
             assert sim_config.pdf_x.shape == sim_config.pdf_y.shape
 
         # Rate Precision
+        """
         sim_config.rate_precision = - \
             int(numpy.log10(sim_config.partition_config['tick']))
+        """
 
         # Matching Engine
         matching_engine = MatchingEngine(
