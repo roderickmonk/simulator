@@ -95,10 +95,8 @@ def simulate():
         remote_mongo_client = MongoClient(os.environ['MONGODB'])
 
         assert os.environ['SIMULATOR_DB'], 'SIMULATOR_DB Not Defined'
+        sim_config.sim_db = remote_mongo_client[os.environ['SIMULATOR_DB']]
 
-        sim_db = remote_mongo_client[os.environ['SIMULATOR_DB']]
-        sim_config.sim_db = sim_db 
-        
         # Prep for local mongodb access
         assert os.environ['LOCALDB'], 'LOCALDB Not Defined'
         local_mongo_client = MongoClient(os.environ['LOCALDB'])
@@ -107,7 +105,7 @@ def simulate():
         if local_sim_db == None:
             raise Exception('Unable to Connect to Local MongoDB')
  
-        sim_config.partition_config = sim_db.partitions.find_one({"_id": partition_id })
+        sim_config.partition_config = sim_config.sim_db.partitions.find_one({"_id": partition_id })
         assert sim_config.partition_config, 'Unknown Trader Configuration'
 
         logging.debug('sim_config.partition_config:\n' +
@@ -121,7 +119,7 @@ def simulate():
         if sim_config.partition_config["pdf"]:
 
             # Load PDF
-            pdf = sim_db.tunings.find_one(
+            pdf = sim_config.sim_db.tunings.find_one(
                 filter={
                     "name": sim_config.partition_config["pdf"]
                 }
@@ -143,7 +141,7 @@ def simulate():
             IL=sim_config.partition_config['inventoryLimit'],
             actual_fee_rate=sim_config.partition_config["actualFeeRate"],
             min_notional=sim_config.partition_config["minNotional"],
-            trades_collection=sim_db.trades,
+            trades_collection=sim_config.sim_db.trades,
         )
 
         sim_config.init(sim_config.partition_config)
@@ -279,7 +277,7 @@ def simulate():
             # logging.info('StopIteration Detected')
                   # Send the matchings to the database
             if len (matchings) > 0:
-                sim_db.matchings.insert_many(matchings)
+                sim_config.sim_db.matchings.insert_many(matchings)
 
             logging.info(
                 "{0:24}{1:8d}".format("CO Calls:", CO_calls))
@@ -328,7 +326,7 @@ def simulate():
         """
         # Send the matchings to the database
         if len (matchings) > 0:
-            sim_db.matchings.insert_many(matchings)
+            sim_config.sim_db.matchings.insert_many(matchings)
 
         logging.info(
              "{0:24}{1:8d}".format("CO Calls:", CO_calls))
