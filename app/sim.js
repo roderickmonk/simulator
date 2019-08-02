@@ -106,9 +106,10 @@ const start = (configGenerator, simDb) => __awaiter(this, void 0, void 0, functi
         assert(process.env.MONGODB, 'MONGODB Not Defined');
         assert(process.env.SIMULATOR_DB, 'SIMULATOR_DB Not Defined');
         const mongoRemote = yield mongodb_1.MongoClient.connect(process.env.MONGODB, { useNewUrlParser: true });
-        const remoteSimDb = mongoRemote.db(process.env.SIMULATOR_DB);
-        const simConfig = new config_generator_1.ConfigGenerator(configName, remoteSimDb);
-        yield start(simConfig, remoteSimDb);
+        const simConfigDb = mongoRemote.db("sim_configuration");
+        const simDb = mongoRemote.db(process.env.SIMULATOR_DB);
+        const simConfig = new config_generator_1.ConfigGenerator(configName, simConfigDb);
+        yield start(simConfig, simDb);
     }
     catch (err) {
         console.log(err);

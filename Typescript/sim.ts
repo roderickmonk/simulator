@@ -41,7 +41,7 @@ const start = async (
 
             if (done) break;
 
-            debug ({nextSimConfig});
+            debug({ nextSimConfig });
 
             // Bundle up an object to be recorded to the db
             const taskObj = {
@@ -175,11 +175,12 @@ const start = async (
                 { useNewUrlParser: true },
             );
 
-        const remoteSimDb: Db = mongoRemote.db(process.env.SIMULATOR_DB);
+        const simConfigDb: Db = mongoRemote.db("sim_configuration");
+        const simDb: Db = mongoRemote.db(process.env.SIMULATOR_DB);
 
-        const simConfig = new ConfigGenerator(configName, remoteSimDb);
+        const simConfig = new ConfigGenerator(configName, simConfigDb);
 
-        await start(simConfig, remoteSimDb);
+        await start(simConfig, simDb);
 
     } catch (err) {
 
