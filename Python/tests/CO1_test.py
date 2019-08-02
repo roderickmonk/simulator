@@ -112,7 +112,7 @@ def redis_get (r, cycle_time, field):
     raw = [float(i) for i in raw]
     return np.array([raw])
 
-#@pytest.mark.skip(reason="Test Not Routinely Carried Out")
+@pytest.mark.skip(reason="Test Not Routinely Carried Out")
 def test_traders_in_real_time():
 
     try:
