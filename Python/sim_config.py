@@ -18,6 +18,7 @@ rate_precision: int = None
 quantity_precision: int = None
 partition_config: dict = {}
 sim_db = None
+sim_configuration_db = None
 
 def check(conf_schema, conf):
 
