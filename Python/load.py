@@ -146,7 +146,7 @@ if __name__ == '__main__':
             {"_id": ObjectId(load_id)}
         )
         assert config, 'Unknown Configuration'
-        logging.error("Load Configuration...\n%s", pformat(config, indent=4))
+        logging.debug("Load Configuration...\n%s", pformat(config, indent=4))
 
         input_orderbooks = remote_mongo_client.history.orderbooks
 
