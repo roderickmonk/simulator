@@ -49,8 +49,7 @@ def init(config):
         if not check(min_partition_schema, partition_config):
             raise Exception('Invalid Partition Configuration')
 
-        sim_config.rate_precision = - \
-            int(np.log10(sim_config.partition_config['tick']))
+        rate_precision = -int(np.log10(partition_config['tick']))
 
         return None
 
