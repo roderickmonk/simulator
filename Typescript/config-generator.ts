@@ -33,7 +33,7 @@ export class ConfigGenerator {
 
     constructor(
         private configName: string,
-        private simDb: Db) { }
+        private simConfigurationDb: Db) { }
 
     public validateMultiplyConfig = (
         multipleParams: object,
@@ -193,7 +193,7 @@ export class ConfigGenerator {
             // ToDo: the following is required but strange
             process.on('unhandledRejection', _.noop);
 
-            this.config = await this.simDb
+            this.config = await this.simConfigurationDb
                 .collection('configurations')
                 .findOne({ name: this.configName });
 
@@ -201,7 +201,7 @@ export class ConfigGenerator {
 
             if (this.config) {
 
-                const multiplyConfigParams = await this.simDb
+                const multiplyConfigParams = await this.simConfigurationDb
                     .collection('trader.multiply.params')
                     .findOne({
                         name: this.config.multiplyConfigParams

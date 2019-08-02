@@ -246,16 +246,17 @@ const copyTunings = async (
                 { useNewUrlParser: true },
             );
 
-        const remoteSimDb: Db = mongoRemote.db(process.env.SIMULATOR_DB);
-        const localSimDb: Db = mongoLocal.db("sim");
+        const simConfigDb: Db = mongoRemote.db("sim_configuration");
+        const localSimConfigDb: Db = mongoLocal.db("sim_configuration");
+        const simDb: Db = mongoRemote.db(process.env.SIMULATOR_DB);
 
         await copyTunings(
-            remoteSimDb.collection("tunings"),
-            localSimDb.collection("tunings")
+            simConfigDb.collection("tunings"),
+            localSimConfigDb.collection("tunings")
         );
 
-        const configGenerator = new ConfigGenerator(configName, remoteSimDb);
-        await start(configGenerator, remoteSimDb);
+        const configGenerator = new ConfigGenerator(configName, simConfigDb);
+        await start(configGenerator, simDb);
 
     } catch (err) {
 

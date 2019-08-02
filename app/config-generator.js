@@ -16,9 +16,9 @@ const debug_1 = require("./debug");
 const config_manager_1 = require("./config-manager");
 const GenerateSchema = require('generate-schema');
 class ConfigGenerator {
-    constructor(configName, simDb) {
+    constructor(configName, simConfigurationDb) {
         this.configName = configName;
-        this.simDb = simDb;
+        this.simConfigurationDb = simConfigurationDb;
         this.propertyLength = new Map();
         this.propertyLevel = new Map();
         this.propertyData = new Map();
@@ -78,12 +78,12 @@ class ConfigGenerator {
         this.getGenerator = () => __awaiter(this, void 0, void 0, function* () {
             try {
                 process.on('unhandledRejection', _.noop);
-                this.config = yield this.simDb
+                this.config = yield this.simConfigurationDb
                     .collection('configurations')
                     .findOne({ name: this.configName });
                 debug_1.debug(JSON.stringify(this.config, null, 4));
                 if (this.config) {
-                    const multiplyConfigParams = yield this.simDb
+                    const multiplyConfigParams = yield this.simConfigurationDb
                         .collection('trader.multiply.params')
                         .findOne({
                         name: this.config.multiplyConfigParams

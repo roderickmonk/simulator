@@ -149,11 +149,12 @@ const copyTunings = (tuningsRemote, tuningsLocal) => __awaiter(this, void 0, voi
         const mongoRemote = yield mongodb_1.MongoClient.connect(process.env.MONGODB, { useNewUrlParser: true });
         assert(process.env.LOCALDB, 'LOCALDB Not Defined');
         const mongoLocal = yield mongodb_1.MongoClient.connect(process.env.LOCALDB, { useNewUrlParser: true });
-        const remoteSimDb = mongoRemote.db(process.env.SIMULATOR_DB);
-        const localSimDb = mongoLocal.db("sim");
-        yield copyTunings(remoteSimDb.collection("tunings"), localSimDb.collection("tunings"));
-        const configGenerator = new config_generator_1.ConfigGenerator(configName, remoteSimDb);
-        yield start(configGenerator, remoteSimDb);
+        const simConfigDb = mongoRemote.db("sim_configuration");
+        const localSimConfigDb = mongoLocal.db("sim_configuration");
+        const simDb = mongoRemote.db(process.env.SIMULATOR_DB);
+        yield copyTunings(simConfigDb.collection("tunings"), localSimConfigDb.collection("tunings"));
+        const configGenerator = new config_generator_1.ConfigGenerator(configName, simConfigDb);
+        yield start(configGenerator, simDb);
     }
     catch (err) {
         console.log(err);
