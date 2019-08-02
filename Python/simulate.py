@@ -95,8 +95,10 @@ def simulate():
         remote_mongo_client = MongoClient(os.environ['MONGODB'])
 
         assert os.environ['SIMULATOR_DB'], 'SIMULATOR_DB Not Defined'
-        sim_db = remote_mongo_client[os.environ['SIMULATOR_DB']]
 
+        sim_db = remote_mongo_client[os.environ['SIMULATOR_DB']]
+        sim_config.sim_db = sim_db 
+        
         # Prep for local mongodb access
         assert os.environ['LOCALDB'], 'LOCALDB Not Defined'
         local_mongo_client = MongoClient(os.environ['LOCALDB'])
@@ -111,8 +113,10 @@ def simulate():
         logging.debug('sim_config.partition_config:\n' +
                       str(sim_config.partition_config))
 
+        # Convenience destructuring
         depth = sim_config.partition_config["depth"]
 
+        """
         # Load optional PDF data
         if sim_config.partition_config["pdf"]:
 
@@ -129,6 +133,7 @@ def simulate():
             sim_config.pdf_y = np.array(pdf["y"])
             assert len(sim_config.pdf_y) > 0
             assert sim_config.pdf_x.shape == sim_config.pdf_y.shape
+        """
 
         # Matching Engine
         matching_engine = MatchingEngine(
@@ -202,8 +207,6 @@ def simulate():
                     logging.debug('len(sell_trades): ' + str(len(sell_trades)))
 
                 CO_calls += 1
-
-                # depth = sim_config.partition_config["depth"]
 
                 buyob = Orderbooks.apply_depth(depth, orderbook['buy']) \
                     if depth > 0 else orderbook['buy']
