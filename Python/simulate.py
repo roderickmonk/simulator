@@ -130,12 +130,6 @@ def simulate():
             assert len(sim_config.pdf_y) > 0
             assert sim_config.pdf_x.shape == sim_config.pdf_y.shape
 
-        # Rate Precision
-        """
-        sim_config.rate_precision = - \
-            int(numpy.log10(sim_config.partition_config['tick']))
-        """
-
         # Matching Engine
         matching_engine = MatchingEngine(
 
@@ -150,10 +144,6 @@ def simulate():
         sim_config.init(sim_config.partition_config)
 
         assert sim_config.partition_config["minNotional"], "Min Notional Missing"
-
-        logging.error ("Hello")
-        logging.error (sim_config.rate_precision)
-        logging.error (sim_config)
 
         if __debug__:
             from co1 import Trader
