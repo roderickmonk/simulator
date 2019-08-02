@@ -15,5 +15,7 @@ source ./scripts/aliases
 export PYTHONPATH=./Python:~/traders:.:$PYTHONPATH
 
 source ./bin/activate
+
+echo "Hello"
 # export the version
 source ./scripts/software.version
