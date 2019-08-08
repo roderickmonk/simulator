@@ -352,7 +352,7 @@ def test_traders_in_real_time():
     except:
         assert False  # Must not be here
 
-@pytest.mark.skip(reason="Test Not Routinely Carried Out")
+# @pytest.mark.skip(reason="Test Not Routinely Carried Out")
 def test_compare_bots():
 
     try:
