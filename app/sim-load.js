@@ -1,12 +1,20 @@
 #!/usr/bin/env node
 "use strict";
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
         function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
         function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
+};
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (Object.hasOwnProperty.call(mod, k)) result[k] = mod[k];
+    result["default"] = mod;
+    return result;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const assert = require('assert');
@@ -15,7 +23,7 @@ const debug_1 = require("./debug");
 const config_generator_1 = require("./config-generator");
 const async_1 = require("async");
 const child_process_1 = require("child_process");
-const _ = require("lodash");
+const _ = __importStar(require("lodash"));
 const mongodb_1 = require("mongodb");
 let configName = '';
 const removeDuplicates = (arr) => arr.reduce((acc, current) => {
@@ -45,7 +53,7 @@ const removeRedundantPDFs = (arr) => arr.reduce((acc, current) => {
     acc.push(current);
     return acc;
 }, []);
-const start = (configGenerator, simDb) => __awaiter(this, void 0, void 0, function* () {
+const start = (configGenerator, simDb) => __awaiter(void 0, void 0, void 0, function* () {
     const startProcessTime = process.hrtime();
     try {
         const generator = yield configGenerator.getGenerator();
@@ -95,7 +103,7 @@ const start = (configGenerator, simDb) => __awaiter(this, void 0, void 0, functi
                 }
             });
         }
-        async_1.parallelLimit(tasks, configGenerator.config.parallelSimulations, (err, stdoutArray) => __awaiter(this, void 0, void 0, function* () {
+        async_1.parallelLimit(tasks, configGenerator.config.parallelSimulations, (err, stdoutArray) => __awaiter(void 0, void 0, void 0, function* () {
             try {
                 if (err) {
                     console.log({ err });
@@ -128,10 +136,10 @@ const start = (configGenerator, simDb) => __awaiter(this, void 0, void 0, functi
         return Promise.reject(err);
     }
 });
-const copyTunings = (tuningsRemote, tuningsLocal) => __awaiter(this, void 0, void 0, function* () {
+const copyTunings = (tuningsRemote, tuningsLocal) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         yield tuningsLocal.deleteMany({});
-        tuningsRemote.find({}).forEach((pdf) => __awaiter(this, void 0, void 0, function* () {
+        tuningsRemote.find({}).forEach((pdf) => __awaiter(void 0, void 0, void 0, function* () {
             yield tuningsLocal.insertOne(pdf);
         }), (err) => {
             return Promise.reject(err);
@@ -141,7 +149,7 @@ const copyTunings = (tuningsRemote, tuningsLocal) => __awaiter(this, void 0, voi
         return Promise.reject(err);
     }
 });
-(() => __awaiter(this, void 0, void 0, function* () {
+(() => __awaiter(void 0, void 0, void 0, function* () {
     try {
         configName = process.argv[2];
         assert(process.env.MONGODB, 'MONGODB Not Defined');

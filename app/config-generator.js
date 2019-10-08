@@ -1,16 +1,24 @@
 #!/usr/bin/env node
 "use strict";
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
         function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
         function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (Object.hasOwnProperty.call(mod, k)) result[k] = mod[k];
+    result["default"] = mod;
+    return result;
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 const assert = require('assert');
-const _ = require("lodash");
+const _ = __importStar(require("lodash"));
 const chalk = require('chalk');
 const debug_1 = require("./debug");
 const config_manager_1 = require("./config-manager");
@@ -128,7 +136,7 @@ class ConfigGenerator {
                     const next = genLoop.next();
                     if (next.done)
                         break;
-                    yield Object.assign({}, returnObj, next.value);
+                    yield Object.assign(Object.assign({}, returnObj), next.value);
                 }
             }
         }

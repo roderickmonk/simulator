@@ -1,32 +1,17 @@
 {
-    "compilerOptions": {
-      "declaration": false,
-      "module": "commonjs",
-      "target": "es6",
-      "moduleResolution": "node",
-      "outDir": "./app",
-      "preserveConstEnums": true,
-      "removeComments": true,
-      "allowJs": true,
-      "alwaysStrict": true,
-      "allowUnusedLabels": false,
-      "noImplicitAny": true,
-      "noImplicitThis": true,
-      "noImplicitReturns": true,
-      "pretty": true,
-      "strictNullChecks": true,
-      "strictPropertyInitialization": true,
-      "rootDir": "Typescript",
-      "lib": ["es2017", "dom"]
-    },
-    "include": [
-      "Typescript/**/*.ts",
-    ],
-    "exclude": [
-      "Typescript/test.hold/",
-      "Typescript/HFT/Poloniex",
-      "node_modules/",
-      "node_modules/rxjs",
-      "**/*-spec.ts"
-    ]
-  }
+  "extends": "../TypeScript.Projects/tsconfig.base.json",
+  "compilerOptions": {
+    "outDir": "./app",
+    "preserveConstEnums": true,
+    "rootDir": "Typescript",
+    "types": ["node"]
+  },
+  "include": ["Typescript/**/*.ts"],
+  "exclude": [
+    "Typescript/test.hold/",
+    "Typescript/HFT/Poloniex",
+    "node_modules/",
+    "node_modules/rxjs",
+    "**/*-spec.ts"
+  ]
+}

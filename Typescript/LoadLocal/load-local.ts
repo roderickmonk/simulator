@@ -1,11 +1,11 @@
 #!/usr/bin/env node
 
-const assert = require('assert');
+import  assert from "assert";
 const chalk = require('chalk');
 import { debug } from "../debug";
-import { exec, spawn } from 'child_process';
+import { exec } from 'child_process';
 import { parallelLimit } from 'async';
-import * as moment from 'moment';
+import moment from "moment";
 const { promisify } = require("util");
 const setTimeoutPromise = promisify(setTimeout);
 

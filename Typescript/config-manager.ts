@@ -1,9 +1,14 @@
 // tslint:disable
 
 import * as _ from 'lodash';
-import * as assert from "assert";
-import * as Ajv from "ajv";
-const ajv = new Ajv;
+import Ajv from "ajv";
+
+// Validate the configuration
+const ajv = new Ajv({
+    allErrors: true,
+    useDefaults: true,
+    verbose: true
+});
 
 const simSchema = {
 

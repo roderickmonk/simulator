@@ -1,20 +1,24 @@
 #!/usr/bin/env node
 "use strict";
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
         function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
         function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
-const assert = require('assert');
+const assert_1 = __importDefault(require("assert"));
 const chalk = require('chalk');
 const debug_1 = require("../debug");
 const child_process_1 = require("child_process");
 const async_1 = require("async");
-const moment = require("moment");
+const moment_1 = __importDefault(require("moment"));
 const { promisify } = require("util");
 const setTimeoutPromise = promisify(setTimeout);
 const mongodb_1 = require("mongodb");
@@ -124,15 +128,15 @@ const validateMultiplyConfig = (simConfig) => {
         }
     }
     for (const [prop, entry] of propertySchema.entries()) {
-        assert(entry.type === 'array', `Parameter "${prop}" Data Not Array`);
+        assert_1.default(entry.type === 'array', `Parameter "${prop}" Data Not Array`);
         if (multiplyConfigParams.hasOwnProperty(prop)) {
-            assert(multiplyConfigParams[prop].items.type === entry.items.type, `Parameter "${prop}" Wrong Type`);
+            assert_1.default(multiplyConfigParams[prop].items.type === entry.items.type, `Parameter "${prop}" Wrong Type`);
         }
         Object.keys(multiplyConfigParams).forEach(property => {
-            assert(propertySchema.has(property), `Required Parameter "${property}" Not Found`);
+            assert_1.default(propertySchema.has(property), `Required Parameter "${property}" Not Found`);
         });
     }
-    assert((new Set(properties)).size === properties.length, 'Duplicate Parameters Detected');
+    assert_1.default((new Set(properties)).size === properties.length, 'Duplicate Parameters Detected');
     for (const [i, config] of simConfig.entries()) {
         const levelConfig = i === 0 ?
             config["0"] :
@@ -140,7 +144,7 @@ const validateMultiplyConfig = (simConfig) => {
         debug_1.debug({ levelConfig });
         for (const prop in levelConfig) {
             debug_1.debug(chalk.red(`${prop}[${levelConfig[prop]}]`));
-            assert(levelConfig[prop].length > 0, 'Empty Configuration Parameter Array');
+            assert_1.default(levelConfig[prop].length > 0, 'Empty Configuration Parameter Array');
             propertyLength.set(prop, levelConfig[prop].length);
             propertyData.set(prop, levelConfig[prop]);
             propertyLevel.set(prop, i);
@@ -159,7 +163,7 @@ const validateMultiplyConfig = (simConfig) => {
         const levelPropertiesSameLength = levelProperties
             .map(prop => propertyLength.get(prop))
             .every((val, i, arr) => val === arr[0]);
-        assert(levelPropertiesSameLength, 'Mismatched Parameter Array Lengths');
+        assert_1.default(levelPropertiesSameLength, 'Mismatched Parameter Array Lengths');
     }
     debug_1.debug('levels: ', schema.length);
 };
@@ -182,7 +186,7 @@ function* generatorSimParameters(level) {
                 const next = genLoop.next();
                 if (next.done)
                     break;
-                yield Object.assign({}, returnObj, next.value);
+                yield Object.assign(Object.assign({}, returnObj), next.value);
             }
         }
     }
@@ -190,7 +194,7 @@ function* generatorSimParameters(level) {
 const orderbookTradesMap = new Map();
 const startTime = new Date("2018-09-15");
 const endTime = new Date("2018-09-15T00:01:30");
-const getTrades = (params) => __awaiter(this, void 0, void 0, function* () {
+const getTrades = (params) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const filter = {
             e: 0,
@@ -219,7 +223,7 @@ const getTrades = (params) => __awaiter(this, void 0, void 0, function* () {
         process.exit(1);
     }
 });
-const getOrderbooks = (params) => __awaiter(this, void 0, void 0, function* () {
+const getOrderbooks = (params) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const cursor = params.mongoClient.db('history').collection('orderbooks').find({
             e: 0,
@@ -230,7 +234,7 @@ const getOrderbooks = (params) => __awaiter(this, void 0, void 0, function* () {
                 $lte: endTime,
             }
         });
-        yield cursor.forEach((orderbook) => __awaiter(this, void 0, void 0, function* () {
+        yield cursor.forEach((orderbook) => __awaiter(void 0, void 0, void 0, function* () {
             try {
                 if (orderbookTradesMap.has(String(orderbook._id))) {
                     orderbook.trades = orderbookTradesMap.get(String(orderbook._id));
@@ -247,34 +251,34 @@ const getOrderbooks = (params) => __awaiter(this, void 0, void 0, function* () {
         console.log(err);
     }
 });
-(() => __awaiter(this, void 0, void 0, function* () {
+(() => __awaiter(void 0, void 0, void 0, function* () {
     const startProcessTime = process.hrtime();
     const startTime = new Date();
     try {
-        assert(process.env.MONGODB, 'MONGODB Not Defined');
-        assert(process.env.SIMULATOR_DB, 'SIMULATOR_DB Not Defined');
+        assert_1.default(process.env.MONGODB, 'MONGODB Not Defined');
+        assert_1.default(process.env.SIMULATOR_DB, 'SIMULATOR_DB Not Defined');
         const sim_db = process.env.SIMULATOR_DB;
         const runId = new mongodb_1.ObjectId();
         const mainMongoClient = yield mongodb_1.MongoClient.connect(process.env.MONGODB, { useNewUrlParser: true });
         const simDb = mainMongoClient.db(sim_db);
         const configName = process.argv[2];
         const config = yield simDb.collection('configurations').findOne({ name: configName });
-        assert(config, 'Unknown Configuration');
+        assert_1.default(config, 'Unknown Configuration');
         debug_1.debug({ config });
         validateMultiplyConfig(config.simConfig);
         const trades = yield getTrades({
             mongoClient: mainMongoClient,
             exchange: 'bittrex',
             market: 'btc-eth',
-            startTime: moment("2018-10-01"),
-            endTime: moment("2018-10-04"),
+            startTime: moment_1.default("2018-10-01"),
+            endTime: moment_1.default("2018-10-04"),
         });
         const orderbooks = yield getOrderbooks({
             mongoClient: mainMongoClient,
             exchange: 'bittrex',
             market: 'btc-eth',
-            startTime: moment("2018-10-01"),
-            endTime: moment("2018-10-04"),
+            startTime: moment_1.default("2018-10-01"),
+            endTime: moment_1.default("2018-10-04"),
         });
         process.exit(1);
         const genLoop = generatorSimParameters(0);
@@ -308,7 +312,7 @@ const getOrderbooks = (params) => __awaiter(this, void 0, void 0, function* () {
                 }
             });
         }
-        async_1.parallelLimit(simulations, config.parallelSimulations, (err, stdoutArray) => __awaiter(this, void 0, void 0, function* () {
+        async_1.parallelLimit(simulations, config.parallelSimulations, (err, stdoutArray) => __awaiter(void 0, void 0, void 0, function* () {
             try {
                 if (err) {
                     console.log({ err });

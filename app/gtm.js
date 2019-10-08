@@ -26,10 +26,10 @@ const start = (configGenerator, simDb) => __awaiter(void 0, void 0, void 0, func
         const tasks = [];
         const runId = new mongodb_1.ObjectId();
         while (true) {
-            const { value: nextSimConfig, done } = generator.next();
+            const { value: nextConfig, done } = generator.next();
             if (done)
                 break;
-            debug_1.debug({ nextSimConfig });
+            debug_1.debug({ nextConfig });
             const taskObj = Object.assign({
                 runId,
                 simVersion: process.env.SIM_VERSION,
@@ -37,17 +37,14 @@ const start = (configGenerator, simDb) => __awaiter(void 0, void 0, void 0, func
                 ts: new Date(),
                 status: "STARTED",
                 envId: configGenerator.config.envId,
-                minNotional: configGenerator.config.minNotional ? configGenerator.config.minNotional : 0.0005,
-                trim: configGenerator.config.trim,
-                saveRedis: configGenerator.config.saveRedis,
-            }, nextSimConfig);
+            }, nextConfig);
             debug_1.debug('taskObj:\n', JSON.stringify(taskObj, null, 4));
-            const { insertedId: simId } = yield simDb.collection('simulations')
+            const { insertedId: simId } = yield simDb.collection('generate.tuning')
                 .insertOne(taskObj);
             tasks.push((callback) => {
                 try {
                     console.log(chalk.blue(`Simulation (${configName}) ${simId} Activated`));
-                    child_process_1.exec(`simulator ${simId}`, (err, stdout, stderr) => {
+                    child_process_1.exec(`gtm ${simId}`, (err, stdout, stderr) => {
                         callback(err, stderr);
                     });
                 }
@@ -79,7 +76,6 @@ const start = (configGenerator, simDb) => __awaiter(void 0, void 0, void 0, func
                 console.log(chalk.green(`Simulation Run ${runId} Execution Time (hh:mm:ss): ${elapsedTime}`));
                 const runObj = {
                     runId,
-                    simVersion: process.env.SIM_VERSION,
                     configName,
                     startTime,
                     endTime: new Date(),
