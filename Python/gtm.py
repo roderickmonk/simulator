@@ -6,65 +6,60 @@ from bson.objectid import ObjectId
 import sys
 import logging
 from datetime import datetime, timedelta
+from math import log10
 
-
+mongodb = None
+config = None
 
 BUY = 1
 
-
-def calc_price_depths(
-    bucket: list,
-    price_depths: list,
-    sorted_trades: list,
-):
-
-    ref_rate = bucket[0][2]
-
-    l = []
-    for trade in bucket:
-
-        if trade[4] == BUY:
-            l.append(1.0 / (ref_rate / trade[2]))
-        else:
-            l.append(ref_rate / trade[2])
-
-    price_depths.append(l)
-
-
-def price_depths_and_volumes(
+def trades_price_depth(
     trades: list,
+    IL: float,
 ):
+
+    def remaining_price_depths():
+
+        trades_price_depths.append ([
+            1.0 / (bucket[0][2] / trade[2])
+            if trade[4] == BUY 
+            else bucket[0][2] / trade[2]
+            for trade in bucket
+            ])
+
+    def remaining_volumes():
+
+        l = list(np.cumsum([t[2] * t[3] for t in bucket]))
+        trades_volumes.append([ v if v <= IL else IL for v in l ])
 
     def process_bucket():
 
         bucket.sort(key=lambda x: x[2])
 
-        calc_price_depths(bucket, price_depths, sorted_trades)
-
-        volumes.append(list(np.cumsum([t[3] for t in bucket])))
-
-        sorted_trades.extend(bucket)
-
+        remaining_price_depths()
+        remaining_volumes()
+       
     # Preliminary sort by ts, id, and buy
-    trades.sort(key=lambda x: (x[0], x[1], x[4]))
+    trades.sort(key=lambda x: (x[0], x[4], x[1]))
 
-    sorted_trades = []
-    price_depths = []
-    volumes = []
+    trades_price_depths = []
+    trades_volumes = []
+
     bucket = []
-    ref_ts = trades[0][0]
-    ref_buy = trades[0][4]
+    ref_trade = trades[0]
 
     try:
         for trade in trades:
 
-            # New bucket when ts changes
-            if trade[0] != ref_ts or trade[4] != ref_buy:
+            # New bucket?
+            if trade[0] != ref_trade[0] or trade[4] != ref_trade[4]:
 
+                # Process the existing bucket and...
                 process_bucket()
 
-                # Start again with an empty bucket
-                bucket, ref_ts, ref_buy = [], trade[0], trade[4]
+                # ...start again with an empty one
+                bucket = []
+                ref_trade = trade
 
             bucket.append(trade)
 
@@ -73,7 +68,7 @@ def price_depths_and_volumes(
         # Handle the last bucket
         process_bucket()
 
-    return price_depths, volumes
+    return trades_price_depths, trades_volumes
 
 
 def remaining_size_depths(
@@ -86,9 +81,7 @@ def remaining_size_depths(
     for depth in depths:
 
       volume = [max(x) for x in remaining_volumes]
-
-      remainder < - volume - depth
-      remainder = list(map(sub, volume, depth))
+      remainder = volume - depth
 
       # Ensure that if the remainder is less than 0 we only have 0
       remainders.append([(x if x > 0 else 0) for x in remainder])
@@ -101,29 +94,31 @@ def remaining_trade_size_quadrant(
   depths: list,
   IL: float):
 
-    price_depths, remaining_volumes=price_depths_and_volumes(trades)
+    trades_price_depths, trades_volumes=trades_price_depth(trades, IL)
 
-    print("price_depths\n", price_depths)
-    print("remaining_volumes\n", remaining_volumes)
+    print("trades_price_depths\n", trades_price_depths)
+    print("trades_volumes\n", trades_volumes)
 
     remaining_depth=remaining_size_depths(
         remaining_volumes,
         depths)
 
-    total_volume=sum(max(x) for x in remaining_volume)
+    total_volume=sum(max(x) for x in trades_volumes)
 
     # create empty matrix to be filled
-    output=np.empty(shape = (len(depths), len(price_depths)),
+    values = np.empty(shape = (len(depths), len(price_depths)),
                     dtype = np.float64)
 
     for i in range (len(depths)):
     
       for j in range (len(price_depths)):
       
-        # use the remaining depth and price depth rows to calculate quadrant data
-        output[i,j] = quadrant(remaining_depth[i], remaining_pdepth[j]) / total_volumefsubract
+        # remaining_depth and remaining_price_depth 
+        # used to populate griddata values
+        grid_values[i,j] = \
+            quadrant(remaining_depth[i], trades_price_depths[j]) / total_volume
   
-    return output
+    return list (values)
 
 def quadrant (remaining_depth: list, remaining_pdepth: list):
   return sum(list(map(min, zip(*[remaining_depth,remaining_pdepth]))))
@@ -154,75 +149,137 @@ def remaining_price_depth(
 
   return remaining_pdepth
 
+def price_depths (): 
+
+    return list (
+        np.insert (
+            10 ** np.linspace(
+                    log10(config["priceDepthStart"]),
+                    log10(config["priceDepthEnd"]),
+                    config["priceDepthSamples"]
+                ),
+            0,
+            0
+        ) + 1.0
+    )
+
+def depths ():
+
+    return list (
+        np.insert (
+            10 ** np.linspace(
+                    log10(config["depthStart"]),
+                    log10(config["depthEnd"]),
+                    config["depthSamples"]
+                ),
+            0,
+            0
+        )
+    )
+
+def load_config ():
+
+    global config
+
+    config_db = mongodb["configuration"]
+    config_collection = config_db["generate.tuning"]
+    config = config_collection.find_one ({"name": sys.argv[1]})
+
+def load_trades ():
+
+    window = {"$gte": datetime.now() - timedelta(milliseconds=config["window"])}
+    range  = {"$gte": config["startTime"], "$lt": config["endTime"]}
+
+    trades = list(
+                mongodb["history"].trades.find(
+                    filter={
+                        "e": config["envId"],
+                        "x": config["exchange"],
+                        "m": config["market"],
+                        "ts": window if "window" in config else range
+                    }).sort("ts", 1).limit(10)
+            )
+
+    logging.warning (len(trades))
+    # logging.error (trades)
+    # for t in trades:
+        # print ("t.ts: ", int(t["ts"].timestamp()*1000))
+
+    # Extract salient fields from each trade
+    return [
+        [
+            int(t["ts"].timestamp()*1000), 
+            t["id"], 
+            t["r"], 
+            t["q"], 
+            t["buy"]
+        ] for t in trades]
+
+
+def save_tuning (
+    tuning: dict,
+):
+    # Save tuning data
+    if config["output"] is None:
+        output_name = ":".join ([
+            "auto", 
+            str (config["envId"]), 
+            config["exchange"], 
+            config["market"]])
+        output_name = {"name": output_name}
+    else:
+        output_name = {"name": config["output"]}
+
+    config_db = mongodb["configuration"]
+
+    config_db["tuning"].update_one (
+        output_name, 
+        {'$set': {**output_name, **tuning}},
+        upsert=True)
+
 if __name__ == '__main__':
 
     logging.basicConfig(
         format='[%(levelname)-5s] %(message)s',
-        level=logging.DEBUG,
+        level=logging.WARNING,
         datefmt='')
 
-    logging.debug(f'simulate args: {sys.argv}')
-    config_id = sys.argv[1]
+    logging.debug(f'sys.argv: {sys.argv}')
 
     assert os.environ['MONGODB'], 'MONGODB Not Defined'
-    remote_mongo_client = MongoClient(os.environ['MONGODB'])
-    config_db = remote_mongo_client["configuration"]
-    config_collection = config_db["generate.tuning"]
+    mongodb = MongoClient(os.environ['MONGODB'])
 
-    config = config_collection.find_one ({"name": sys.argv[1]})
-
+    load_config ()
     logging.error (config)
 
-    history_db = remote_mongo_client["history"]
+    trades = load_trades ()
+    logging.debug (trades)
 
-    if "startWindow" in config:
+    price_depths = price_depths ()
+    logging.debug (price_depths)
 
-        trades = list(
-                    history_db.trades.find(
-                        filter={
-                            "e": config["envId"],
-                            "x": config["exchange"],
-                            "m": config["market"],
-                            "ts": {
-                                "$gte": datetime.now() - timedelta(milliseconds=config["startWindow"])
-                            },
-                        }).sort("ts", 1)
-                )
-
-    elif (
-        "startTime" in config and 
-        "endTime" in config and 
-        config["startTime"] < config["endTime"]
-    ):
-        print ("range")
-        trades = list(
-                    history_db.trades.find(
-                        filter={
-                            "e": config["envId"],
-                            "x": config["exchange"],
-                            "m": config["market"],
-                            "ts": {
-                                "$gte": config["startTime"],
-                                "$lt": config["endTime"]
-                            },
-                        }).sort("ts", 1).limit(5)
-                )
-
-    logging.error (len(trades))
-    logging.error (trades)
-    for t in trades:
-        print ("t.ts: ", int(t["ts"].timestamp()*1000))
-
-    new_trades = []
-    for t in trades:
-        new_trades.append ([int(t["ts"].timestamp()*1000), t["id"], t["r"], t["q"], t["buy"]])
-
-
-    print (new_trades)
+    depths = depths ()
+    logging.debug (depths)
 
     os._exit(0)
 
+    values = grid_x, grid_x, grid_values = remaining_trade_size_quadrant (
+        trades, 
+        price_depths, 
+        depths, 
+        config["inventoryLimit"])
 
+    tuning = {
+        "x": price_depths,
+        "y": depths,
+        "values": values
+    }
+
+    save_tuning (tuning)
+
+    print("That's All Folks")
+
+    """
     trades=[
         [12345, 1234, 30, 504, True],
         [12345, 1233, 31, 1003, True],
@@ -230,11 +287,4 @@ if __name__ == '__main__':
         [98765, 1235, 31, 1003, True],
         [98765, 1235, 31, 1003, False],
     ]
-
-    priced_depths = [1, 2, 3, 4]
-    depths = [5, 6, 7, 8]
-
-    output_matrix = remaining_trade_size_quadrant (trades, price_depths, depths, 2.0)
-
-
-    print("That's All Folks")
+    """
