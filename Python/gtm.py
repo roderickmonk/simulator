@@ -9,10 +9,10 @@ from datetime import datetime, timedelta
 from math import log10
 
 mongodb = None
+config_db = None
 config = None
 trades = None
 IL = None
-
 BUY = 1
 
 
@@ -74,27 +74,33 @@ def remaining_size_depths(
         depths: list,
 ):
 
-    remainders = []
+    volume = [max(x) for x in remaining_volumes]
+    logging.error('volume:\n%r', volume)
 
+    remainders = []
     for depth in depths:
 
-        volume = [max(x) for x in remaining_volumes]
+        logging.debug('depth:\n%r', depth)
+
         remainder = volume - depth
+        logging.debug('remainder:\n%r', remainder)
 
         # Ensure that if the remainder is less than 0 we only have 0
-        remainders.append([(x if x > 0 else 0) for x in remainder])
+        remainders.append([(x if x > 0 else 0) for x in volume - depth])
 
     return remainders
 
 
 def get_values(price_depths: list, depths: list):
 
-    trades_price_depths, trades_volumes = trades_price_depth(trades, IL)
+    trades_price_depths, trades_volumes = trades_price_depth(trades)
 
-    print("trades_price_depths\n", trades_price_depths)
-    print("trades_volumes\n", trades_volumes)
+    logging.debug('trades_price_depths:\n%r', trades_price_depths)
+    logging.debug('trades_volumes:\n%r', trades_volumes)
 
-    remaining_depth = remaining_size_depths(remaining_volumes, depths)
+    remaining_depth = remaining_size_depths(trades_volumes, depths)
+    logging.error ("remaining_depth.shape: %r", np.array (remaining_depth).shape)
+    logging.error('remaining_depth:\n%r', remaining_depth)
 
     total_volume = sum(max(x) for x in trades_volumes)
 
@@ -107,8 +113,8 @@ def get_values(price_depths: list, depths: list):
 
             # remaining_depth and remaining_price_depth
             # used to populate griddata values
-            grid_values[i,j] = \
-                quadrant(remaining_depth[i], trades_price_depths[j]) / total_volume
+            values[i, j] = quadrant(remaining_depth[i],
+                                    trades_price_depths[j]) / total_volume
 
     return list(values)
 
@@ -164,7 +170,6 @@ def load_config():
     global config
     global IL
 
-    config_db = mongodb["configuration"]
     config_collection = config_db["generate.tuning"]
     config = config_collection.find_one({"name": sys.argv[1]})
     IL = config["inventoryLimit"]
@@ -209,8 +214,6 @@ def save_tuning(tuning: dict, ):
     else:
         output_name = {"name": config["output"]}
 
-    config_db = mongodb["configuration"]
-
     config_db["tuning"].update_one(output_name,
                                    {'$set': {
                                        **output_name,
@@ -229,11 +232,12 @@ if __name__ == '__main__':
 
     assert os.environ['MONGODB'], 'MONGODB Not Defined'
     mongodb = MongoClient(os.environ['MONGODB'])
+    config_db = mongodb["configuration"]
 
     load_config()
     logging.error(config)
 
-    trades = load_trades()
+    load_trades()
     logging.debug(trades)
 
     price_depths = price_depths()
@@ -242,7 +246,7 @@ if __name__ == '__main__':
     depths = depths()
     logging.debug(depths)
 
-    os._exit(0)
+    # os._exit(0)
 
     values = get_values(price_depths, depths)
 

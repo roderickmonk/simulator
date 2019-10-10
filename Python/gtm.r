@@ -1,3 +1,4 @@
+# Python: get_values ()
 remaining.trade.size.quadrant <- function (th, market, price.depths, depths, i.limit)
 {
   
@@ -43,6 +44,7 @@ remaining.trade.size.quadrant <- function (th, market, price.depths, depths, i.l
 }
 
 # get price depth and remaining volumes
+# Python: trades_price_depth ()
 th.price.depth <- function( th, market, i.limit)
 {
   
