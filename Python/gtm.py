@@ -75,7 +75,7 @@ def remaining_size_depths(
 ):
 
     volume = [max(x) for x in remaining_volumes]
-    logging.error('volume:\n%r', volume)
+    logging.debug('volume:\n%r', volume)
 
     remainders = []
     for depth in depths:
@@ -99,28 +99,54 @@ def get_values(price_depths: list, depths: list):
     logging.debug('trades_volumes:\n%r', trades_volumes)
 
     remaining_depth = remaining_size_depths(trades_volumes, depths)
-    logging.error ("remaining_depth.shape: %r", np.array (remaining_depth).shape)
-    logging.error('remaining_depth:\n%r', remaining_depth)
+    logging.error("remaining_depth.shape: %r", np.array(remaining_depth).shape)
+    logging.debug('remaining_depth:\n%r', remaining_depth)
+
+    remaining_pdepth = remaining_price_depth(trades_price_depths,
+                                             trades_volumes, price_depths)
+
+    logging.error("remaining_pdepth.shape: %r",
+                  np.array(remaining_pdepth).shape)
+    logging.debug('remaining_pdepth:\n%r', remaining_pdepth)
 
     total_volume = sum(max(x) for x in trades_volumes)
 
     # create empty matrix to be filled
     values = np.empty(shape=(len(depths), len(price_depths)), dtype=np.float64)
 
+    logging.error("values.shape: %r", values.shape)
+
     for i in range(len(depths)):
 
         for j in range(len(price_depths)):
 
-            # remaining_depth and remaining_price_depth
-            # used to populate griddata values
-            values[i, j] = quadrant(remaining_depth[i],
-                                    trades_price_depths[j]) / total_volume
+            values[i][j] = quadrant(remaining_depth[i],
+                                    remaining_pdepth[j]) / total_volume
 
-    return list(values)
+    return values.tolist()
 
 
 def quadrant(remaining_depth: list, remaining_pdepth: list):
-    return sum(list(map(min, zip(*[remaining_depth, remaining_pdepth]))))
+    # logging.error ("remaining_depth.shape: %r", np.array(remaining_depth).shape)
+    return sum([min(x, y) for x, y in zip(remaining_depth, remaining_pdepth)])
+    """
+    remaining.price.depth <- function(th.price.depth.output, price.depth)
+    {
+    pdepth <- th.price.depth.output[[1]]
+    remain <- th.price.depth.output[[2]]
+    
+    remaining.pdepth <- sapply (1:length(pdepth), function (x)
+    {
+        if(any(price.depth <= pdepth[[x]]) )
+        {
+        remain[[x]][min(which(price.depth <= pdepth[[x]]))]
+        }
+        else
+        {0}
+    }
+    )
+    }
+    """
 
 
 def remaining_price_depth(
@@ -129,20 +155,27 @@ def remaining_price_depth(
         price_depths: list,
 ):
 
+    logging.debug("remain:\n%r", remain)
+
     remaining_pdepth = []
 
-    for pd in price_depths:
-        """
-    remaining_pdepth <- sapply (1:length(pdepth), function (x)
-    {
-    if(any(price.depth <= pdepth[[x]]) )
-    {
-      remain[[x]][min(which(price.depth <= pdepth[[x]]))]
-    }
-    else
-    {0}
-    })
-    """
+    remaining_pdepth_ele = []
+
+    for price_depth in price_depths:
+
+        try:
+            for idx_x, x in enumerate(pdepth):
+
+                val, idx = min((val, idx) for (idx, val) in enumerate(x))
+
+                if price_depth <= val:
+                    remaining_pdepth_ele.append(remain[idx_x][idx])
+                else:
+                    remaining_pdepth_ele.append(0.0)
+
+        finally:
+            remaining_pdepth.append(remaining_pdepth_ele)
+            remaining_pdepth_ele = []
 
     return remaining_pdepth
 
@@ -190,7 +223,7 @@ def load_trades():
             "x": config["exchange"],
             "m": config["market"],
             "ts": window if "window" in config else range
-        }).sort("ts", 1).limit(10))
+        }).sort("ts", 1))
 
     logging.warning(len(trades))
     # logging.error (trades)
@@ -202,9 +235,8 @@ def load_trades():
         int(t["ts"].timestamp() * 1000), t["id"], t["r"], t["q"], t["buy"]
     ] for t in trades]
 
+def save_tuning(tuning: dict):
 
-def save_tuning(tuning: dict, ):
-    # Save tuning data
     if config["output"] is None:
         output_name = ":".join([
             "auto",
@@ -214,18 +246,15 @@ def save_tuning(tuning: dict, ):
     else:
         output_name = {"name": config["output"]}
 
-    config_db["tuning"].update_one(output_name,
-                                   {'$set': {
-                                       **output_name,
-                                       **tuning
-                                   }},
-                                   upsert=True)
+    document = {"$set": {**output_name, **tuning}}
+
+    config_db["tuning"].update_one(output_name, document, upsert=True)
 
 
 if __name__ == '__main__':
 
     logging.basicConfig(format='[%(levelname)-5s] %(message)s',
-                        level=logging.WARNING,
+                        level=logging.INFO,
                         datefmt='')
 
     logging.debug(f'sys.argv: {sys.argv}')
@@ -246,15 +275,13 @@ if __name__ == '__main__':
     depths = depths()
     logging.debug(depths)
 
-    # os._exit(0)
-
     values = get_values(price_depths, depths)
 
     tuning = {"x": price_depths, "y": depths, "values": values}
 
     save_tuning(tuning)
 
-    print("That's All Folks")
+    logging.info("That's All Folks")
     """
     trades=[
         [12345, 1234, 30, 504, True],
