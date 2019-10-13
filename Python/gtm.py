@@ -212,17 +212,17 @@ def load_trades():
 
     global trades
 
-    window = {
-        "$gte": datetime.now() - timedelta(milliseconds=config["window"])
-    }
-    range = {"$gte": config["startTime"], "$lt": config["endTime"]}
+    if "window" in config else:
+        range = {"$gte": datetime.now() - timedelta(milliseconds=config["window"])}
+    else:
+        range = {"$gte": config["startTime"], "$lt": config["endTime"]}
 
     trades = list(mongodb["history"].trades.find(
         filter={
             "e": config["envId"],
             "x": config["exchange"],
             "m": config["market"],
-            "ts": window if "window" in config else range
+            "ts": range
         }).sort("ts", 1))
 
     logging.warning(len(trades))
