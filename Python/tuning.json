@@ -1,6 +1,6 @@
 {
-    "name": "auto:0:bittrex:btc-eth",
-    "x": [...],
-    "y": [...],
+    "name": "test_range_output",
+    "depths": [...],
+    "price_depths": [...],
     "values": [[...], [...], ...]
 }
