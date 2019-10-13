@@ -212,7 +212,7 @@ def load_trades():
 
     global trades
 
-    if "window" in config else:
+    if "window" in config:
         range = {"$gte": datetime.now() - timedelta(milliseconds=config["window"])}
     else:
         range = {"$gte": config["startTime"], "$lt": config["endTime"]}
