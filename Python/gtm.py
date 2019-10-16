@@ -206,7 +206,7 @@ def load_trades():
             "ts": range
         }).sort("ts", 1))
 
-    logging.warning("Trade Count: %f", len(trades))
+    logging.warning("Trade Count: %d", len(trades))
     # logging.error (trades)
     # for t in trades:
     # print ("t.ts: ", int(t["ts"].timestamp()*1000))
