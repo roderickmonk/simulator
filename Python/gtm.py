@@ -129,25 +129,6 @@ def get_values(price_depths: list, depths: list):
 def quadrant(remaining_depth: list, remaining_pdepth: list):
     # logging.error ("remaining_depth.shape: %r", np.array(remaining_depth).shape)
     return sum([min(x, y) for x, y in zip(remaining_depth, remaining_pdepth)])
-    """
-    remaining.price.depth <- function(th.price.depth.output, price.depth)
-    {
-    pdepth <- th.price.depth.output[[1]]
-    remain <- th.price.depth.output[[2]]
-    
-    remaining.pdepth <- sapply (1:length(pdepth), function (x)
-    {
-        if(any(price.depth <= pdepth[[x]]) )
-        {
-        remain[[x]][min(which(price.depth <= pdepth[[x]]))]
-        }
-        else
-        {0}
-    }
-    )
-    }
-    """
-
 
 def remaining_price_depth(
         pdepth: list,
@@ -225,7 +206,7 @@ def load_trades():
             "ts": range
         }).sort("ts", 1))
 
-    logging.warning(len(trades))
+    logging.warning("Trade Count: %f", len(trades))
     # logging.error (trades)
     # for t in trades:
     # print ("t.ts: ", int(t["ts"].timestamp()*1000))
