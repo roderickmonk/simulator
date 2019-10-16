@@ -248,6 +248,11 @@ if __name__ == '__main__':
     logging.error(config)
 
     load_trades()
+
+    if len(trades) == 0:
+        logging.info ("No Trades!")
+        return
+        
     logging.debug(trades)
 
     price_depths = price_depths()
