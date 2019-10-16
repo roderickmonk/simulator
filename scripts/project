@@ -1,20 +1,20 @@
 #!/bin/bash
 
-export PATH=$PATH:./scripts:./Python
+export PATH=$PATH:$SIMULATOR_PATH/scripts:$SIMULATOR_PATH/Python
 
 # Assume production
 export NODE_ENV=production
 
 # Various useful functions
-source ./scripts/bash-functions
+source $SIMULATOR_PATH/scripts/bash-functions
 
 # Various useful aliases
-source ./scripts/aliases
+source $SIMULATOR_PATH/scripts/aliases
 
 # Give Python access to traders
 export PYTHONPATH=./Python:~/traders:.:$PYTHONPATH
 
-source ./bin/activate
+source $SIMULATOR_PATH/bin/activate
 
 # export the version
-source ./scripts/software.version
+source $SIMULATOR_PATH/scripts/software.version
