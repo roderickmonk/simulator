@@ -96,7 +96,7 @@ def get_values(price_depths: list, depths: list):
     trades_price_depths, trades_volumes = trades_price_depth(trades)
 
     logging.debug('trades_price_depths:\n%r', trades_price_depths)
-    logging.debug('trades_volumes:\n%r', trades_volumes)
+    logging.info('trades_volumes:\n%r', trades_volumes)
 
     remaining_depth = remaining_size_depths(trades_volumes, depths)
     logging.error("remaining_depth.shape: %r", np.array(remaining_depth).shape)
