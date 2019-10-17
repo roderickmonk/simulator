@@ -99,13 +99,13 @@ def get_values(price_depths: list, depths: list):
     logging.info('trades_volumes:\n%r', trades_volumes)
 
     remaining_depth = remaining_size_depths(trades_volumes, depths)
-    logging.error("remaining_depth.shape: %r", np.array(remaining_depth).shape)
+    logging.debug("remaining_depth.shape: %r", np.array(remaining_depth).shape)
     logging.debug('remaining_depth:\n%r', remaining_depth)
 
     remaining_pdepth = remaining_price_depth(trades_price_depths,
                                              trades_volumes, price_depths)
 
-    logging.error("remaining_pdepth.shape: %r",
+    logging.debug("remaining_pdepth.shape: %r",
                   np.array(remaining_pdepth).shape)
     logging.debug('remaining_pdepth:\n%r', remaining_pdepth)
 
@@ -114,7 +114,7 @@ def get_values(price_depths: list, depths: list):
     # create empty matrix to be filled
     values = np.empty(shape=(len(depths), len(price_depths)), dtype=np.float64)
 
-    logging.error("values.shape: %r", values.shape)
+    logging.debug("values.shape: %r", values.shape)
 
     for i in range(len(depths)):
 
@@ -241,7 +241,7 @@ if __name__ == '__main__':
     config_db = mongodb["configuration"]
 
     load_config()
-    logging.error(config)
+    logging.debug(config)
 
     load_trades()
 
