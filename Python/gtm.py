@@ -231,7 +231,7 @@ def save_tuning(tuning: dict):
 if __name__ == '__main__':
 
     logging.basicConfig(format='[%(levelname)-5s] %(message)s',
-                        level=logging.INFO,
+                        level=logging.ERROR,
                         datefmt='')
 
     logging.debug(f'sys.argv: {sys.argv}')
@@ -246,8 +246,10 @@ if __name__ == '__main__':
     load_trades()
 
     if len(trades) == 0:
-        logging.info ("No Trades!")
+        logging.error ("(%s) No Trades!", sys.argv[1])
         exit (0)
+
+    logging.error ("(%s) Trades Count: %d", sys.argv[1], len (trades))
 
     logging.debug(trades)
 
