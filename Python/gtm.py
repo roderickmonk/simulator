@@ -109,7 +109,7 @@ def get_values(price_depths: list, depths: list):
                   np.array(remaining_pdepth).shape)
     logging.debug('remaining_pdepth:\n%r', remaining_pdepth)
 
-    total_volume = sum(max(x) for x in trades_volumes)
+    total_volume = 1 # sum(max(x) for x in trades_volumes)
 
     # create empty matrix to be filled
     values = np.empty(shape=(len(depths), len(price_depths)), dtype=np.float64)
