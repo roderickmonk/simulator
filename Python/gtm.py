@@ -219,7 +219,7 @@ def load_trades():
 def save_tuning(tuning: dict):
 
     if not "output" in config or config["output"] is None:
-        output_name = ":".join([
+        output_name = "_".join([
             "auto",
             str(config["envId"]), config["exchange"], config["market"]
         ])
