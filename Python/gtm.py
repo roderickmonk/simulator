@@ -251,8 +251,8 @@ if __name__ == '__main__':
 
     if len(trades) == 0:
         logging.info ("No Trades!")
-        return
-        
+        exit (0)
+
     logging.debug(trades)
 
     price_depths = price_depths()
