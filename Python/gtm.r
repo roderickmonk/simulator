@@ -21,9 +21,6 @@ remaining.trade.size.quadrant <- function (th, market, price.depths, depths, i.l
   }
   )
   
-  # th <- th[which(th$m == market),]
-  # total.volume <- sum(th$q*th$r)
-  
   total.volume <- sum(sapply(th.price.depth.output[[2]], max))
   
   #create empty matrix to be filled
