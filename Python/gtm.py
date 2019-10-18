@@ -10,24 +10,11 @@ from math import log10
 
 mongodb = None
 config_db = None
-config = None
-trades = None
-IL = None
 BUY = 1
 
-
-def trades_price_depth(trades: list):
+def trades_price_depth(trades: list, IL: float):
 
     def remaining_price_depths():
-
-        """
-        for trade in bucket:
-            trades_price_depths.append([
-            1.0 /
-            (bucket[0][2] / trade[2]) if trade[4] == BUY else bucket[0][2] /
-            trade[2] 
-        ])
-        """
 
         for trade in bucket:
             ratio = bucket[0][2] / trade[2]
@@ -35,7 +22,6 @@ def trades_price_depth(trades: list):
                 trades_price_depths.append([1.0 / ratio])  
             else:
                 trades_price_depths.append ([ratio])
-
 
     def remaining_volumes():
 
@@ -74,12 +60,10 @@ def trades_price_depth(trades: list):
             bucket.append(trade)
 
     finally:
-
         # Handle the last bucket
         process_bucket()
 
     return trades_price_depths, trades_volumes
-
 
 def remaining_size_depths(
         remaining_volumes: list,
@@ -102,10 +86,9 @@ def remaining_size_depths(
 
     return remainders
 
+def get_values(trades: list, price_depths: list, depths: list, IL: float):
 
-def get_values(price_depths: list, depths: list):
-
-    trades_price_depths, trades_volumes = trades_price_depth(trades)
+    trades_price_depths, trades_volumes = trades_price_depth(trades, IL)
 
     logging.debug('trades_price_depths:\n%r', trades_price_depths)
     logging.info('trades_volumes:\n%r', trades_volumes)
@@ -173,7 +156,7 @@ def remaining_price_depth(
     return remaining_pdepth
 
 
-def price_depths():
+def price_depths(config: dict):
 
     return list(
         np.insert(
@@ -181,8 +164,7 @@ def price_depths():
                             log10(config["priceDepthEnd"]),
                             config["priceDepthSamples"]), 0, 0) + 1.0)
 
-
-def depths():
+def depths(config: dict):
 
     return list(
         np.insert(
@@ -190,20 +172,13 @@ def depths():
                             log10(config["depthEnd"]), config["depthSamples"]),
             0, 0))
 
-
 def load_config():
-
-    global config
-    global IL
 
     config_collection = config_db["generate.tuning"]
     config = config_collection.find_one({"name": sys.argv[1]})
-    IL = config["inventoryLimit"]
+    return config
 
-
-def load_trades():
-
-    global trades
+def load_trades(config: dict):
 
     if "window" in config:
         range = {"$gte": datetime.now() - timedelta(milliseconds=config["window"])}
@@ -219,16 +194,13 @@ def load_trades():
         }).sort("ts", 1))
 
     logging.warning("Trade Count: %d", len(trades))
-    # logging.error (trades)
-    # for t in trades:
-    # print ("t.ts: ", int(t["ts"].timestamp()*1000))
 
     # Extract salient fields from each trade
-    trades = [[
+    return = [[
         int(t["ts"].timestamp() * 1000), t["id"], t["r"], t["q"], t["buy"]
     ] for t in trades]
 
-def save_tuning(tuning: dict):
+def save_tuning(config: dict, tuning: dict):
 
     if not "output" in config or config["output"] is None:
         output_name = {"name": config["name"]}
@@ -238,7 +210,6 @@ def save_tuning(tuning: dict):
     document = {"$set": {**output_name, **tuning}}
 
     config_db["tuning"].update_one(output_name, document, upsert=True)
-
 
 if __name__ == '__main__':
 
@@ -252,10 +223,10 @@ if __name__ == '__main__':
     mongodb = MongoClient(os.environ['MONGODB'])
     config_db = mongodb["configuration"]
 
-    load_config()
+    config = load_config()
     logging.debug(config)
 
-    load_trades()
+    trades = load_trades()
 
     if len(trades) == 0:
         logging.error ("(%s) No Trades!", sys.argv[1])
@@ -271,9 +242,9 @@ if __name__ == '__main__':
     depths = depths()
     logging.debug(depths)
 
-    values = get_values(price_depths, depths)
+    values = get_values(trades, price_depths, depths, config["inventoryLimit"])
 
-    tuning = {"x": price_depths, "y": depths, "values": values}
+    tuning = {"price_depths": price_depths, "depths": depths, "values": values}
 
     save_tuning(tuning)
 
