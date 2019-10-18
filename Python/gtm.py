@@ -17,13 +17,25 @@ BUY = 1
 
 
 def trades_price_depth(trades: list):
+
     def remaining_price_depths():
 
-        trades_price_depths.append([
+        """
+        for trade in bucket:
+            trades_price_depths.append([
             1.0 /
             (bucket[0][2] / trade[2]) if trade[4] == BUY else bucket[0][2] /
-            trade[2] for trade in bucket
+            trade[2] 
         ])
+        """
+
+        for trade in bucket:
+            ratio = bucket[0][2] / trade[2]
+            if trade[4] == BUY:
+                trades_price_depths.append([1.0 / ratio])  
+            else:
+                trades_price_depths.append ([ratio])
+
 
     def remaining_volumes():
 
