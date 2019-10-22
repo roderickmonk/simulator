@@ -21,13 +21,16 @@ class TuningGenerator:
     trades: list
     depths: list
     price_depths: list
-    trades_volumes: list = []
-    trades_price_depths: list = []
+    trades_volumes: list
+    trades_price_depths: list
 
     def __init__(self, config: dict = None, configName: str = None) -> None:
 
         assert not (config == None and configName == None)
         assert not (config != None and configName != None)
+
+        self.trades_volumes = []
+        self.trades_price_depths = []
 
         if config:
             self.config = config
@@ -41,21 +44,39 @@ class TuningGenerator:
 
     def remaining_price_depths(self):
 
+        assert len (self.bucket) > 0
+
+        logging.error("bucket: %r", self.bucket)
+
+        tmp = []
         for trade in self.bucket:
             ratio = self.bucket[0][2] / trade[2]
             if trade[4] == BUY:
-                self.trades_price_depths.append([1.0 / ratio])
+                tmp.append(ratio)
             else:
-                self.trades_price_depths.append([ratio])
+                tmp.append(1 / ratio)
+
+        self.trades_price_depths.append(tmp)
 
     def remaining_volumes(self):
 
-        l = list(np.cumsum([t[2] * t[3] for t in self.bucket]))
-        self.trades_volumes.append([v if v <= self.IL else self.IL for v in l])
+        self.trades_volumes.append([
+            v if v <= self.IL else self.IL
+            for v in list(np.cumsum([t[2] * t[3] for t in self.bucket]))
+        ])
 
     def process_bucket(self):
 
-        self.bucket.sort(key=lambda x: x[2])
+        assert len (self.bucket) > 0
+
+        
+        # logging.error("bucket-before: %r", self.bucket)
+
+        self.bucket.sort(key=lambda x: x[2],
+                         reverse=(self.bucket[0][4] == True))
+
+        # logging.error("bucket-after: %r", self.bucket)
+
 
         self.remaining_price_depths()
         self.remaining_volumes()
@@ -211,6 +232,7 @@ class TuningGenerator:
         print(trades)
 
         if trades == None:
+
             # Retrieve trades from the database
 
             if "window" in self.config:
@@ -248,6 +270,7 @@ class TuningGenerator:
 
         config_collection = config_db["generate.tuning"]
         self.config = config_collection.find_one({"name": configName})
+
 
 def save_tuning(config: dict, tuning: dict):
 
