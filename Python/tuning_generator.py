@@ -17,7 +17,7 @@ class TuningGenerator:
 
     config: dict
     IL: float
-    bucket: list
+    meta_trade: list
     trades: list
     depths: list
     price_depths: list
@@ -25,7 +25,6 @@ class TuningGenerator:
     trades_price_depths: list
 
     def __init__(self, config: dict = None, configName: str = None):
-
         """
         Must initialize with either a config dict or a name of a config.
         If the latter, then configName is used to retrieve the config
@@ -47,40 +46,48 @@ class TuningGenerator:
         self.generate_price_depths()
         self.generate_depths()
 
+    def remaining_volumes(self) -> None:
+
+        # Ensure meta_trade contains only trades from one side
+        assert all([t[4] == self.meta_trade[0][4] for t in self.meta_trade])
+
+        self.trades_volumes.append([
+            v if v <= self.IL else self.IL for v in list(
+                np.cumsum([t[2] * t[3] for t in self.meta_trade][::-1]))
+        ][::-1])
+        """
+        self.trades_volumes.append([
+            v if v <= self.IL else self.IL for v in list(
+                # note meta_trade is reversed in the following
+                np.cumsum([t[2] * t[3] for t in self.meta_trade]))
+        ])
+        """
     def remaining_price_depths(self) -> None:
 
-        assert len(self.bucket) > 0
+        assert len(self.meta_trade) > 0
 
-        logging.debug("bucket: %r", self.bucket)
+        logging.debug("meta_trade: %r", self.meta_trade)
 
         tmp = []
-        for trade in self.bucket:
-            ratio = self.bucket[0][2] / trade[2]
+        for trade in self.meta_trade:
+            ratio = self.meta_trade[0][2] / trade[2]
             if trade[4] == BUY:
-                tmp.append(ratio)
-            else:
                 tmp.append(1 / ratio)
+            else:
+                tmp.append(ratio)
 
         self.trades_price_depths.append(tmp)
 
-    def remaining_volumes(self) -> None:
+    def process_meta_trade(self) -> None:
 
-        self.trades_volumes.append([
-            v if v <= self.IL else self.IL
-            # Review
-            for v in list(np.cumsum([t[2] * t[3] for t in self.bucket.reverse()]))
-        ])
+        assert len(self.meta_trade) > 0
 
-    def process_bucket(self) -> None:
+        logging.error("meta_trade-before: %r", self.meta_trade)
 
-        assert len(self.bucket) > 0
+        self.meta_trade.sort(key=lambda x: x[2],
+                             reverse= not self.meta_trade[0][4])
 
-        # logging.debug("bucket-before: %r", self.bucket)
-
-        self.bucket.sort(key=lambda x: x[2],
-                         reverse=(self.bucket[0][4] == True))
-
-        # logging.debug("bucket-after: %r", self.bucket)
+        logging.error("meta_trade-after: %r", self.meta_trade)
 
         self.remaining_price_depths()
         self.remaining_volumes()
@@ -90,27 +97,27 @@ class TuningGenerator:
         # Preliminary sort by ts, id, and buy
         self.trades.sort(key=lambda x: (x[0], x[4], x[1]))
 
-        self.bucket = []
+        self.meta_trade = []
         ref_trade = self.trades[0]
 
         try:
             for trade in self.trades:
 
-                # New bucket?
+                # New meta_trade?
                 if trade[0] != ref_trade[0] or trade[4] != ref_trade[4]:
 
-                    # Process the existing bucket and...
-                    self.process_bucket()
+                    # Process the existing meta_trade and...
+                    self.process_meta_trade()
 
                     # ...start again with an empty one
-                    self.bucket = []
+                    self.meta_trade = []
                     ref_trade = trade
 
-                self.bucket.append(trade)
+                self.meta_trade.append(trade)
 
         finally:
-            # Handle the last bucket
-            self.process_bucket()
+            # Handle the last meta_trade
+            self.process_meta_trade()
 
     def remaining_size_depths(
             self,
