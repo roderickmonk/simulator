@@ -44,13 +44,22 @@ def compare2D(x, y) -> bool:
 
 def test_remaining_price_depths_1():
 
+    config = {
+        "priceDepthStart": 0.0000000001,
+        "priceDepthEnd": 1.0,
+        "priceDepthSamples": 100,
+        "depthStart": 0.01,
+        "depthEnd": 100.0,
+        "depthSamples": 100,
+        "inventoryLimit": 200,
+    }
 
     tg = TuningGenerator(config=config)
 
     tg.bucket = [
-        [12345, 1234, 30, 504, True],
-        [12345, 1233, 60, 1003, True],
-        [12345, 1235, 30, 1003, True],
+        [12345, 1234, 3, 50, True],
+        [12345, 1233, 6, 30, True],
+        [12345, 1235, 3, 100, True],
     ]
     
     tg.bucket.sort(key=lambda x: (x[0], x[4], x[1]))
@@ -59,16 +68,37 @@ def test_remaining_price_depths_1():
     tg.remaining_price_depths()
 
     # trades_price_depths
-    logging.error("tg.trades_price_depths:\n%r", tg.trades_price_depths)
+    logging.debug("tg.trades_price_depths:\n%r", tg.trades_price_depths)
     expected = [[1.0, 2.0, 2.0]]
     assert compare2D(tg.trades_price_depths, expected)
+
+def test_remaining_volumes_1():
+
+
+    tg = TuningGenerator(config=config)
+
+    tg.bucket = [
+        [12345, 1234, 3, 50, True],
+        [12345, 1233, 6, 30, True],
+        [12345, 1235, 3, 100, True],
+    ]
+    
+    tg.bucket.sort(key=lambda x: (x[0], x[4], x[1]))
+    tg.bucket.sort(key=lambda x: x[2], reverse=True)
+
+    tg.remaining_volumes()
+
+    # trades_volumes
+    logging.debug("tg.trades_volumes:\n%r", tg.trades_volumes)
+    expected = [[180, 200, 200]]
+    assert compare2D(tg.trades_volumes, expected)
 
 
 def test_trades_price_depth_1():
 
     trades = [
         [12345, 1234, 3, 50, True],
-        [12345, 1233, 6, 100, True],
+        [12345, 1233, 6, 30, True],
         [12345, 1235, 3, 100, True],
     ]
 
@@ -79,7 +109,7 @@ def test_trades_price_depth_1():
         "depthStart": 0.01,
         "depthEnd": 100.0,
         "depthSamples": 100,
-        "inventoryLimit": 0.2,
+        "inventoryLimit": 200,
     }
 
     tg = TuningGenerator(config=config)
@@ -88,23 +118,23 @@ def test_trades_price_depth_1():
 
     # trades_volumes
     logging.debug("tg.trades_volumes:\n%r", tg.trades_volumes)
-    expected = [[150, 200, 200]]
+    expected = [[180, 200, 200]]
     assert compare2D(tg.trades_volumes, expected)
 
     # trades_price_depths
     logging.debug("tg.trades_price_depths:\n%r", tg.trades_price_depths)
-    expected = [[1.0, 1.0, 2.0]]
+    expected = [[1.0, 2.0, 2.0]]
     assert compare2D(tg.trades_price_depths, expected)
 
 
 def test_trades_price_depth_2():
 
     trades = [
-        [12345, 1234, 30, 504, True],
-        [12345, 1233, 60, 1003, True],
-        [12345, 1235, 30, 1003, True],
-        [98765, 1235, 31, 1003, True],
-        [98765, 1235, 31, 1003, False],
+        [12345, 1234, 3, 50, True],
+        [12345, 1233, 6, 30, True],
+        [12345, 1235, 3, 100, True],
+        [98765, 1235, 3, 100, True],
+        [98766, 1235, 3, 50, False],
     ]
 
     config = {
@@ -114,7 +144,7 @@ def test_trades_price_depth_2():
         "depthStart": 0.01,
         "depthEnd": 100.0,
         "depthSamples": 100,
-        "inventoryLimit": 0.2,
+        "inventoryLimit": 200,
     }
 
     tg = TuningGenerator(config=config)
@@ -123,10 +153,10 @@ def test_trades_price_depth_2():
 
     # trades_volumes
     logging.debug("tg.trades_volumes:\n%r", tg.trades_volumes)
-    expected = [[0.2, 0.2, 0.2], [0.2], [0.2]]
+    expected = [[180, 200, 200], [200], [150]]
     assert compare2D(tg.trades_volumes, expected)
 
     # trades_price_depths
     logging.debug("tg.trades_price_depths:\n%r", tg.trades_price_depths)
-    expected = [[1.0, 1.0, 2.0], [1.0], [1.0]]
+    expected = [[1.0, 2.0, 2.0], [1.0], [1.0]]
     assert compare2D(tg.trades_price_depths, expected)

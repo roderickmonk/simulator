@@ -24,8 +24,13 @@ class TuningGenerator:
     trades_volumes: list
     trades_price_depths: list
 
-    def __init__(self, config: dict = None, configName: str = None) -> None:
+    def __init__(self, config: dict = None, configName: str = None):
 
+        """
+        Must initialize with either a config dict or a name of a config.
+        If the latter, then configName is used to retrieve the config
+        from the database.
+        """
         assert not (config == None and configName == None)
         assert not (config != None and configName != None)
 
@@ -42,11 +47,11 @@ class TuningGenerator:
         self.generate_price_depths()
         self.generate_depths()
 
-    def remaining_price_depths(self):
+    def remaining_price_depths(self) -> None:
 
-        assert len (self.bucket) > 0
+        assert len(self.bucket) > 0
 
-        logging.error("bucket: %r", self.bucket)
+        logging.debug("bucket: %r", self.bucket)
 
         tmp = []
         for trade in self.bucket:
@@ -58,30 +63,29 @@ class TuningGenerator:
 
         self.trades_price_depths.append(tmp)
 
-    def remaining_volumes(self):
+    def remaining_volumes(self) -> None:
 
         self.trades_volumes.append([
             v if v <= self.IL else self.IL
-            for v in list(np.cumsum([t[2] * t[3] for t in self.bucket]))
+            # Review
+            for v in list(np.cumsum([t[2] * t[3] for t in self.bucket.reverse()]))
         ])
 
-    def process_bucket(self):
+    def process_bucket(self) -> None:
 
-        assert len (self.bucket) > 0
+        assert len(self.bucket) > 0
 
-        
-        # logging.error("bucket-before: %r", self.bucket)
+        # logging.debug("bucket-before: %r", self.bucket)
 
         self.bucket.sort(key=lambda x: x[2],
                          reverse=(self.bucket[0][4] == True))
 
-        # logging.error("bucket-after: %r", self.bucket)
-
+        # logging.debug("bucket-after: %r", self.bucket)
 
         self.remaining_price_depths()
         self.remaining_volumes()
 
-    def trades_price_depth(self):
+    def trades_price_depth(self) -> None:
 
         # Preliminary sort by ts, id, and buy
         self.trades.sort(key=lambda x: (x[0], x[4], x[1]))
@@ -111,7 +115,7 @@ class TuningGenerator:
     def remaining_size_depths(
             self,
             remaining_volumes: list,
-    ):
+    ) -> None:
 
         volume = [max(x) for x in remaining_volumes]
         logging.debug('volume:\n%r', volume)
@@ -129,13 +133,7 @@ class TuningGenerator:
 
         return remainders
 
-    def get_values(self):
-
-        price_depths = self.price_depths()
-        logging.debug(price_depths)
-
-        depths = self.depths()
-        logging.debug(depths)
+    def get_values(self) -> None:
 
         self.trades_price_depth()
 
@@ -164,15 +162,15 @@ class TuningGenerator:
 
         for i in range(len(self.depths)):
 
-            for j in range(len(price_depths)):
+            for j in range(len(self.price_depths)):
 
-                values[i][j] = quadrant(remaining_depth[i],
-                                        remaining_pdepth[j]) / total_volume
+                values[i][j] = self.quadrant(
+                    remaining_depth[i], remaining_pdepth[j]) / total_volume
 
         return values.tolist()
 
-    def quadrant(self, remaining_depth: list, remaining_pdepth: list):
-        # logging.error ("remaining_depth.shape: %r", np.array(remaining_depth).shape)
+    def quadrant(self, remaining_depth: list, remaining_pdepth: list) -> None:
+        # logging.debug ("remaining_depth.shape: %r", np.array(remaining_depth).shape)
         return sum(
             [min(x, y) for x, y in zip(remaining_depth, remaining_pdepth)])
 
@@ -180,7 +178,7 @@ class TuningGenerator:
             self,
             pdepth: list,
             remain: list,
-    ):
+    ) -> None:
 
         logging.debug("remain:\n%r", remain)
 
@@ -206,7 +204,7 @@ class TuningGenerator:
 
         return remaining_pdepth
 
-    def generate_price_depths(self) -> list:
+    def generate_price_depths(self) -> None:
 
         self.price_depths = list(
             np.insert(
@@ -214,9 +212,7 @@ class TuningGenerator:
                                 log10(self.config["priceDepthEnd"]),
                                 self.config["priceDepthSamples"]), 0, 0) + 1.0)
 
-        return self.price_depths
-
-    def generate_depths(self) -> list:
+    def generate_depths(self) -> None:
 
         self.depths = list(
             np.insert(
@@ -224,12 +220,7 @@ class TuningGenerator:
                                 log10(self.config["depthEnd"]),
                                 self.config["depthSamples"]), 0, 0))
 
-        return self.depths
-
-    def load_trades(self, *, trades: list = None):
-
-        print("trades")
-        print(trades)
+    def load_trades(self, trades: list = None) -> None:
 
         if trades == None:
 
@@ -264,15 +255,15 @@ class TuningGenerator:
         else:
             self.trades = trades
 
-        logging.warning("Trade Count: %d", len(self.trades))
+        logging.critical("Trade Count: %d", len(self.trades))
 
-    def load_config(self, configName: dict):
+    def load_config(self, configName: dict) -> None:
 
         config_collection = config_db["generate.tuning"]
         self.config = config_collection.find_one({"name": configName})
 
 
-def save_tuning(config: dict, tuning: dict):
+def save_tuning(config: dict, tuning: dict) -> None:
 
     if not "output" in config or config["output"] is None:
         output_name = {"name": config["name"]}
@@ -287,7 +278,7 @@ def save_tuning(config: dict, tuning: dict):
 if __name__ == '__main__':
 
     logging.basicConfig(format='[%(levelname)-5s] %(message)s',
-                        level=logging.DEBUG,
+                        level=logging.ERROR,
                         datefmt='')
 
     logging.debug(f'sys.argv: {sys.argv}')
@@ -300,16 +291,16 @@ if __name__ == '__main__':
     tg.load_trades()
 
     if len(tg.trades) == 0:
-        logging.error("(%s) No Trades!", sys.argv[1])
+        logging.debug("(%s) No Trades!", sys.argv[1])
         exit(0)
 
-    logging.error("(%s) Trades Count: %d", sys.argv[1], len(tg.trades))
+    logging.debug("(%s) Trades Count: %d", sys.argv[1], len(tg.trades))
     logging.debug(tg.trades)
 
     values = tg.get_values()
 
     tuning = {"price_depths": tg.depths, "depths": tg.depths, "values": values}
 
-    save_tuning(tuning)
+    save_tuning(tg.config, tuning)
 
-    logging.info("That's All Folks")
+    logging.critical("That's All Folks")
