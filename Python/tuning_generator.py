@@ -36,6 +36,7 @@ class TuningGenerator:
     trades_price_depths: list
     remaining_depth: list
     remaining_pdepth: list
+    total_volume: float
 
     def __init__(self, config: dict = None, configName: str = None):
         """
@@ -54,10 +55,10 @@ class TuningGenerator:
         else:
             self.load_config(configName=configName)
 
-        self.generate_price_depths()
-        self.generate_depths()
+        self.load_price_depths()
+        self.load_depths()
 
-    def remaining_volumes(self) -> None:
+    def load_trades_volumes(self) -> None:
 
         IL = self.config["inventoryLimit"]
 
@@ -66,7 +67,7 @@ class TuningGenerator:
                 np.cumsum([t[2] * t[3] for t in self.meta_trade][::-1]))
         ][::-1])
 
-    def remaining_price_depths(self) -> None:
+    def load_trades_price_depths(self) -> None:
 
         best_rate = self.meta_trade[0][2]
 
@@ -88,8 +89,8 @@ class TuningGenerator:
 
         logging.debug("meta_trade-after: %r", self.meta_trade)
 
-        self.remaining_price_depths()
-        self.remaining_volumes()
+        self.load_trades_price_depths()
+        self.load_trades_volumes()
 
     def trades_price_depth(self) -> None:
 
@@ -118,13 +119,16 @@ class TuningGenerator:
             # Handle the last meta_trade
             self.process_meta_trade()
 
-    def remaining_size_depths(self) -> None:
+    def load_total_volume(self):
+        self.total_volume = sum(max(x) for x in self.trades_volumes)
+
+    def load_remaining_depth(self) -> None:
 
         volume = [max(x) for x in self.trades_volumes]
         logging.debug('volume:\n%r', volume)
 
-        return [[(x if x > 0 else 0) for x in volume - depth]
-                for depth in self.depths]
+        self.remaining_depth = [[x if x > 0 else 0 for x in volume - depth]
+                                for depth in self.depths]
 
     """
     remaining.price.depth <- function(pdepth, remain, price.depth)
@@ -142,19 +146,16 @@ class TuningGenerator:
     )
     }
     """
-
-    def remaining_price_depth(
-            self,
-    ) -> None:
+    def remaining_price_depth(self, ) -> None:
 
         logging.debug("remain:\n%r", self.trades_volumes)
 
         self.remaining_pdepth = []
         remaining_pdepth_ele = []
 
-        l2 = [9,8,7,6,5]
-        xx = min ([(v,idx) for idx,v in enumerate(l2)])
-        print ("xx: ", xx)
+        l2 = [9, 8, 7, 6, 5]
+        xx = min([(v, idx) for idx, v in enumerate(l2)])
+        print("xx: ", xx)
 
         for price_depth in self.price_depths:
 
@@ -164,7 +165,8 @@ class TuningGenerator:
                     val, idx = min((val, idx) for (idx, val) in enumerate(x))
 
                     if price_depth <= val:
-                        remaining_pdepth_ele.append(self.trades_volumes[idx_x][idx])
+                        remaining_pdepth_ele.append(
+                            self.trades_volumes[idx_x][idx])
                     else:
                         remaining_pdepth_ele.append(0.0)
 
@@ -179,23 +181,23 @@ class TuningGenerator:
         logging.debug('trades_price_depths:\n%r', self.trades_price_depths)
         logging.info('trades_volumes:\n%r', self.trades_volumes)
 
-        self.remaining_depth = self.remaining_size_depths()
+        self.load_remaining_depth()
 
-        logging.error("remaining_depth.shape: %r",
+        logging.debug("remaining_depth.shape: %r",
                       np.array(self.remaining_depth).shape)
         logging.debug('remaining_depth:\n%r', self.remaining_depth)
 
         self.remaining_price_depth()
 
-        logging.error("remaining_pdepth.shape: %r",
+        logging.debug("remaining_pdepth.shape: %r",
                       np.array(self.remaining_pdepth).shape)
         logging.debug('remaining_pdepth:\n%r', self.remaining_pdepth)
 
-        total_volume = sum(max(x) for x in self.trades_volumes)
+        self.load_total_volume()
 
         return [[
             self.quadrant(self.remaining_depth[i], self.remaining_pdepth[j]) /
-            total_volume for i in range(len(self.depths))
+            self.total_volume for i in range(len(self.depths))
         ] for j in range(len(self.price_depths))]
 
     def quadrant(self, remaining_depth: list, remaining_pdepth: list) -> None:
@@ -204,7 +206,7 @@ class TuningGenerator:
         return sum(
             [min(x, y) for x, y in zip(remaining_depth, remaining_pdepth)])
 
-    def generate_price_depths(self) -> None:
+    def load_price_depths(self) -> None:
 
         self.price_depths = list(
             np.insert(
@@ -213,7 +215,7 @@ class TuningGenerator:
                                 self.config["priceDepthSamples"] - 1), 0, 0) +
             1.0)
 
-    def generate_depths(self) -> None:
+    def load_depths(self) -> None:
 
         self.depths = list(
             np.insert(
@@ -256,7 +258,7 @@ class TuningGenerator:
         else:
             self.trades = trades
 
-        logging.critical("Trade Count: %d", len(self.trades))
+        logging.debug("Trade Count: %d", len(self.trades))
 
     def load_config(self, configName: dict) -> None:
 
@@ -304,4 +306,4 @@ if __name__ == '__main__':
 
     save_tuning(tg.config, tuning)
 
-    logging.critical("That's All Folks")
+    print("That's All Folks")
