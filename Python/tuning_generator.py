@@ -6,23 +6,36 @@ from bson.objectid import ObjectId
 import sys
 import logging
 from datetime import datetime, timedelta
-from math import log10
+from math import isclose, log10
 
 mongodb = None
 config_db = None
 BUY = 1
 
 
+def compare2D(x, y) -> bool:
+    if len(x) != len(y):
+        return False
+    for x1, y1 in zip(x, y):
+        if len(x1) != len(y1):
+            return False
+        for x2, y2 in zip(x1, y1):
+            if not isclose(x2, y2):
+                return False
+    return True
+
+
 class TuningGenerator:
 
     config: dict
-    IL: float
     meta_trade: list
     trades: list
     depths: list
     price_depths: list
     trades_volumes: list
     trades_price_depths: list
+    remaining_depth: list
+    remaining_pdepth: list
 
     def __init__(self, config: dict = None, configName: str = None):
         """
@@ -41,41 +54,28 @@ class TuningGenerator:
         else:
             self.load_config(configName=configName)
 
-        self.IL = self.config["inventoryLimit"]
-
         self.generate_price_depths()
         self.generate_depths()
 
     def remaining_volumes(self) -> None:
 
-        assert len(self.meta_trade) > 0
-
-        # Ensure meta_trade contains only trades with the same timestamp
-        assert all([t[0] == self.meta_trade[0][0] for t in self.meta_trade])
-
-        # Ensure meta_trade contains only trades from one side
-        assert all([t[4] == self.meta_trade[0][4] for t in self.meta_trade])
+        IL = self.config["inventoryLimit"]
 
         self.trades_volumes.append([
-            v if v <= self.IL else self.IL for v in list(
+            v if v <= IL else IL for v in list(
                 np.cumsum([t[2] * t[3] for t in self.meta_trade][::-1]))
         ][::-1])
 
     def remaining_price_depths(self) -> None:
 
-        assert len(self.meta_trade) > 0
+        best_rate = self.meta_trade[0][2]
 
-        logging.debug("meta_trade: %r", self.meta_trade)
-
-        tmp = []
-        for trade in self.meta_trade:
-            ratio = self.meta_trade[0][2] / trade[2]
-            if trade[4] == BUY:
-                tmp.append(1 / ratio)
-            else:
-                tmp.append(ratio)
-
-        self.trades_price_depths.append(tmp)
+        self.trades_price_depths.append(
+            list(
+                map(
+                    lambda x: x[2] / best_rate
+                    if x[2] > best_rate else best_rate / x[2],
+                    self.meta_trade)))
 
     def process_meta_trade(self) -> None:
 
@@ -118,55 +118,59 @@ class TuningGenerator:
             # Handle the last meta_trade
             self.process_meta_trade()
 
-    def remaining_size_depths(
-            self,
-            remaining_volumes: list,
-    ) -> None:
+    def remaining_size_depths(self) -> None:
 
-        volume = [max(x) for x in remaining_volumes]
+        volume = [max(x) for x in self.trades_volumes]
         logging.debug('volume:\n%r', volume)
 
-        remainders = []
-        for depth in self.depths:
+        return [[(x if x > 0 else 0) for x in volume - depth]
+                for depth in self.depths]
 
-            logging.debug('depth:\n%r', depth)
-
-            remainder = volume - depth
-            logging.debug('remainder:\n%r', remainder)
-
-            # Ensure that if the remainder is less than 0 we only have 0
-            remainders.append([(x if x > 0 else 0) for x in volume - depth])
-
-        return remainders
+    """
+    remaining.price.depth <- function(pdepth, remain, price.depth)
+    {
+    
+        remaining.pdepth <- sapply (1:length(pdepth), function (x)
+        {
+            if(any(price.depth <= pdepth[[x]]) )
+            {
+            remain[[x]][min(which(price.depth <= pdepth[[x]]))]
+            }
+            else
+            {0}
+        }
+    )
+    }
+    """
 
     def remaining_price_depth(
             self,
-            pdepth: list,
-            remain: list,
     ) -> None:
 
-        logging.debug("remain:\n%r", remain)
+        logging.debug("remain:\n%r", self.trades_volumes)
 
-        remaining_pdepth = []
+        self.remaining_pdepth = []
         remaining_pdepth_ele = []
+
+        l2 = [9,8,7,6,5]
+        xx = min ([(v,idx) for idx,v in enumerate(l2)])
+        print ("xx: ", xx)
 
         for price_depth in self.price_depths:
 
             try:
-                for idx_x, x in enumerate(pdepth):
+                for idx_x, x in enumerate(self.trades_price_depths):
 
                     val, idx = min((val, idx) for (idx, val) in enumerate(x))
 
                     if price_depth <= val:
-                        remaining_pdepth_ele.append(remain[idx_x][idx])
+                        remaining_pdepth_ele.append(self.trades_volumes[idx_x][idx])
                     else:
                         remaining_pdepth_ele.append(0.0)
 
             finally:
-                remaining_pdepth.append(remaining_pdepth_ele)
+                self.remaining_pdepth.append(remaining_pdepth_ele)
                 remaining_pdepth_ele = []
-
-        return remaining_pdepth
 
     def get_values(self) -> None:
 
@@ -175,51 +179,39 @@ class TuningGenerator:
         logging.debug('trades_price_depths:\n%r', self.trades_price_depths)
         logging.info('trades_volumes:\n%r', self.trades_volumes)
 
-        remaining_depth = self.remaining_size_depths(self.trades_volumes)
-        logging.debug("remaining_depth.shape: %r",
-                      np.array(remaining_depth).shape)
-        logging.debug('remaining_depth:\n%r', remaining_depth)
+        self.remaining_depth = self.remaining_size_depths()
 
-        remaining_pdepth = self.remaining_price_depth(self.trades_price_depths,
-                                                      self.trades_volumes)
+        logging.error("remaining_depth.shape: %r",
+                      np.array(self.remaining_depth).shape)
+        logging.debug('remaining_depth:\n%r', self.remaining_depth)
 
-        logging.debug("remaining_pdepth.shape: %r",
-                      np.array(remaining_pdepth).shape)
-        logging.debug('remaining_pdepth:\n%r', remaining_pdepth)
+        self.remaining_price_depth()
 
-        # total_volume = 1
+        logging.error("remaining_pdepth.shape: %r",
+                      np.array(self.remaining_pdepth).shape)
+        logging.debug('remaining_pdepth:\n%r', self.remaining_pdepth)
+
         total_volume = sum(max(x) for x in self.trades_volumes)
 
-        # create empty matrix to be filled
-        values = np.empty(shape=(len(self.depths), len(self.price_depths)),
-                          dtype=np.float64)
-
-        logging.debug("values.shape: %r", values.shape)
-
-        for i in range(len(self.depths)):
-
-            for j in range(len(self.price_depths)):
-
-                values[i][j] = self.quadrant(
-                    remaining_depth[i], remaining_pdepth[j]) / total_volume
-
-        return values.tolist()
+        return [[
+            self.quadrant(self.remaining_depth[i], self.remaining_pdepth[j]) /
+            total_volume for i in range(len(self.depths))
+        ] for j in range(len(self.price_depths))]
 
     def quadrant(self, remaining_depth: list, remaining_pdepth: list) -> None:
 
         assert len(remaining_depth) == len(remaining_pdepth)
-        # logging.debug ("remaining_depth.shape: %r", np.array(remaining_depth).shape)
         return sum(
             [min(x, y) for x, y in zip(remaining_depth, remaining_pdepth)])
 
- 
     def generate_price_depths(self) -> None:
 
         self.price_depths = list(
             np.insert(
                 10**np.linspace(log10(self.config["priceDepthStart"]),
                                 log10(self.config["priceDepthEnd"]),
-                                self.config["priceDepthSamples"]), 0, 0) + 1.0)
+                                self.config["priceDepthSamples"] - 1), 0, 0) +
+            1.0)
 
     def generate_depths(self) -> None:
 
@@ -227,7 +219,7 @@ class TuningGenerator:
             np.insert(
                 10**np.linspace(log10(self.config["depthStart"]),
                                 log10(self.config["depthEnd"]),
-                                self.config["depthSamples"]), 0, 0))
+                                self.config["depthSamples"] - 1), 0, 0))
 
     def load_trades(self, trades: list = None) -> None:
 

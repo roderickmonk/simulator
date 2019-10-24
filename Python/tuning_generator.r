@@ -127,10 +127,8 @@ remaining.price.depth <- function(th.price.depth.output, price.depth)
 
 remaining.size.depth <- function(th.price.depth.output, depth)
 {
-  
       volume <- sapply(th.price.depth.output[[2]], max)     
   
-
       remainder <- volume - depth
       #make sure if the reaminder is less than 0 we only have 0
       
