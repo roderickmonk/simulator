@@ -48,6 +48,11 @@ class TuningGenerator:
 
     def remaining_volumes(self) -> None:
 
+        assert len(self.meta_trade) > 0
+
+        # Ensure meta_trade contains only trades with the same timestamp
+        assert all([t[0] == self.meta_trade[0][0] for t in self.meta_trade])
+
         # Ensure meta_trade contains only trades from one side
         assert all([t[4] == self.meta_trade[0][4] for t in self.meta_trade])
 
@@ -55,13 +60,7 @@ class TuningGenerator:
             v if v <= self.IL else self.IL for v in list(
                 np.cumsum([t[2] * t[3] for t in self.meta_trade][::-1]))
         ][::-1])
-        """
-        self.trades_volumes.append([
-            v if v <= self.IL else self.IL for v in list(
-                # note meta_trade is reversed in the following
-                np.cumsum([t[2] * t[3] for t in self.meta_trade]))
-        ])
-        """
+
     def remaining_price_depths(self) -> None:
 
         assert len(self.meta_trade) > 0
@@ -82,12 +81,12 @@ class TuningGenerator:
 
         assert len(self.meta_trade) > 0
 
-        logging.error("meta_trade-before: %r", self.meta_trade)
+        logging.debug("meta_trade-before: %r", self.meta_trade)
 
         self.meta_trade.sort(key=lambda x: x[2],
-                             reverse= not self.meta_trade[0][4])
+                             reverse=not self.meta_trade[0][4])
 
-        logging.error("meta_trade-after: %r", self.meta_trade)
+        logging.debug("meta_trade-after: %r", self.meta_trade)
 
         self.remaining_price_depths()
         self.remaining_volumes()
@@ -140,47 +139,6 @@ class TuningGenerator:
 
         return remainders
 
-    def get_values(self) -> None:
-
-        self.trades_price_depth()
-
-        logging.debug('trades_price_depths:\n%r', self.trades_price_depths)
-        logging.info('trades_volumes:\n%r', self.trades_volumes)
-
-        remaining_depth = self.remaining_size_depths(self.trades_volumes)
-        logging.debug("remaining_depth.shape: %r",
-                      np.array(remaining_depth).shape)
-        logging.debug('remaining_depth:\n%r', remaining_depth)
-
-        remaining_pdepth = self.remaining_price_depth(self.trades_price_depths,
-                                                      self.trades_volumes)
-
-        logging.debug("remaining_pdepth.shape: %r",
-                      np.array(remaining_pdepth).shape)
-        logging.debug('remaining_pdepth:\n%r', remaining_pdepth)
-
-        total_volume = 1  # sum(max(x) for x in trades_volumes)
-
-        # create empty matrix to be filled
-        values = np.empty(shape=(len(self.depths), len(self.price_depths)),
-                          dtype=np.float64)
-
-        logging.debug("values.shape: %r", values.shape)
-
-        for i in range(len(self.depths)):
-
-            for j in range(len(self.price_depths)):
-
-                values[i][j] = self.quadrant(
-                    remaining_depth[i], remaining_pdepth[j]) / total_volume
-
-        return values.tolist()
-
-    def quadrant(self, remaining_depth: list, remaining_pdepth: list) -> None:
-        # logging.debug ("remaining_depth.shape: %r", np.array(remaining_depth).shape)
-        return sum(
-            [min(x, y) for x, y in zip(remaining_depth, remaining_pdepth)])
-
     def remaining_price_depth(
             self,
             pdepth: list,
@@ -190,7 +148,6 @@ class TuningGenerator:
         logging.debug("remain:\n%r", remain)
 
         remaining_pdepth = []
-
         remaining_pdepth_ele = []
 
         for price_depth in self.price_depths:
@@ -211,6 +168,51 @@ class TuningGenerator:
 
         return remaining_pdepth
 
+    def get_values(self) -> None:
+
+        self.trades_price_depth()
+
+        logging.debug('trades_price_depths:\n%r', self.trades_price_depths)
+        logging.info('trades_volumes:\n%r', self.trades_volumes)
+
+        remaining_depth = self.remaining_size_depths(self.trades_volumes)
+        logging.debug("remaining_depth.shape: %r",
+                      np.array(remaining_depth).shape)
+        logging.debug('remaining_depth:\n%r', remaining_depth)
+
+        remaining_pdepth = self.remaining_price_depth(self.trades_price_depths,
+                                                      self.trades_volumes)
+
+        logging.debug("remaining_pdepth.shape: %r",
+                      np.array(remaining_pdepth).shape)
+        logging.debug('remaining_pdepth:\n%r', remaining_pdepth)
+
+        # total_volume = 1
+        total_volume = sum(max(x) for x in self.trades_volumes)
+
+        # create empty matrix to be filled
+        values = np.empty(shape=(len(self.depths), len(self.price_depths)),
+                          dtype=np.float64)
+
+        logging.debug("values.shape: %r", values.shape)
+
+        for i in range(len(self.depths)):
+
+            for j in range(len(self.price_depths)):
+
+                values[i][j] = self.quadrant(
+                    remaining_depth[i], remaining_pdepth[j]) / total_volume
+
+        return values.tolist()
+
+    def quadrant(self, remaining_depth: list, remaining_pdepth: list) -> None:
+
+        assert len(remaining_depth) == len(remaining_pdepth)
+        # logging.debug ("remaining_depth.shape: %r", np.array(remaining_depth).shape)
+        return sum(
+            [min(x, y) for x, y in zip(remaining_depth, remaining_pdepth)])
+
+ 
     def generate_price_depths(self) -> None:
 
         self.price_depths = list(
