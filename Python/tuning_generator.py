@@ -6,7 +6,7 @@ from bson.objectid import ObjectId
 import sys
 import logging
 from datetime import datetime, timedelta
-from math import isclose, log10
+import math
 
 mongodb = None
 config_db = None
@@ -20,7 +20,7 @@ def compare2D(x, y) -> bool:
         if len(x1) != len(y1):
             return False
         for x2, y2 in zip(x1, y1):
-            if not isclose(x2, y2):
+            if not math.isclose(x2, y2):
                 return False
     return True
 
@@ -153,6 +153,7 @@ class TuningGenerator:
 
         logging.debug("trades_volumes:\n%r", self.trades_volumes)
         logging.debug("trades_price_depths:\n%r", self.trades_price_depths)
+        logging.debug("price_depths:\n%r", self.price_depths)
 
         self.remaining_price_depths = []
 
@@ -163,13 +164,17 @@ class TuningGenerator:
             for idx_x, trade_price_depth in enumerate(
                     self.trades_price_depths):
 
-                val, idx = min(
-                    (val, idx) for (idx, val) in enumerate(trade_price_depth))
+                found = False
+                best_trade_price_depth = math.inf
+                best_idx: int = 0
+                for idx, pd in enumerate(trade_price_depth):
+                    if price_depth <= pd and pd < best_trade_price_depth:
+                        best_trade_price_depth = pd
+                        best_idx = idx
+                        found = True
 
-                logging.debug("idx: %d, val:\n%r", idx, val)
-
-                if price_depth <= val:
-                    tmp.append(self.trades_volumes[idx_x][idx])
+                if found:
+                    tmp.append(self.trades_volumes[idx_x][best_idx])
                 else:
                     tmp.append(0.0)
 
@@ -215,8 +220,8 @@ class TuningGenerator:
 
         self.price_depths = list(
             np.insert(
-                10**np.linspace(log10(self.config["priceDepthStart"]),
-                                log10(self.config["priceDepthEnd"]),
+                10**np.linspace(math.log10(self.config["priceDepthStart"]),
+                                math.log10(self.config["priceDepthEnd"]),
                                 self.config["priceDepthSamples"] - 1), 0, 0) +
             1.0)
 
@@ -224,8 +229,8 @@ class TuningGenerator:
 
         self.depths = list(
             np.insert(
-                10**np.linspace(log10(self.config["depthStart"]),
-                                log10(self.config["depthEnd"]),
+                10**np.linspace(math.log10(self.config["depthStart"]),
+                                math.log10(self.config["depthEnd"]),
                                 self.config["depthSamples"] - 1), 0, 0))
 
     def load_trades(self, trades: list = None) -> None:

@@ -672,44 +672,25 @@ def test_load_remaining_price_depths_0():
     assert compare2D(tg.remaining_price_depths, expected)
 
 
-def test_get_values_0():
-
-    trades = [
-        [12345, 1234, 3, 50, True],
-        [12345, 1233, 6, 30, True],
-        [12345, 1235, 3, 100, True],
-        [98765, 1235, 3, 100, True],
-        [98766, 1235, 3, 50, False],
-    ]
-
-    config = {
-        "priceDepthStart": 0.0000000001,
-        "priceDepthEnd": 1.0,
-        "priceDepthSamples": 4,
-        "depthStart": 0.01,
-        "depthEnd": 100.0,
-        "depthSamples": 3,
-        "inventoryLimit": 325,
-    }
-
-    tg = TuningGenerator(config=config)
-    tg.load_trades(trades=trades)
-    values = tg.get_values()
-
-    expected = [[1., 0.99996129, 0.61290323], [0., 0., 0.], [0., 0., 0.],
-                [0., 0., 0.]]
-    logging.error("values:\n%r", np.array(values))
-    assert compare2D(values, expected)
-
-
 def test_load_remaining_price_depths_0():
 
     trades = [
         [12345, 1234, 3, 50, True],
         [12345, 1233, 6, 30, True],
-        [12345, 1235, 3, 100, True],
+        [12345, 1235, 3.0001, 100, True],
+        [12345, 1236, 3, 50, True],
+        [12345, 1237, 9, 300, True],
+        [12345, 1238, 3, 100, True],
+        [23456, 1234, 3, 50, True],
+        [23456, 1233, 6, 30, True],
+        [23456, 1235, 3, 100, True],
+        [23456, 1236, 3, 50, True],
+        [23456, 1237, 9, 300, True],
+        [23456, 1238, 3, 100, True],
         [98765, 1235, 3, 100, True],
         [98766, 1235, 3, 50, False],
+        [100000, 1235, 3, 50, False],
+        [100000, 1235, 4, 50, False],
     ]
 
     config = {
@@ -718,8 +699,8 @@ def test_load_remaining_price_depths_0():
         "priceDepthSamples": 4,
         "depthStart": 0.01,
         "depthEnd": 100.0,
-        "depthSamples": 3,
-        "inventoryLimit": 325,
+        "depthSamples": 4,
+        "inventoryLimit": math.inf,
     }
 
     tg = TuningGenerator(config=config)
@@ -729,8 +710,9 @@ def test_load_remaining_price_depths_0():
 
     # trades_volumes
     logging.error("remaining_price_depths:\n%r", tg.remaining_price_depths)
-    expected = [[325, 300, 150], [0.0, 0.0, 0.0], [0.0, 0.0, 0.0],
-                [0.0, 0.0, 0.0]]
+    expected = [[3780.01, 3780, 300, 150, 350], [3180.01, 2880, 0.0, 0.0, 150],
+                [3180.01, 2880, 0.0, 0.0, 150], [2880.0, 2880, 0.0, 0.0, 0.0]]
+
     logging.debug("%r", np.array(expected))
     logging.error("%r", np.array(tg.remaining_price_depths))
     assert compare2D(tg.remaining_price_depths, expected)
@@ -760,9 +742,13 @@ def test_get_values_0():
     tg.load_trades(trades=trades)
     values = tg.get_values()
 
-    expected = [[1., 0.99996129, 0.61290323], [0., 0., 0.], [0., 0., 0.],
-                [0., 0., 0.]]
-    logging.error("values:\n%r", np.array(values))
+    expected = [
+        [1.0, 0.9999612903225806, 0.6129032258064516],
+        [0.23225806451612904, 0.23225806451612904, 0.23225806451612904],
+        [0.23225806451612904, 0.23225806451612904, 0.23225806451612904],
+        [0.23225806451612904, 0.23225806451612904, 0.23225806451612904]
+    ]
+    logging.debug("values:\n%r", values)
     assert compare2D(values, expected)
 
 
@@ -799,7 +785,9 @@ def test_get_values_1():
     tg.load_trades(trades=trades)
     values = tg.get_values()
 
-    expected = [[1.0, 0.9999950062421972, 0.9500624219725343], [0.0, 0.0, 0.0],
-                [0.0, 0.0, 0.0], [0.0, 0.0, 0.0]]
-    logging.error("values:\n%r", np.array(values))
+    expected = [[1.0, 0.9999950062421972, 0.9500624219725343],
+                [0.7191011235955056, 0.7191011235955056, 0.7191011235955056],
+                [0.7191011235955056, 0.7191011235955056, 0.7191011235955056],
+                [0.7191011235955056, 0.7191011235955056, 0.7191011235955056]]
+    logging.error("values:\n%r", values)
     assert compare2D(values, expected)
