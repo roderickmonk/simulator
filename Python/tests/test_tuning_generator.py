@@ -664,11 +664,11 @@ def test_load_remaining_price_depths_0():
     tg.load_remaining_price_depths()
 
     # trades_volumes
-    logging.error("remaining_price_depths:\n%r", tg.remaining_price_depths)
+    logging.debug("remaining_price_depths:\n%r", tg.remaining_price_depths)
     expected = [[325, 300, 150], [0.0, 0.0, 0.0], [0.0, 0.0, 0.0],
                 [0.0, 0.0, 0.0]]
     logging.debug("%r", np.array(expected))
-    logging.error("%r", np.array(tg.remaining_price_depths))
+    logging.debug("%r", np.array(tg.remaining_price_depths))
     assert compare2D(tg.remaining_price_depths, expected)
 
 
@@ -709,12 +709,12 @@ def test_load_remaining_price_depths_0():
     tg.load_remaining_price_depths()
 
     # trades_volumes
-    logging.error("remaining_price_depths:\n%r", tg.remaining_price_depths)
+    logging.debug("remaining_price_depths:\n%r", tg.remaining_price_depths)
     expected = [[3780.01, 3780, 300, 150, 350], [3180.01, 2880, 0.0, 0.0, 150],
                 [3180.01, 2880, 0.0, 0.0, 150], [2880.0, 2880, 0.0, 0.0, 0.0]]
 
     logging.debug("%r", np.array(expected))
-    logging.error("%r", np.array(tg.remaining_price_depths))
+    logging.debug("%r", np.array(tg.remaining_price_depths))
     assert compare2D(tg.remaining_price_depths, expected)
 
 
@@ -789,5 +789,5 @@ def test_get_values_1():
                 [0.7191011235955056, 0.7191011235955056, 0.7191011235955056],
                 [0.7191011235955056, 0.7191011235955056, 0.7191011235955056],
                 [0.7191011235955056, 0.7191011235955056, 0.7191011235955056]]
-    logging.error("values:\n%r", values)
+    logging.debug("values:\n%r", values)
     assert compare2D(values, expected)
