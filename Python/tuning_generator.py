@@ -35,7 +35,7 @@ class TuningGenerator:
     trades_volumes: list
     trades_price_depths: list
     remaining_depth: list
-    remaining_pdepth: list
+    remaining_price_depths: list
     total_volume: float
 
     def __init__(self, config: dict = None, configName: str = None):
@@ -47,8 +47,11 @@ class TuningGenerator:
         assert not (config == None and configName == None)
         assert not (config != None and configName != None)
 
+        self.depths = []
+        self.price_depths = []
         self.trades_volumes = []
         self.trades_price_depths = []
+        self.remaining_depth = []
 
         if config:
             self.config = config
@@ -146,33 +149,31 @@ class TuningGenerator:
     )
     }
     """
-    def remaining_price_depth(self, ) -> None:
+    def load_remaining_price_depths(self) -> None:
 
-        logging.debug("remain:\n%r", self.trades_volumes)
+        logging.debug("trades_volumes:\n%r", self.trades_volumes)
+        logging.debug("trades_price_depths:\n%r", self.trades_price_depths)
 
-        self.remaining_pdepth = []
-        remaining_pdepth_ele = []
-
-        l2 = [9, 8, 7, 6, 5]
-        xx = min([(v, idx) for idx, v in enumerate(l2)])
-        print("xx: ", xx)
+        self.remaining_price_depths = []
 
         for price_depth in self.price_depths:
 
-            try:
-                for idx_x, x in enumerate(self.trades_price_depths):
+            tmp = []
 
-                    val, idx = min((val, idx) for (idx, val) in enumerate(x))
+            for idx_x, trade_price_depth in enumerate(
+                    self.trades_price_depths):
 
-                    if price_depth <= val:
-                        remaining_pdepth_ele.append(
-                            self.trades_volumes[idx_x][idx])
-                    else:
-                        remaining_pdepth_ele.append(0.0)
+                val, idx = min(
+                    (val, idx) for (idx, val) in enumerate(trade_price_depth))
 
-            finally:
-                self.remaining_pdepth.append(remaining_pdepth_ele)
-                remaining_pdepth_ele = []
+                logging.debug("idx: %d, val:\n%r", idx, val)
+
+                if price_depth <= val:
+                    tmp.append(self.trades_volumes[idx_x][idx])
+                else:
+                    tmp.append(0.0)
+
+            self.remaining_price_depths.append(tmp)
 
     def get_values(self) -> None:
 
@@ -187,24 +188,28 @@ class TuningGenerator:
                       np.array(self.remaining_depth).shape)
         logging.debug('remaining_depth:\n%r', self.remaining_depth)
 
-        self.remaining_price_depth()
+        self.load_remaining_price_depths()
 
-        logging.debug("remaining_pdepth.shape: %r",
-                      np.array(self.remaining_pdepth).shape)
-        logging.debug('remaining_pdepth:\n%r', self.remaining_pdepth)
+        logging.debug("remaining_price_depths.shape: %r",
+                      np.array(self.remaining_price_depths).shape)
+        logging.debug('remaining_price_depths:\n%r',
+                      self.remaining_price_depths)
 
         self.load_total_volume()
 
         return [[
-            self.quadrant(self.remaining_depth[i], self.remaining_pdepth[j]) /
-            self.total_volume for i in range(len(self.depths))
+            self.quadrant(self.remaining_depth[i],
+                          self.remaining_price_depths[j]) / self.total_volume
+            for i in range(len(self.depths))
         ] for j in range(len(self.price_depths))]
 
-    def quadrant(self, remaining_depth: list, remaining_pdepth: list) -> None:
+    def quadrant(self, remaining_depth: list,
+                 remaining_price_depths: list) -> None:
 
-        assert len(remaining_depth) == len(remaining_pdepth)
-        return sum(
-            [min(x, y) for x, y in zip(remaining_depth, remaining_pdepth)])
+        assert len(remaining_depth) == len(remaining_price_depths)
+        return sum([
+            min(x, y) for x, y in zip(remaining_depth, remaining_price_depths)
+        ])
 
     def load_price_depths(self) -> None:
 
