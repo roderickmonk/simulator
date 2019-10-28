@@ -65,6 +65,7 @@ class Co2Validator:
         bot_config["inventoryLimit"] = float(bot_config["quantityLimit"])
         bot_config["feeRate"] = float(bot_config["feeRate"])
         bot_config["tick"] = float(bot_config["tick"])
+        bot_config["priceDepthLimit"] = 2.0
 
         tick = bot_config["tick"]
 
