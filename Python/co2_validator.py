@@ -84,7 +84,7 @@ class Co2Validator:
             'tick': bot_config["tick"],
             'pdf': "not-used",
             'allowOrderConflicts': bot_config["allowOrderConflicts"],
-            'tuning': 'qa_test_1',
+            'tuning': bot_config["tuning"],
         }
 
         sim_config.init(sim_config.partition_config)
