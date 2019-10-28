@@ -133,22 +133,6 @@ class TuningGenerator:
         self.remaining_depth = [[x if x > 0 else 0 for x in volume - depth]
                                 for depth in self.depths]
 
-    """
-    remaining.price.depth <- function(pdepth, remain, price.depth)
-    {
-    
-        remaining.pdepth <- sapply (1:length(pdepth), function (x)
-        {
-            if(any(price.depth <= pdepth[[x]]) )
-            {
-            remain[[x]][min(which(price.depth <= pdepth[[x]]))]
-            }
-            else
-            {0}
-        }
-    )
-    }
-    """
     def load_remaining_price_depths(self) -> None:
 
         logging.debug("trades_volumes:\n%r", self.trades_volumes)
@@ -312,7 +296,7 @@ if __name__ == '__main__':
 
     values = tg.get_values()
 
-    tuning = {"price_depths": tg.depths, "depths": tg.depths, "values": values}
+    tuning = {"price_depths": tg.price_depths, "depths": tg.depths, "values": values}
 
     save_tuning(tg.config, tuning)
 

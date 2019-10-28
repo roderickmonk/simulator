@@ -90,7 +90,7 @@ def simulate():
 
         logging.debug('partition_id: ' + str(partition_id))
 
-        # Prep for local mongodb access
+        # Prep for remote mongodb access
         assert os.environ['MONGODB'], 'MONGODB Not Defined'
         remote_mongo_client = MongoClient(os.environ['MONGODB'])
 
