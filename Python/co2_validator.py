@@ -59,15 +59,11 @@ class Co2Validator:
         bot_config = self.r.hgetall(bot_id.encode())
         logging.error("bot_config: %r", bot_config)
 
-        allow_order_conflicts = False
-
         bot_config["quantityLimit"] = float(bot_config["quantityLimit"])
         bot_config["inventoryLimit"] = float(bot_config["quantityLimit"])
         bot_config["feeRate"] = float(bot_config["feeRate"])
         bot_config["tick"] = float(bot_config["tick"])
-        bot_config["priceDepthLimit"] = 2.0
-
-        tick = bot_config["tick"]
+        bot_config["priceDepthLimit"] = float(bot_config["priceDepthLimit"])
 
         if bot_config["allowOrderConflicts"] == "true":
             bot_config["allowOrderConflicts"] = True
@@ -88,7 +84,7 @@ class Co2Validator:
             'priceDepthLimit': bot_config["priceDepthLimit"],
         }
 
-        self.trader = Trader(config)
+        self.trader = Trader(bot_config)
 
     def redis_get(self, cycle_time, field):
         raw = self.r.get(":".join([cycle_time, field]))
