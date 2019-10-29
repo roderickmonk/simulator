@@ -124,8 +124,8 @@ class Co2Validator:
                         logging.error("Cycle Time: %r", cycle_time)
 
                         # buyOB
-                        buy_rates = redis_get(cycle_time, "buy_rates")
-                        buy_quantities = redis_get(cycle_time,
+                        buy_rates = self.redis_get(cycle_time, "buy_rates")
+                        buy_quantities = self.redis_get(cycle_time,
                                                    "buy_quantities")
 
                         assert buy_rates.size == buy_quantities.size
@@ -134,8 +134,8 @@ class Co2Validator:
                         logging.debug('buyob:\n%r', buyob)
 
                         # sellOB
-                        sell_rates = redis_get(cycle_time, "sell_rates")
-                        sell_quantities = redis_get(cycle_time,
+                        sell_rates = self.redis_get(cycle_time, "sell_rates")
+                        sell_quantities = self.redis_get(cycle_time,
                                                     "sell_quantities")
 
                         assert sell_rates.size == sell_quantities.size
@@ -145,12 +145,12 @@ class Co2Validator:
 
                         # buy_rates
                         buy_rates_ref = np.flip(
-                            redis_get(r, cycle_time, "buy_candidate_rates")[0])
+                            self.redis_get(cycle_time, "buy_candidate_rates")[0])
                         assert buy_rates_ref.size > 0
 
                         # sell_rates
                         sell_rates_ref = np.flip(
-                            redis_get(cycle_time, "sell_candidate_rates")[0])
+                            self.redis_get(cycle_time, "sell_candidate_rates")[0])
                         assert sell_rates_ref.size > 0
 
                         timer = Timer()
