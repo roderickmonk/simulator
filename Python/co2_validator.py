@@ -85,6 +85,7 @@ class Co2Validator:
             'pdf': "not-used",
             'allowOrderConflicts': bot_config["allowOrderConflicts"],
             'tuning': bot_config["tuning"],
+            'priceDepthLimit': bot_config["priceDepthLimit"],
         }
 
         self.trader = Trader(config)
@@ -173,11 +174,6 @@ if __name__ == '__main__':
     logging.basicConfig(format='[%(levelname)-5s] %(message)s',
                         level=logging.ERROR,
                         datefmt='')
-
-    # assert os.environ['MONGODB'], 'MONGODB Not Defined'
-    # remote_mongo_client = MongoClient(os.environ['MONGODB'])
-
-    # sim_config.sim_configuration_db = remote_mongo_client['sim_configuration']
 
     co2 = Co2Validator()
     co2.run()
