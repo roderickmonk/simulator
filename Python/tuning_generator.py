@@ -186,6 +186,8 @@ class TuningGenerator:
 
         self.load_total_volume()
 
+        self.total_volume = 1.0
+
         return [[
             self.quadrant(self.remaining_depth[i],
                           self.remaining_price_depths[j]) / self.total_volume
