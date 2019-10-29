@@ -70,20 +70,6 @@ class Co2Validator:
         else:
             bot_config["allowOrderConflicts"] = False
 
-        config = {
-            '_id': "00000000",
-            'name': "config-name",
-            'quantityLimit': bot_config["quantityLimit"],
-            'inventoryLimit': bot_config["inventoryLimit"],
-            'feeRate': bot_config["feeRate"],
-            'actualFeeRate': 0.0027,
-            'tick': bot_config["tick"],
-            'pdf': "not-used",
-            'allowOrderConflicts': bot_config["allowOrderConflicts"],
-            'tuning': bot_config["tuning"],
-            'priceDepthLimit': bot_config["priceDepthLimit"],
-        }
-
         self.trader = Trader(bot_config)
 
     def redis_get(self, cycle_time, field):
