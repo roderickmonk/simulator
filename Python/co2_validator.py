@@ -154,7 +154,7 @@ class Co2Validator:
                         assert sell_rates_ref.size > 0
 
                         timer = Timer()
-                        buy_rate, sell_rate = trader.compute_orders(
+                        buy_rate, sell_rate = self.trader.compute_orders(
                             buyob, sellob)
 
                         logging.info(
