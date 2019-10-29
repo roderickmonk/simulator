@@ -158,7 +158,7 @@ class Co2Validator:
                         buy_rate, sell_rate = self.trader.compute_orders(
                             buyob, sellob)
 
-                        logging.info(
+                        logging.error(
                             "Elapsed Time: %f, buy_rate: %f, sell_rate: %f",
                             timer, buy_rate, sell_rate)
 
