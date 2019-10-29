@@ -160,7 +160,7 @@ class Co2Validator:
 
                         logging.error(
                             "Elapsed Time: %f, buy_rate: %f, sell_rate: %f",
-                            timer, buy_rate, sell_rate)
+                            timer(), buy_rate, sell_rate)
 
         except StopIteration:
             assert False  # Must not be here
