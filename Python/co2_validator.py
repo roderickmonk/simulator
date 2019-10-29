@@ -74,7 +74,7 @@ class Co2Validator:
         else:
             bot_config["allowOrderConflicts"] = False
 
-        sim_config.partition_config = {
+        config = {
             '_id': "00000000",
             'name': "config-name",
             'quantityLimit': bot_config["quantityLimit"],
@@ -87,8 +87,7 @@ class Co2Validator:
             'tuning': bot_config["tuning"],
         }
 
-        sim_config.init(sim_config.partition_config)
-        self.trader = Trader(sim_config)
+        self.trader = Trader(config)
 
     def redis_get(self, cycle_time, field):
         raw = self.r.get(":".join([cycle_time, field]))
