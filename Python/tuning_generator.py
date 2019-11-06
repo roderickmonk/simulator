@@ -7,6 +7,7 @@ import sys
 import logging
 from datetime import datetime, timedelta
 import math
+import pprint
 
 mongodb = None
 config_db = None
@@ -186,13 +187,11 @@ class TuningGenerator:
 
         self.load_total_volume()
 
-        self.total_volume = 1.0
-
         return [[
-            self.quadrant(self.remaining_depth[i],
-                          self.remaining_price_depths[j]) / self.total_volume
-            for i in range(len(self.depths))
-        ] for j in range(len(self.price_depths))]
+            self.quadrant(self.remaining_depth[j],
+                          self.remaining_price_depths[i]) / self.total_volume
+            for i in range(len(self.price_depths))
+        ] for j in range(len(self.depths))]
 
     def quadrant(self, remaining_depth: list,
                  remaining_price_depths: list) -> None:
@@ -226,23 +225,23 @@ class TuningGenerator:
             # Retrieve trades from the database
 
             if "window" in self.config:
-                range = {
+                ts_range = {
                     "$gte":
                     datetime.now() -
                     timedelta(milliseconds=self.config["window"])
                 }
             else:
-                range = {
+                ts_range = {
                     "$gte": self.config["startTime"],
-                    "$lt": self.config["endTime"]
+                    "$lte": self.config["endTime"]
                 }
 
-            self.trades = list(mongodb["history"].trades.find(
+            self.trades = list(mongodb["history"]["bittrex-v1-trades"].find(
                 filter={
                     "e": self.config["envId"],
                     "x": self.config["exchange"],
                     "m": self.config["market"],
-                    "ts": range
+                    "ts": ts_range
                 }).sort("ts", 1))
 
             # Extract salient fields from each trade
@@ -251,10 +250,19 @@ class TuningGenerator:
                 t["buy"]
             ] for t in self.trades]
 
+            logging.error("First trade: %r", self.trades[0])
+            logging.error("Last trade: %r", self.trades[-1])
+
+            logging.error(
+                datetime.utcfromtimestamp(self.trades[0][0] /
+                                          1000).strftime('%Y-%m-%d %H:%M:%S'))
+            logging.error(
+                datetime.utcfromtimestamp(self.trades[-1][0] /
+                                          1000).strftime('%Y-%m-%d %H:%M:%S'))
         else:
             self.trades = trades
 
-        logging.debug("Trade Count: %d", len(self.trades))
+        logging.error("Trade Count: %d", len(self.trades))
 
     def load_config(self, configName: dict) -> None:
 
@@ -298,7 +306,15 @@ if __name__ == '__main__':
 
     values = tg.get_values()
 
-    tuning = {"price_depths": tg.price_depths, "depths": tg.depths, "values": values}
+    tuning = {
+        "price_depths": tg.price_depths,
+        "depths": tg.depths,
+        "values": values,
+        "trades_price_depths": tg.trades_price_depths,
+        "trades_volumes": tg.trades_volumes,
+        "remaining_depths": tg.remaining_depth,
+        "remaining_price_depths": tg.remaining_price_depths,
+    }
 
     save_tuning(tg.config, tuning)
 

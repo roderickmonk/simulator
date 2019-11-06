@@ -20,6 +20,8 @@ config = {
     "inventoryLimit": 200,
 }
 
+np.set_printoptions(precision=12)
+
 
 def compare1D(x, y) -> bool:
     if len(x) != len(y):
@@ -42,9 +44,7 @@ def compare2D(x, y) -> bool:
     return True
 
 
-"""
-Generate Depths
-"""
+# Generate Depths
 
 
 def test_load_depths_0():
@@ -644,8 +644,8 @@ def test_load_remaining_price_depths_0():
         [12345, 1234, 3, 50, True],
         [12345, 1233, 6, 30, True],
         [12345, 1235, 3, 100, True],
-        [98765, 1235, 3, 100, True],
-        [98766, 1235, 3, 50, False],
+        [98765, 1236, 3, 100, True],
+        [98766, 1237, 3, 50, False],
     ]
 
     config = {
@@ -663,16 +663,18 @@ def test_load_remaining_price_depths_0():
     tg.trades_price_depth()
     tg.load_remaining_price_depths()
 
-    # trades_volumes
+    logging.debug("depths:\n%r", tg.depths)
+    logging.debug("price_depths:\n%r", tg.price_depths)
     logging.debug("remaining_price_depths:\n%r", tg.remaining_price_depths)
-    expected = [[325, 300, 150], [0.0, 0.0, 0.0], [0.0, 0.0, 0.0],
-                [0.0, 0.0, 0.0]]
+
+    expected = [[325, 300, 150], [180, 0.0, 0.0], [180, 0.0, 0.0],
+                [180, 0.0, 0.0]]
     logging.debug("%r", np.array(expected))
     logging.debug("%r", np.array(tg.remaining_price_depths))
     assert compare2D(tg.remaining_price_depths, expected)
 
 
-def test_load_remaining_price_depths_0():
+def test_load_remaining_price_depths_1():
 
     trades = [
         [12345, 1234, 3, 50, True],
@@ -708,10 +710,58 @@ def test_load_remaining_price_depths_0():
     tg.trades_price_depth()
     tg.load_remaining_price_depths()
 
-    # trades_volumes
+    logging.error("depths:\n%r", tg.depths)
+    logging.error("price_depths:\n%r", tg.price_depths)
     logging.debug("remaining_price_depths:\n%r", tg.remaining_price_depths)
     expected = [[3780.01, 3780, 300, 150, 350], [3180.01, 2880, 0.0, 0.0, 150],
                 [3180.01, 2880, 0.0, 0.0, 150], [2880.0, 2880, 0.0, 0.0, 0.0]]
+
+    logging.debug("%r", np.array(expected))
+    logging.debug("%r", np.array(tg.remaining_price_depths))
+    assert compare2D(tg.remaining_price_depths, expected)
+
+
+def test_load_remaining_price_depths_2():
+
+    trades = [
+        [12345, 1234, 3, 50, True],
+        [12345, 1233, 6, 30, True],
+        [12345, 1235, 3.0001, 100, True],
+        [12345, 1236, 3, 50, True],
+        [12345, 1237, 9, 300, True],
+        [12345, 1238, 3, 100, True],
+        [23456, 1234, 3, 50, True],
+        [23456, 1233, 6, 30, True],
+        [23456, 1235, 3, 100, True],
+        [23456, 1236, 3, 50, True],
+        [23456, 1237, 9, 300, True],
+        [23456, 1238, 3, 100, True],
+        [98765, 1235, 3, 100, True],
+        [98766, 1235, 3, 50, False],
+        [100000, 1235, 3, 50, False],
+        [100000, 1235, 4, 50, False],
+    ]
+
+    config = {
+        "priceDepthStart": 0.0000000001,
+        "priceDepthEnd": 1.0,
+        "priceDepthSamples": 4,
+        "depthStart": 0.01,
+        "depthEnd": 100.0,
+        "depthSamples": 4,
+        "inventoryLimit": 500,
+    }
+
+    tg = TuningGenerator(config=config)
+    tg.load_trades(trades=trades)
+    tg.trades_price_depth()
+    tg.load_remaining_price_depths()
+
+    logging.debug("depths:\n%r", tg.depths)
+    logging.debug("price_depths:\n%r", tg.price_depths)
+    logging.debug("remaining_price_depths:\n%r", tg.remaining_price_depths)
+    expected = [[500, 500, 300, 150, 350], [500, 500, 0.0, 0.0, 150],
+                [500, 500, 0.0, 0.0, 150], [500, 500, 0.0, 0.0, 0.0]]
 
     logging.debug("%r", np.array(expected))
     logging.debug("%r", np.array(tg.remaining_price_depths))
@@ -743,12 +793,11 @@ def test_get_values_0():
     values = tg.get_values()
 
     expected = [
-        [1.0, 0.9999612903225806, 0.6129032258064516],
-        [0.23225806451612904, 0.23225806451612904, 0.23225806451612904],
-        [0.23225806451612904, 0.23225806451612904, 0.23225806451612904],
-        [0.23225806451612904, 0.23225806451612904, 0.23225806451612904]
+        [1., 0.232258064516, 0.232258064516, 0.232258064516],
+        [0.999961290323, 0.232258064516, 0.232258064516, 0.232258064516],
+        [0.612903225806, 0.232258064516, 0.232258064516, 0.232258064516]
     ]
-    logging.debug("values:\n%r", values)
+    logging.error("values:\n%r", np.array(values))
     assert compare2D(values, expected)
 
 
