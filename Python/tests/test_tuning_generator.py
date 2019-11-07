@@ -44,7 +44,7 @@ def compare2D(x, y) -> bool:
     return True
 
 
-# Generate Depths
+# depths
 
 
 def test_load_depths_0():
@@ -60,7 +60,7 @@ def test_load_depths_0():
 
     tg = TuningGenerator(config=config)
 
-    # trades_volumes
+    # meta_remaining_volumes
     logging.debug("depths:\n%r", tg.depths)
     expected = [
         0.0, 0.01, 0.03162277660168379, 0.1, 0.31622776601683794, 1.0,
@@ -69,9 +69,7 @@ def test_load_depths_0():
     assert compare1D(tg.depths, expected)
 
 
-"""
-Generate Price Depths
-"""
+# price_depths
 
 
 def test_load_price_depths_0():
@@ -87,7 +85,7 @@ def test_load_price_depths_0():
 
     tg = TuningGenerator(config=config)
 
-    # trades_volumes
+    # meta_remaining_volumes
     logging.debug("price_depths:\n%r", tg.price_depths)
     expected = [
         1.0, 1.0000000001, 1.000000001, 1.00000001, 1.0000001, 1.000001,
@@ -127,15 +125,13 @@ def test_load_total_volume_0():
 
     tg.load_total_volume()
 
-    logging.debug("trades_volumes:\n%r", tg.trades_volumes)
+    logging.debug("meta_remaining_volumes:\n%r", tg.meta_remaining_volumes)
     logging.debug("total_volume:\n%r", tg.total_volume)
     expected = 550
     assert math.isclose(tg.total_volume, expected)
 
 
-"""
-Remaining Volumes
-"""
+# meta_remaining_volumes
 
 
 def test_load_trades_volumes_1():
@@ -163,10 +159,9 @@ def test_load_trades_volumes_1():
 
     tg.load_trades_volumes()
 
-    # trades_volumes
-    logging.debug("tg.trades_volumes:\n%r", tg.trades_volumes)
+    logging.debug("tg.meta_remaining_volumes:\n%r", tg.meta_remaining_volumes)
     expected = [[450, 300, 180]]
-    assert compare2D(tg.trades_volumes, expected)
+    assert compare2D(tg.meta_remaining_volumes, expected)
 
 
 def test_load_trades_volumes_2():
@@ -194,10 +189,10 @@ def test_load_trades_volumes_2():
 
     tg.load_trades_volumes()
 
-    # trades_volumes
-    logging.debug("tg.trades_volumes:\n%r", tg.trades_volumes)
+    # meta_remaining_volumes
+    logging.debug("tg.meta_remaining_volumes:\n%r", tg.meta_remaining_volumes)
     expected = [[200, 200, 180]]
-    assert compare2D(tg.trades_volumes, expected)
+    assert compare2D(tg.meta_remaining_volumes, expected)
 
 
 def test_load_trades_volumes_3():
@@ -221,14 +216,14 @@ def test_load_trades_volumes_3():
     ]
 
     tg.meta_trade.sort(key=lambda x: (x[0], x[4], x[1]))
-    tg.meta_trade.sort(key=lambda x: x[2], reverse=tg.meta_trade[0][4])
+    tg.meta_trade.sort(key=lambda x: x[2], reverse= not tg.meta_trade[0][4])
 
     tg.load_trades_volumes()
 
-    # trades_volumes
-    logging.debug("tg.trades_volumes:\n%r", tg.trades_volumes)
-    expected = [[450, 300, 180]]
-    assert compare2D(tg.trades_volumes, expected)
+    # meta_remaining_volumes
+    logging.error("tg.meta_remaining_volumes:\n%r", tg.meta_remaining_volumes)
+    expected = [[450, 270, 120]]
+    assert compare2D(tg.meta_remaining_volumes, expected)
 
 
 def test_load_trades_volumes_4():
@@ -256,10 +251,10 @@ def test_load_trades_volumes_4():
 
     tg.load_trades_volumes()
 
-    # trades_volumes
-    logging.debug("tg.trades_volumes:\n%r", tg.trades_volumes)
+    # meta_remaining_volumes
+    logging.debug("tg.meta_remaining_volumes:\n%r", tg.meta_remaining_volumes)
     expected = [[200, 200, 180]]
-    assert compare2D(tg.trades_volumes, expected)
+    assert compare2D(tg.meta_remaining_volumes, expected)
 
 
 def test_load_trades_volumes_5():
@@ -289,10 +284,10 @@ def test_load_trades_volumes_5():
 
     tg.load_total_volume()
 
-    # trades_volumes
-    logging.debug("tg.trades_volumes:\n%r", tg.trades_volumes)
+    # meta_remaining_volumes
+    logging.debug("tg.meta_remaining_volumes:\n%r", tg.meta_remaining_volumes)
     expected = [[450, 270, 120], [300], [150]]
-    assert compare2D(tg.trades_volumes, expected)
+    assert compare2D(tg.meta_remaining_volumes, expected)
 
 
 """
@@ -325,10 +320,10 @@ def test_load_trades_price_depths_1():
 
     tg.load_trades_price_depths()
 
-    # trades_price_depths
-    logging.debug("tg.trades_price_depths:\n%r", tg.trades_price_depths)
+    # meta_price_depths
+    logging.debug("tg.meta_price_depths:\n%r", tg.meta_price_depths)
     expected = [[1.0, 1.0, 2.0]]
-    assert compare2D(tg.trades_price_depths, expected)
+    assert compare2D(tg.meta_price_depths, expected)
 
 
 def test_load_trades_price_depths_2():
@@ -356,10 +351,10 @@ def test_load_trades_price_depths_2():
 
     tg.load_trades_price_depths()
 
-    # trades_price_depths
-    logging.debug("tg.trades_price_depths:\n%r", tg.trades_price_depths)
+    # meta_price_depths
+    logging.debug("tg.meta_price_depths:\n%r", tg.meta_price_depths)
     expected = [[1.0, 2.0, 2.0]]
-    assert compare2D(tg.trades_price_depths, expected)
+    assert compare2D(tg.meta_price_depths, expected)
 
 
 """
@@ -389,15 +384,15 @@ def test_trades_price_depth_0():
     tg.load_trades(trades=trades)
     tg.trades_price_depth()
 
-    # trades_volumes
-    logging.debug("tg.trades_volumes:\n%r", tg.trades_volumes)
+    # meta_remaining_volumes
+    logging.debug("tg.meta_remaining_volumes:\n%r", tg.meta_remaining_volumes)
     expected = [[630, 480, 180]]
-    assert compare2D(tg.trades_volumes, expected)
+    assert compare2D(tg.meta_remaining_volumes, expected)
 
-    # trades_price_depths
-    logging.debug("tg.trades_price_depths:\n%r", tg.trades_price_depths)
+    # meta_price_depths
+    logging.debug("tg.meta_price_depths:\n%r", tg.meta_price_depths)
     expected = [[1.0, 1.0, 2.0]]
-    assert compare2D(tg.trades_price_depths, expected)
+    assert compare2D(tg.meta_price_depths, expected)
 
 
 def test_trades_price_depth_1():
@@ -422,15 +417,15 @@ def test_trades_price_depth_1():
     tg.load_trades(trades=trades)
     tg.trades_price_depth()
 
-    # trades_volumes
-    logging.debug("tg.trades_volumes:\n%r", tg.trades_volumes)
+    # meta_remaining_volumes
+    logging.debug("tg.meta_remaining_volumes:\n%r", tg.meta_remaining_volumes)
     expected = [[200, 200, 180]]
-    assert compare2D(tg.trades_volumes, expected)
+    assert compare2D(tg.meta_remaining_volumes, expected)
 
-    # trades_price_depths
-    logging.debug("tg.trades_price_depths:\n%r", tg.trades_price_depths)
+    # meta_price_depths
+    logging.debug("tg.meta_price_depths:\n%r", tg.meta_price_depths)
     expected = [[1.0, 1.0, 2.0]]
-    assert compare2D(tg.trades_price_depths, expected)
+    assert compare2D(tg.meta_price_depths, expected)
 
 
 def test_trades_price_depth_2():
@@ -457,15 +452,15 @@ def test_trades_price_depth_2():
     tg.load_trades(trades=trades)
     tg.trades_price_depth()
 
-    # trades_volumes
-    logging.debug("tg.trades_volumes:\n%r", tg.trades_volumes)
+    # meta_remaining_volumes
+    logging.debug("tg.meta_remaining_volumes:\n%r", tg.meta_remaining_volumes)
     expected = [[630, 450, 300], [300], [150]]
-    assert compare2D(tg.trades_volumes, expected)
+    assert compare2D(tg.meta_remaining_volumes, expected)
 
-    # trades_price_depths
-    logging.debug("tg.trades_price_depths:\n%r", tg.trades_price_depths)
+    # meta_price_depths
+    logging.debug("tg.meta_price_depths:\n%r", tg.meta_price_depths)
     expected = [[1.0, 2.0, 2.0], [1.0], [1.0]]
-    assert compare2D(tg.trades_price_depths, expected)
+    assert compare2D(tg.meta_price_depths, expected)
 
 
 def test_trades_price_depth_3():
@@ -492,15 +487,15 @@ def test_trades_price_depth_3():
     tg.load_trades(trades=trades)
     tg.trades_price_depth()
 
-    # trades_volumes
-    logging.debug("tg.trades_volumes:\n%r", tg.trades_volumes)
+    # meta_remaining_volumes
+    logging.debug("tg.meta_remaining_volumes:\n%r", tg.meta_remaining_volumes)
     expected = [[200, 200, 200], [200], [150]]
-    assert compare2D(tg.trades_volumes, expected)
+    assert compare2D(tg.meta_remaining_volumes, expected)
 
-    # trades_price_depths
-    logging.debug("tg.trades_price_depths:\n%r", tg.trades_price_depths)
+    # meta_price_depths
+    logging.debug("tg.meta_price_depths:\n%r", tg.meta_price_depths)
     expected = [[1.0, 2.0, 2.0], [1.0], [1.0]]
-    assert compare2D(tg.trades_price_depths, expected)
+    assert compare2D(tg.meta_price_depths, expected)
 
 
 def test_trades_price_depth_4():
@@ -527,15 +522,15 @@ def test_trades_price_depth_4():
     tg.load_trades(trades=trades)
     tg.trades_price_depth()
 
-    # trades_volumes
-    logging.debug("tg.trades_volumes:\n%r", tg.trades_volumes)
+    # meta_remaining_volumes
+    logging.debug("tg.meta_remaining_volumes:\n%r", tg.meta_remaining_volumes)
     expected = [[630, 480, 180], [300], [150]]
-    assert compare2D(tg.trades_volumes, expected)
+    assert compare2D(tg.meta_remaining_volumes, expected)
 
-    # trades_price_depths
-    logging.debug("tg.trades_price_depths:\n%r", tg.trades_price_depths)
+    # meta_price_depths
+    logging.debug("tg.meta_price_depths:\n%r", tg.meta_price_depths)
     expected = [[1.0, 1.0, 2.0], [1.0], [1.0]]
-    assert compare2D(tg.trades_price_depths, expected)
+    assert compare2D(tg.meta_price_depths, expected)
 
 
 def test_trades_price_depth_5():
@@ -562,15 +557,15 @@ def test_trades_price_depth_5():
     tg.load_trades(trades=trades)
     tg.trades_price_depth()
 
-    # trades_volumes
-    logging.debug("tg.trades_volumes:\n%r", tg.trades_volumes)
+    # meta_remaining_volumes
+    logging.debug("tg.meta_remaining_volumes:\n%r", tg.meta_remaining_volumes)
     expected = [[200, 200, 180], [200], [150]]
-    assert compare2D(tg.trades_volumes, expected)
+    assert compare2D(tg.meta_remaining_volumes, expected)
 
-    # trades_price_depths
-    logging.debug("tg.trades_price_depths:\n%r", tg.trades_price_depths)
+    # meta_price_depths
+    logging.debug("tg.meta_price_depths:\n%r", tg.meta_price_depths)
     expected = [[1.0, 1.0, 2.0], [1.0], [1.0]]
-    assert compare2D(tg.trades_price_depths, expected)
+    assert compare2D(tg.meta_price_depths, expected)
 
 
 def test_load_remaining_depth_0():
@@ -598,7 +593,7 @@ def test_load_remaining_depth_0():
     tg.trades_price_depth()
     tg.load_remaining_depth()
 
-    # trades_volumes
+    # meta_remaining_volumes
     logging.debug("tg.remaining_depth:\n%r", tg.remaining_depth)
     expected = [[630.0, 300.0, 150.0], [629.99, 299.99, 149.99],
                 [530.0, 200.0, 50.0]]
@@ -631,7 +626,7 @@ def test_load_remaining_depth_1():
 
     tg.load_remaining_depth()
 
-    # trades_volumes
+    # meta_remaining_volumes
     logging.debug("tg.remaining_depth:\n%r", tg.remaining_depth)
     expected = [[200.0, 200.0, 150.0], [199.99, 199.99, 149.99],
                 [100.0, 100.0, 50.0]]
@@ -834,9 +829,44 @@ def test_get_values_1():
     tg.load_trades(trades=trades)
     values = tg.get_values()
 
-    expected = [[1.0, 0.9999950062421972, 0.9500624219725343],
-                [0.7191011235955056, 0.7191011235955056, 0.7191011235955056],
-                [0.7191011235955056, 0.7191011235955056, 0.7191011235955056],
-                [0.7191011235955056, 0.7191011235955056, 0.7191011235955056]]
-    logging.debug("values:\n%r", values)
+    expected = [[
+        1.0, 0.7191011235955056, 0.7191011235955056, 0.7191011235955056
+    ],
+                [
+                    0.9999950062421972, 0.7191011235955056, 0.7191011235955056,
+                    0.7191011235955056
+                ],
+                [
+                    0.9500624219725343, 0.7191011235955056, 0.7191011235955056,
+                    0.7191011235955056
+                ]]
+    logging.error("values:\n%r", np.array(values))
     assert compare2D(values, expected)
+
+
+def test_meta_remaining_volumes_0():
+
+    config = {
+        "priceDepthStart": 0.0000000001,
+        "priceDepthEnd": 1.0,
+        "priceDepthSamples": 100,
+        "depthStart": 0.01,
+        "depthEnd": 100.0,
+        "depthSamples": 100,
+        "inventoryLimit": math.inf,
+    }
+
+    tg = TuningGenerator(config=config)
+
+    trades = [
+        [12345, 1234, 3, 50, False],
+        [12345, 1233, 6, 30, False],
+        [12345, 1235, 3, 40, False],
+    ]
+
+    tg.load_trades (trades=trades)
+    tg.get_values()
+
+    logging.error("tg.meta_remaining_volumes:\n%r", tg.meta_remaining_volumes)
+    expected = [[450, 270, 120]]
+    assert compare2D(tg.meta_remaining_volumes, expected)

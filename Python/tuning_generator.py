@@ -7,7 +7,6 @@ import sys
 import logging
 from datetime import datetime, timedelta
 import math
-import pprint
 
 mongodb = None
 config_db = None
@@ -27,18 +26,6 @@ def compare2D(x, y) -> bool:
 
 
 class TuningGenerator:
-
-    config: dict
-    meta_trade: list
-    trades: list
-    depths: list
-    price_depths: list
-    trades_volumes: list
-    trades_price_depths: list
-    remaining_depth: list
-    remaining_price_depths: list
-    total_volume: float
-
     def __init__(self, config: dict = None, configName: str = None):
         """
         Must initialize with either a config dict or a name of a config.
@@ -50,9 +37,10 @@ class TuningGenerator:
 
         self.depths = []
         self.price_depths = []
-        self.trades_volumes = []
-        self.trades_price_depths = []
+        self.meta_remaining_volumes = []
+        self.meta_price_depths = []
         self.remaining_depth = []
+        self.meta_trades = []
 
         if config:
             self.config = config
@@ -66,7 +54,7 @@ class TuningGenerator:
 
         IL = self.config["inventoryLimit"]
 
-        self.trades_volumes.append([
+        self.meta_remaining_volumes.append([
             v if v <= IL else IL for v in list(
                 np.cumsum([t[2] * t[3] for t in self.meta_trade][::-1]))
         ][::-1])
@@ -75,7 +63,7 @@ class TuningGenerator:
 
         best_rate = self.meta_trade[0][2]
 
-        self.trades_price_depths.append(
+        self.meta_price_depths.append(
             list(
                 map(
                     lambda x: x[2] / best_rate
@@ -92,6 +80,8 @@ class TuningGenerator:
                              reverse=not self.meta_trade[0][4])
 
         logging.debug("meta_trade-after: %r", self.meta_trade)
+
+        self.meta_trades.append(self.meta_trade)
 
         self.load_trades_price_depths()
         self.load_trades_volumes()
@@ -124,11 +114,11 @@ class TuningGenerator:
             self.process_meta_trade()
 
     def load_total_volume(self):
-        self.total_volume = sum(max(x) for x in self.trades_volumes)
+        self.total_volume = sum(max(x) for x in self.meta_remaining_volumes)
 
     def load_remaining_depth(self) -> None:
 
-        volume = [max(x) for x in self.trades_volumes]
+        volume = [max(x) for x in self.meta_remaining_volumes]
         logging.debug('volume:\n%r', volume)
 
         self.remaining_depth = [[x if x > 0 else 0 for x in volume - depth]
@@ -136,8 +126,9 @@ class TuningGenerator:
 
     def load_remaining_price_depths(self) -> None:
 
-        logging.debug("trades_volumes:\n%r", self.trades_volumes)
-        logging.debug("trades_price_depths:\n%r", self.trades_price_depths)
+        logging.debug("meta_remaining_volumes:\n%r",
+                      self.meta_remaining_volumes)
+        logging.debug("meta_price_depths:\n%r", self.meta_price_depths)
         logging.debug("price_depths:\n%r", self.price_depths)
 
         self.remaining_price_depths = []
@@ -146,8 +137,7 @@ class TuningGenerator:
 
             tmp = []
 
-            for idx_x, trade_price_depth in enumerate(
-                    self.trades_price_depths):
+            for idx_x, trade_price_depth in enumerate(self.meta_price_depths):
 
                 found = False
                 best_trade_price_depth = math.inf
@@ -159,7 +149,7 @@ class TuningGenerator:
                         found = True
 
                 if found:
-                    tmp.append(self.trades_volumes[idx_x][best_idx])
+                    tmp.append(self.meta_remaining_volumes[idx_x][best_idx])
                 else:
                     tmp.append(0.0)
 
@@ -169,8 +159,9 @@ class TuningGenerator:
 
         self.trades_price_depth()
 
-        logging.debug('trades_price_depths:\n%r', self.trades_price_depths)
-        logging.info('trades_volumes:\n%r', self.trades_volumes)
+        logging.debug('meta_price_depths:\n%r', self.meta_price_depths)
+        logging.info('meta_remaining_volumes:\n%r',
+                     self.meta_remaining_volumes)
 
         self.load_remaining_depth()
 
@@ -277,6 +268,9 @@ def save_tuning(config: dict, tuning: dict) -> None:
     else:
         output_name = {"name": config["output"]}
 
+    # Delete existing if one existing
+    config_db["tuning"].delete_one(output_name)
+
     document = {"$set": {**output_name, **tuning}}
 
     config_db["tuning"].update_one(output_name, document, upsert=True)
@@ -310,10 +304,10 @@ if __name__ == '__main__':
         "price_depths": tg.price_depths,
         "depths": tg.depths,
         "values": values,
-        "trades_price_depths": tg.trades_price_depths,
-        "trades_volumes": tg.trades_volumes,
-        "remaining_depths": tg.remaining_depth,
-        "remaining_price_depths": tg.remaining_price_depths,
+        #"remainingDepths": tg.remaining_depth,
+        #"remainingPriceDepths": tg.remaining_price_depths,
+        #"metaPriceDepths": tg.meta_price_depths,
+        #"metaRemainingVolumes": tg.meta_remaining_volumes,
     }
 
     save_tuning(tg.config, tuning)
