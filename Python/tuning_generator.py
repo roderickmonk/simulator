@@ -301,6 +301,7 @@ if __name__ == '__main__':
     values = tg.get_values()
 
     tuning = {
+        "ts": datetime.now(),
         "price_depths": tg.price_depths,
         "depths": tg.depths,
         "values": values,
