@@ -61,7 +61,7 @@ class Co2Validator:
         logging.debug("bot_id: %s", bot_id)
 
         bot_config = self.r.hgetall(bot_id.encode())
-        logging.debug("bot_config: %r", bot_config)
+        logging.error("bot_config: %r", bot_config)
 
         bot_config["quantityLimit"] = float(bot_config["quantityLimit"])
         bot_config["inventoryLimit"] = float(bot_config["quantityLimit"])
