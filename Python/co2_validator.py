@@ -61,7 +61,7 @@ class Co2Validator:
         logging.debug("bot_id: %s", bot_id)
 
         bot_config = self.r.hgetall(bot_id.encode())
-        logging.error("bot_config: %r", bot_config)
+        logging.debug("bot_config: %r", bot_config)
 
         bot_config["quantityLimit"] = float(bot_config["quantityLimit"])
         bot_config["inventoryLimit"] = float(bot_config["quantityLimit"])
@@ -69,14 +69,12 @@ class Co2Validator:
         bot_config["tick"] = float(bot_config["tick"])
         bot_config["priceDepthLimit"] = float(bot_config["priceDepthLimit"])
         del bot_config["PDF"]
+        del bot_config["tuningGeneration"]
 
         if bot_config["allowOrderConflicts"] == "true":
             bot_config["allowOrderConflicts"] = True
         else:
             bot_config["allowOrderConflicts"] = False
-
-        tg_json = json.dumps (bot_config["tuningGeneration"], indent=4)
-        logging.info (tg_json)
 
         s = json.dumps(bot_config, sort_keys=True, indent=4)
         logging.info ("Bot Configuration\n" + s)
