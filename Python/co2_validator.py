@@ -134,7 +134,7 @@ class Co2Validator:
                             timer() * 1000, buy_rates[0], sell_rates[0])
                         logging.info(
                             "\t\t\tbuy_rate: %14.8f, sell_rate: %14.8f",
-                            timer() * 1000, buy_rate, sell_rate)
+                            buy_rate, sell_rate)
 
         except StopIteration:
             assert False  # Must not be here
