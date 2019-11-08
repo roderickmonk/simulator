@@ -76,6 +76,7 @@ class Co2Validator:
 
         s = json.dumps(bot_config, indent=4)
         pprint (s)
+        logging.info (s)
 
         self.trader = Trader(bot_config)
 
