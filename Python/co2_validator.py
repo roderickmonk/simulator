@@ -74,10 +74,6 @@ class Co2Validator:
         else:
             bot_config["allowOrderConflicts"] = False
 
-        start = timer()
-        end = timer()
-        print(timedelta(seconds=end-start))
-
         self.trader = Trader(bot_config)
 
     def redis_get(self, cycle_time, field):
