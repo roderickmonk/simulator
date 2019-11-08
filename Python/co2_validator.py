@@ -139,11 +139,11 @@ class Co2Validator:
                             buyob, sellob)
 
                         logging.error(
-                            "Elapsed Time: %f, best_buy: %14.10f, best_sell: %14.10f",
-                            timer(), buy_rates[0], sell_rates[0])
+                            "Elapsed Time: %d, best_buy: %14.8f, best_sell: %14.8f",
+                            timer() * 1000, buy_rates[0], sell_rates[0])
                         logging.error(
-                            "Elapsed Time: %f, buy_rate: %14.10f, sell_rate: %14.10f",
-                            timer(), buy_rate, sell_rate)
+                            "Elapsed Time: %d, buy_rate: %14.8f, sell_rate: %14.8f",
+                            timer() * 1000, buy_rate, sell_rate)
 
         except StopIteration:
             assert False  # Must not be here
