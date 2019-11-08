@@ -125,16 +125,6 @@ class Co2Validator:
                         sellob = np.vstack((sell_rates, sell_quantities)).T
                         logging.debug('sellob:\n%r', sellob)
 
-                        # buy_rates
-                        buy_rates_ref = np.flip(
-                            self.redis_get(cycle_time, "buy_candidate_rates")[0])
-                        assert buy_rates_ref.size > 0
-
-                        # sell_rates
-                        sell_rates_ref = np.flip(
-                            self.redis_get(cycle_time, "sell_candidate_rates")[0])
-                        assert sell_rates_ref.size > 0
-
                         timer = Timer()
                         buy_rate, sell_rate = self.trader.compute_orders(
                             buyob, sellob)
