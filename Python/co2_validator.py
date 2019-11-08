@@ -139,6 +139,7 @@ class Co2Validator:
                             buyob, sellob)
 
                         print ("buy_rates", buy_rates)
+                        print ("shape: ", buy_rates.shape)
 
                         logging.error(
                             "Elapsed Time: %f, best_buy: %14.10f, best_sell: %14.10f",
