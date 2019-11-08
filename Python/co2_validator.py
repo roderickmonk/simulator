@@ -106,6 +106,7 @@ class Co2Validator:
 
                         # buyOB
                         buy_rates = self.redis_get(cycle_time, "buy_rates")
+                        print ("buy_rates", buy_rates)
                         buy_quantities = self.redis_get(cycle_time,
                                                    "buy_quantities")
 
