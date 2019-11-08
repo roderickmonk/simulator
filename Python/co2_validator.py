@@ -106,7 +106,6 @@ class Co2Validator:
 
                         # buyOB
                         buy_rates = self.redis_get(cycle_time, "buy_rates")
-                        print ("buy_rates", buy_rates)
                         buy_quantities = self.redis_get(cycle_time,
                                                    "buy_quantities")
 
@@ -138,6 +137,8 @@ class Co2Validator:
                         timer = Timer()
                         buy_rate, sell_rate = self.trader.compute_orders(
                             buyob, sellob)
+
+                        print ("buy_rates", buy_rates)
 
                         logging.error(
                             "Elapsed Time: %f, best_buy: %14.10f, best_sell: %14.10f",
