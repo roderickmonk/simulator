@@ -73,7 +73,9 @@ class Co2Validator:
 
         start = timeit.timeit()
         print("hello")
+        print(start)
         end = timeit.timeit()
+
         print(end - start)
 
         self.trader = Trader(bot_config)
