@@ -71,12 +71,11 @@ class Co2Validator:
         else:
             bot_config["allowOrderConflicts"] = False
 
-        start = timeit.timeit()
-        print("hello")
-        print(start)
-        end = timeit.timeit()
-
-        print(end - start)
+        from timeit import default_timer as timer
+        from datetime import timedelta
+        start = timer()
+        end = timer()
+        print(timedelta(seconds=end-start))
 
         self.trader = Trader(bot_config)
 
