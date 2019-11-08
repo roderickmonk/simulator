@@ -10,6 +10,7 @@ from datetime import datetime
 import dateutil.parser
 import dateutil.parser as parser
 import logging
+import coloredlogs
 from schema import Schema, And, Use, Optional, SchemaError
 from bson.objectid import ObjectId
 import operator
