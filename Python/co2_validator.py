@@ -23,6 +23,9 @@ import redis
 
 import datetime
 import timeit
+from timeit import default_timer as timer
+from datetime import timedelta
+
 
 
 class Timer:
@@ -71,8 +74,6 @@ class Co2Validator:
         else:
             bot_config["allowOrderConflicts"] = False
 
-        from timeit import default_timer as timer
-        from datetime import timedelta
         start = timer()
         end = timer()
         print(timedelta(milliseconds=end-start))
