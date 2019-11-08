@@ -58,7 +58,7 @@ class Co2Validator:
                              db=0)
 
         bot_id = self.r.get("testBotId")
-        logging.error("bot_id: %s", bot_id)
+        logging.debug("bot_id: %s", bot_id)
 
         bot_config = self.r.hgetall(bot_id.encode())
         logging.error("bot_config: %r", bot_config)
@@ -73,6 +73,8 @@ class Co2Validator:
             bot_config["allowOrderConflicts"] = True
         else:
             bot_config["allowOrderConflicts"] = False
+
+        pprint (bot_config)
 
         self.trader = Trader(bot_config)
 
