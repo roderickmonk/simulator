@@ -149,7 +149,7 @@ if __name__ == '__main__':
                         level=logging.INFO,
                         datefmt='')
 
-    coloredlogs.install(level='INFO', format='[%(levelname)-5s] %(message)s')
+    coloredlogs.install(level='INFO', milliseconds=True, format='[%(levelname)-5s] %(message)s')
 
     co2 = Co2Validator()
     co2.run()
