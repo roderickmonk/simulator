@@ -68,6 +68,7 @@ class Co2Validator:
         bot_config["feeRate"] = float(bot_config["feeRate"])
         bot_config["tick"] = float(bot_config["tick"])
         bot_config["priceDepthLimit"] = float(bot_config["priceDepthLimit"])
+        del bot_config["PDF"]
 
         if bot_config["allowOrderConflicts"] == "true":
             bot_config["allowOrderConflicts"] = True
@@ -75,8 +76,7 @@ class Co2Validator:
             bot_config["allowOrderConflicts"] = False
 
         s = json.dumps(bot_config, sort_keys=True, indent=4)
-        pprint (s)
-        logging.info (s)
+        logging.info ("Bot Configuration\n" + s)
 
         self.trader = Trader(bot_config)
 
