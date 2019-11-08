@@ -77,7 +77,7 @@ class Co2Validator:
         raw = raw[0:-1]  # Remove the dangling comma
         raw = raw.split(',')
         raw = [float(i) for i in raw]
-        return np.array([raw])
+        return np.array(raw)
 
     def run(self):
 
