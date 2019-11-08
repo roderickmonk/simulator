@@ -130,8 +130,8 @@ class Co2Validator:
                             buyob, sellob)
 
                         logging.info(
-                            "Elapsed (msecs): %d,\tbest_buy: %14.8f, best_sell: %14.8f\n\t\t\t\t\t\t\tbuy_rate: %14.8f",
-                            timer() * 1000, buy_rates[0], sell_rates[0], buy_rate)
+                            "Elapsed (msecs): %d\tbest_buy: %14.8f\tbest_sell: %14.8f\n\t\t\t\t\t\t\tbuy_rate: %14.8f\tBuy Rate: %14.8f",
+                            timer() * 1000, buy_rates[0], sell_rates[0], buy_rate, sell_rate)
                         logging.info(
                             "buy_rate: %14.8f, sell_rate: %14.8f",
                             buy_rate, sell_rate)
