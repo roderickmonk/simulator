@@ -133,13 +133,9 @@ class Co2Validator:
                         logging.debug('sellob:\n%r', sellob)
 
                         timer = Timer()
-                        start = timer()
         
                         buy_rate, sell_rate = self.trader.compute_orders(
                             buyob, sellob)
-
-                        end = timer()
-                        print(timedelta(seconds=end-start))
 
                         logging.info(
                             "Elapsed (msecs): %d\tBest Buy: %14.8f\tBest Sell: %14.8f\n"
