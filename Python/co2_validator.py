@@ -107,8 +107,8 @@ class Co2Validator:
 
                         # buyOB
                         buy_rates = self.redis_get(cycle_time, "buy_rates")
-                        buy_quantities = self.redis_get(cycle_time,
-                                                   "buy_quantities")
+                        buy_quantities = self.redis_get(
+                            cycle_time, "buy_quantities")
 
                         assert buy_rates.size == buy_quantities.size
 
@@ -117,8 +117,8 @@ class Co2Validator:
 
                         # sellOB
                         sell_rates = self.redis_get(cycle_time, "sell_rates")
-                        sell_quantities = self.redis_get(cycle_time,
-                                                    "sell_quantities")
+                        sell_quantities = self.redis_get(
+                            cycle_time, "sell_quantities")
 
                         assert sell_rates.size == sell_quantities.size
 
@@ -130,10 +130,10 @@ class Co2Validator:
                             buyob, sellob)
 
                         logging.info(
-                            "Elapsed (msecs): %d\tBest Buy: %14.8f\tBest Sell: %14.8f\n\t\t\t\t\t\t\tBuy Rate: %14.8f\tSell Rate: %14.8f",
-                            timer() * 1000, buy_rates[0], sell_rates[0], buy_rate, sell_rate)
-                        logging.info(
-                            "buy_rate: %14.8f, sell_rate: %14.8f",
+                            "Elapsed (msecs): %d\tBest Buy: %14.8f\tBest Sell: %14.8f\n"
+                            +
+                            "\t\t\t\t\t\t\tBuy Rate: %14.8f\tSell Rate: %14.8f",
+                            timer() * 1000, buy_rates[0], sell_rates[0],
                             buy_rate, sell_rate)
 
         except StopIteration:
@@ -149,9 +149,9 @@ if __name__ == '__main__':
                         level=logging.INFO,
                         datefmt='')
 
-    coloredlogs.install(
-        level='INFO', 
-        milliseconds=True, fmt='%(asctime)s [%(levelname)-5s] %(message)s')
+    coloredlogs.install(level='INFO',
+                        milliseconds=True,
+                        fmt='%(asctime)s [%(levelname)-5s] %(message)s')
 
     co2 = Co2Validator()
     co2.run()
