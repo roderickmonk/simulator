@@ -133,7 +133,7 @@ class Co2Validator:
                             "Elapsed Time: %d, best_buy: %14.8f, best_sell: %14.8f",
                             timer() * 1000, buy_rates[0], sell_rates[0])
                         logging.info(
-                            "Elapsed Time: %d, buy_rate: %14.8f, sell_rate: %14.8f",
+                            "\t\t\tbuy_rate: %14.8f, sell_rate: %14.8f",
                             timer() * 1000, buy_rate, sell_rate)
 
         except StopIteration:
