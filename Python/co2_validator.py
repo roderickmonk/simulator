@@ -97,8 +97,6 @@ class Co2Validator:
                         np.set_printoptions(precision=12)
                         np.set_printoptions(suppress=True)
 
-                        logging.fatal("")
-
                         rx_msg = json.loads(message["data"])
 
                         cycle_time, rust_buy_rate, rust_sell_rate = itemgetter(
