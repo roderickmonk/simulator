@@ -76,7 +76,7 @@ class Co2Validator:
 
         start = timer()
         end = timer()
-        print(timedelta(milliseconds=end-start))
+        print(timedelta(seconds=end-start))
 
         self.trader = Trader(bot_config)
 
@@ -139,7 +139,7 @@ class Co2Validator:
                             buyob, sellob)
 
                         end = timer()
-                        print(timedelta(milliseconds=end-start))
+                        print(timedelta(seconds=end-start))
 
                         logging.info(
                             "Elapsed (msecs): %d\tBest Buy: %14.8f\tBest Sell: %14.8f\n"
