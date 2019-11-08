@@ -103,7 +103,7 @@ class Co2Validator:
                         cycle_time, rust_buy_rate, rust_sell_rate = itemgetter(
                             'cycle_time', 'buy_rate', 'sell_rate')(rx_msg)
 
-                        logging.error("Cycle Time: %r", cycle_time)
+                        logging.debug("Cycle Time: %r", cycle_time)
 
                         # buyOB
                         buy_rates = self.redis_get(cycle_time, "buy_rates")
