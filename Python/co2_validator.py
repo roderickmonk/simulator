@@ -141,7 +141,7 @@ class Co2Validator:
 
                         logging.error(
                             "Elapsed Time: %f, best_buy: %14.10f, best_sell: %14.10f",
-                            timer(), buy_rates[0], sell_rates[0])
+                            timer(), list(buy_rates)[0], list(sell_rates)[0])
                         logging.error(
                             "Elapsed Time: %f, buy_rate: %14.10f, sell_rate: %14.10f",
                             timer(), buy_rate, sell_rate)
