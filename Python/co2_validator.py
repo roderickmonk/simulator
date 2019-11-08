@@ -75,7 +75,7 @@ class Co2Validator:
         from datetime import timedelta
         start = timer()
         end = timer()
-        print(timedelta(seconds=end-start))
+        print(timedelta(milliseconds=end-start))
 
         self.trader = Trader(bot_config)
 
