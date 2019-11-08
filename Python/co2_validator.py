@@ -74,7 +74,7 @@ class Co2Validator:
         else:
             bot_config["allowOrderConflicts"] = False
 
-        s = json.dumps(bot_config, indent=4)
+        s = json.dumps(bot_config, sort_keys=True, indent=4)
         pprint (s)
         logging.info (s)
 
