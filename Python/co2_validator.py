@@ -76,6 +76,7 @@ class Co2Validator:
         raw = self.r.get(":".join([cycle_time, field]))
         raw = raw[0:-1]  # Remove the dangling comma
         raw = raw.split(',')
+        logging.error ("raw:\n%r", raw)
         raw = [float(i) for i in raw]
         return np.array(raw)
 
