@@ -146,7 +146,7 @@ class Co2Validator:
 if __name__ == '__main__':
 
     logging.basicConfig(format='[%(levelname)-5s] %(message)s',
-                        level=logging.DEBUG,
+                        level=logging.INFO,
                         datefmt='')
 
     coloredlogs.install(level='DEBUG')
