@@ -74,7 +74,8 @@ class Co2Validator:
         else:
             bot_config["allowOrderConflicts"] = False
 
-        pprint (bot_config, maxlevels=3, depth=3)
+        s = json.dumps(bot_config, indent=4)
+        pprint (s)
 
         self.trader = Trader(bot_config)
 
