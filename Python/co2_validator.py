@@ -75,7 +75,7 @@ class Co2Validator:
         else:
             bot_config["allowOrderConflicts"] = False
 
-        tg_json = json.dumps (bot_config["tuningGeneration"])
+        tg_json = json.dumps (bot_config["tuningGeneration"], indent=4)
         logging.info (tg_json)
 
         s = json.dumps(bot_config, sort_keys=True, indent=4)
