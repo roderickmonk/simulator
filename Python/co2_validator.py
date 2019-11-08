@@ -138,10 +138,10 @@ class Co2Validator:
                         buy_rate, sell_rate = self.trader.compute_orders(
                             buyob, sellob)
 
-                        print (type(buy_rate))
+                        print (type(sell_rate))
 
                         logging.error(
-                            "Elapsed Time: %f, buy_rate: %14.10f, sell_rate: %f",
+                            "Elapsed Time: %f, buy_rate: %14.10f, sell_rate: %14.10f",
                             timer(), buy_rate, sell_rate)
 
         except StopIteration:
