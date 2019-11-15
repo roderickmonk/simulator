@@ -27,7 +27,6 @@ from timeit import default_timer as timer
 from datetime import timedelta
 
 
-
 class Timer:
 
     # Ref: https://stackoverflow.com/a/57931660/
@@ -77,7 +76,7 @@ class Co2Validator:
             bot_config["allowOrderConflicts"] = False
 
         s = json.dumps(bot_config, sort_keys=True, indent=4)
-        logging.info ("Bot Configuration\n" + s)
+        logging.info("Bot Configuration\n" + s)
 
         self.trader = Trader(bot_config)
 
@@ -134,7 +133,7 @@ class Co2Validator:
                         logging.debug('sellob:\n%r', sellob)
 
                         timer = Timer()
-        
+
                         buy_rate, sell_rate = self.trader.compute_orders(
                             buyob, sellob)
 
