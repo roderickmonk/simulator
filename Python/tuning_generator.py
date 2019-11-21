@@ -356,7 +356,7 @@ if __name__ == '__main__':
 
     save_tuning(tg.config, tuning)
 
-    /*
+    """
     r = redis.Redis(host='3.11.7.67',
                     port=6379,
                     encoding=u'utf-8',
@@ -377,6 +377,6 @@ if __name__ == '__main__':
     key = ":".join([tg.config["name"], "values"])
     r.delete(key)
     r.rpush(key, *values_for_redis)
-    */
+    """
 
     print("That's All Folks")
