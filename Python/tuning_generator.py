@@ -273,12 +273,41 @@ def save_tuning(config: dict, tuning: dict) -> None:
     else:
         output_name = {"name": config["output"]}
 
+    """
+    Save tuning to mongodb
+    """
     # Delete existing if one existing
     config_db["tuning"].delete_one(output_name)
 
     document = {"$set": {**output_name, **tuning}}
 
     config_db["tuning"].update_one(output_name, document, upsert=True)
+
+    """
+    *********************************
+    Save tuning to redis
+    *********************************
+    """
+    r = redis.Redis(host='3.11.7.67',
+                    port=6379,
+                    encoding=u'utf-8',
+                    decode_responses=True,
+                    db=0)
+
+    # Record depths to redis
+    key = ":".join([tg.config["name"], "depths"])
+    r.delete(key)
+    r.rpush(key, *tuning.depths)
+
+    # Record price_depths to redis
+    key = ":".join([tg.config["name"], "price_depths"])
+    r.delete(key)
+    r.rpush(key, *tuning.price_depths)
+
+    # Record values to redis
+    key = ":".join([tg.config["name"], "values"])
+    r.delete(key)
+    r.rpush(key, *tuning.values)
 
 
 if __name__ == '__main__':
@@ -305,12 +334,12 @@ if __name__ == '__main__':
 
     values = tg.get_values()
 
-    values_for_redis = np.array (values) \
+    values = np.array (values) \
                     .reshape (len(tg.depths) * len (tg.price_depths),1) \
                     .flatten() \
                     .tolist()
 
-    # print ("values_for_redis: ", values_for_redis)
+    logging.debug (f'values_for_redis: {values_for_redis}')
 
     now = datetime.now()
 
@@ -325,15 +354,14 @@ if __name__ == '__main__':
         #"metaRemainingVolumes": tg.meta_remaining_volumes,
     }
 
-    # save_tuning(tg.config, tuning)
+    save_tuning(tg.config, tuning)
 
+    /*
     r = redis.Redis(host='3.11.7.67',
                     port=6379,
                     encoding=u'utf-8',
                     decode_responses=True,
                     db=0)
-
-    # Save to redis as well
 
     # Record depths to redis
     key = ":".join([tg.config["name"], "depths"])
@@ -349,30 +377,6 @@ if __name__ == '__main__':
     key = ":".join([tg.config["name"], "values"])
     r.delete(key)
     r.rpush(key, *values_for_redis)
-
-    """
-    r.hmset(
-        tg.config["name"],
-        {
-            # "ts": now,
-            "depths": str(tg.depths),
-            "price_depths": str(tg.price_depths),
-            # "values": json.dumps(values),
-        })
-
-    pprint(tg.depths.tolist())
-
-    r.hmset (
-        tg.config["name"], {
-        "_id": str(t["_id"]).encode(),
-        "e": t['e'],
-        "x": t['x'].encode(),
-        "m": t['m'].encode(),
-        "ts": str(t['ts']).encode(),
-        "ob": str(t['ob']).encode(),
-        "r": t['r'],
-        "q": t['q'],
-    }) 
-    """
+    */
 
     print("That's All Folks")
