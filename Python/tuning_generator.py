@@ -338,7 +338,7 @@ if __name__ == '__main__':
     # Record price_depths to redis
     key = ":".join([tg.config["name"],"price_depths"])
     r.delete (key)
-    r.rpush (key, *tg.depths)
+    r.rpush (key, *tg.price_depths)
 
     # Record values to redis
     key = ":".join([tg.config["name"],"values"])
