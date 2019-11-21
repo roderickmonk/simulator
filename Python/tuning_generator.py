@@ -330,12 +330,12 @@ if __name__ == '__main__':
         tg.config["name"],
         {
             # "ts": now,
-            "depths": *tg.depths,
+            "depths": tg.depths.tolist(),
             "price_depths": str(tg.price_depths),
             # "values": json.dumps(values),
         })
 
-    pprint(*tg.depths)
+    pprint(tg.depths.tolist())
     """
     r.hmset (
         tg.config["name"], {
