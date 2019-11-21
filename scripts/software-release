@@ -11,8 +11,7 @@ source ./scripts/aliases
 tsc
 if [ $? -ne 0 ]; then echo $PROGNAME' Aborted'; exit 1; fi
 
-# export the version
-source ./scripts/software.version
+node -pe "require('./package.json').version"
 
 git add .
 if [ $? -ne 0 ]; then echo $PROGNAME' Aborted'; exit 1; fi

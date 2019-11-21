@@ -17,4 +17,4 @@ export PYTHONPATH=$SIMULATOR_PATH/Python:~/traders:.:$PYTHONPATH
 source $SIMULATOR_PATH/bin/activate
 
 # export the version
-source $SIMULATOR_PATH/scripts/software.version
+node -pe "require('./package.json').version"

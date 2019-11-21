@@ -28,9 +28,4 @@ if [ $# -eq 1 ]; then
   fi
 fi
 
-# export the version
-# . ./scripts/software.version
-
-source ./scripts/software.version
-
 echo 'SIM Version'$SIM_VERSION
