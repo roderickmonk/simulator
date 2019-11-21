@@ -299,7 +299,7 @@ if __name__ == '__main__':
         exit(0)
 
     logging.error("(%s) Trades Count: %d", sys.argv[1], len(tg.trades))
-    logging.error(tg.trades)
+    logging.debug(tg.trades)
 
     values = tg.get_values()
 
@@ -331,8 +331,8 @@ if __name__ == '__main__':
     print ("Hello 1")
 
     key = "apple:123"
-    # r.delete (key)
-    # r.rpush (key, *tg.depths)
+    r.delete (key)
+    r.rpush (key, *tg.depths)
 
     print ("Hello 2")
 
