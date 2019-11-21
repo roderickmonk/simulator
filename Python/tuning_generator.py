@@ -330,7 +330,7 @@ if __name__ == '__main__':
         tg.config["name"], {
         # "ts": now,
         "price_depths": json.dumps(tg.price_depths),
-        "depths": json.dumps(tg.depths)
+        "depths": json.dumps(tg.depths),
         "values": json.dumps(values),
      }) 
 
