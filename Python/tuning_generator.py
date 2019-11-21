@@ -309,8 +309,9 @@ if __name__ == '__main__':
                     .reshape (len(tg.depths) * len (tg.price_depths),1) \
                     .flatten() \
                     .tolist()
-    #print ("shape: ", junk.shape)
-    #junk = junk.flatten().tolist()
+
+    
+    print ("values_for_redis: ", values_for_redis)
 
     now = datetime.now()
 
