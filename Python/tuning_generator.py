@@ -304,7 +304,9 @@ if __name__ == '__main__':
     values = tg.get_values()
 
     junk = np.array (values)
-    print ("shape: %r", junk.shape)
+    print ("shape: ", junk.shape)
+    junk = junk.reshape (400,1)
+    print ("shape: ", junk.shape)
 
     now = datetime.now()
 
