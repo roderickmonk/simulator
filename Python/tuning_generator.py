@@ -347,7 +347,7 @@ if __name__ == '__main__':
     r.rpush (key, *tg.price_depths)
 
     print (type(tg.price_depths))
-    print (type(*tg.price_depths))
+    print (type(junk))
 
     # Record values to redis
     key = ":".join([tg.config["name"],"values"])
