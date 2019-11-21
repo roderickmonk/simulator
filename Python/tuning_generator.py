@@ -339,7 +339,7 @@ if __name__ == '__main__':
                     .flatten() \
                     .tolist()
 
-    logging.debug (f'values_for_redis: {values_for_redis}')
+    logging.debug (f'values: {values}')
 
     now = datetime.now()
 
