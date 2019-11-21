@@ -349,10 +349,12 @@ if __name__ == '__main__':
     print (type(tg.price_depths))
     print (type(junk))
 
+    print(junk)
+
     # Record values to redis
     key = ":".join([tg.config["name"],"values"])
     r.delete (key)
-    r.rpush (key, junk)
+    *r.rpush (key, junk)
 
     print ("Hello 2")
 
