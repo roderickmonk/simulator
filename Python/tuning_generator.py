@@ -285,7 +285,7 @@ if __name__ == '__main__':
                         level=logging.ERROR,
                         datefmt='')
 
-    logging.debug(f'sys.argv: {sys.argv}')
+    logging.error(f'sys.argv: {sys.argv}')
 
     assert os.environ['MONGODB'], 'MONGODB Not Defined'
     mongodb = MongoClient(os.environ['MONGODB'])
@@ -298,8 +298,8 @@ if __name__ == '__main__':
         logging.debug("(%s) No Trades!", sys.argv[1])
         exit(0)
 
-    logging.debug("(%s) Trades Count: %d", sys.argv[1], len(tg.trades))
-    logging.debug(tg.trades)
+    logging.error("(%s) Trades Count: %d", sys.argv[1], len(tg.trades))
+    logging.error(tg.trades)
 
     values = tg.get_values()
 
@@ -316,7 +316,9 @@ if __name__ == '__main__':
         #"metaRemainingVolumes": tg.meta_remaining_volumes,
     }
 
-    save_tuning(tg.config, tuning)
+    # save_tuning(tg.config, tuning)
+
+    print ("Hello 0")
 
     r = redis.Redis(host='3.11.7.67',
                     port=6379,
