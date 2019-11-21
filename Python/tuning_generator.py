@@ -334,6 +334,8 @@ if __name__ == '__main__':
     r.delete (key)
     r.rpush (key, tg.depths)
 
+    print ("Hello 2")
+
     """"
     r.hmset(
         tg.config["name"],
