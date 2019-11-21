@@ -343,7 +343,7 @@ if __name__ == '__main__':
     # Record values to redis
     key = ":".join([tg.config["name"],"values"])
     r.delete (key)
-    r.rpush (key, *tg.values)
+    r.rpush (key, *values)
 
     print ("Hello 2")
 
