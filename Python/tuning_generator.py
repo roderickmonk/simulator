@@ -332,7 +332,7 @@ if __name__ == '__main__':
             # "ts": now,
             "depths": tg.depths,
             "price_depths": tg.price_depths,
-            //"values": json.dumps(values),
+            # "values": json.dumps(values),
         })
 
     pprint(json.dumps(tg.price_depths))
