@@ -318,25 +318,24 @@ if __name__ == '__main__':
 
     save_tuning(tg.config, tuning)
 
-    r = redis.Redis(
-        host='3.11.7.67',
-        port=6379, 
-        encoding=u'utf-8', 
-        decode_responses=True, 
-        db=0)
+    r = redis.Redis(host='3.11.7.67',
+                    port=6379,
+                    encoding=u'utf-8',
+                    decode_responses=True,
+                    db=0)
 
     # Save to redis as well
 
-    r.hmset (
-        tg.config["name"], {
-        # "ts": now,
-        "price_depths": tg.price_depths,
-        "depths": tg.depths),
-        "values": json.dumps(values),
-     }) 
+    r.hmset(
+        tg.config["name"],
+        {
+            # "ts": now,
+            "depths": tg.depths,
+            "price_depths": tg.price_depths,
+            "values": json.dumps(values),
+        })
 
-    pprint (json.dumps(tg.price_depths))
-
+    pprint(json.dumps(tg.price_depths))
     """
     r.hmset (
         tg.config["name"], {
