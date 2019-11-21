@@ -335,6 +335,8 @@ if __name__ == '__main__':
         "values": json.dumps(values),
      }) 
 
+    pprint.pprint (json.dumps(tg.price_depths))
+
     """
     r.hmset (
         tg.config["name"], {
