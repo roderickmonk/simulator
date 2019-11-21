@@ -307,6 +307,7 @@ if __name__ == '__main__':
     print ("shape: ", junk.shape)
     junk = junk.reshape (40000,1)
     print ("shape: ", junk.shape)
+    junk = junk.tolist()
 
     now = datetime.now()
 
