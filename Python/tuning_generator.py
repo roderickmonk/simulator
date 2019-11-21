@@ -332,11 +332,10 @@ if __name__ == '__main__':
 
     key = "apple:123"
     # r.delete (key)
-    r.rpush (key, *tg.depths)
+    # r.rpush (key, *tg.depths)
 
     print ("Hello 2")
 
-    """"
     r.hmset(
         tg.config["name"],
         {
@@ -346,6 +345,9 @@ if __name__ == '__main__':
             # "values": json.dumps(values),
         })
 
+    print ("Hello 3")
+
+    """
     pprint(tg.depths.tolist())
 
     r.hmset (
