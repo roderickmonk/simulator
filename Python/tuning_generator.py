@@ -346,6 +346,9 @@ if __name__ == '__main__':
     r.delete (key)
     r.rpush (key, *tg.price_depths)
 
+    print (type(tg.price_depths))
+    print (type(*tg.price_depths))
+
     # Record values to redis
     key = ":".join([tg.config["name"],"values"])
     r.delete (key)
