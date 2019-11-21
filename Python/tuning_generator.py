@@ -329,9 +329,9 @@ if __name__ == '__main__':
     r.hmset (
         tg.config["name"], {
         # "ts": now,
-        "price_depths": tg.price_depths,
-        "depths": tg.depths,
-        "values": values,
+        "price_depths": json.dumps(tg.price_depths),
+        "depths": json.dumps(tg.depths)
+        "values": json.dumps(values),
      }) 
 
     """
