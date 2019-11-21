@@ -328,6 +328,8 @@ if __name__ == '__main__':
 
     # Save to redis as well
 
+    print ("Hello 1")
+
     key = "apple"
     r.delete (key)
     r.rpush (key, tg.depths)
