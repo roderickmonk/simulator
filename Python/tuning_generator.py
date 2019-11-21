@@ -303,6 +303,9 @@ if __name__ == '__main__':
 
     values = tg.get_values()
 
+    junk = np.array (values)
+    print ("shape: %r", junk.shape)
+
     now = datetime.now()
 
     tuning = {
