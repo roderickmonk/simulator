@@ -336,7 +336,7 @@ if __name__ == '__main__':
 
     """
     r.hmset (
-        config["name"], {
+        tg.config["name"], {
         "_id": str(t["_id"]).encode(),
         "e": t['e'],
         "x": t['x'].encode(),
