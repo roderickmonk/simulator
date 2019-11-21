@@ -310,8 +310,7 @@ if __name__ == '__main__':
                     .flatten() \
                     .tolist()
 
-    
-    print ("values_for_redis: ", values_for_redis)
+    # print ("values_for_redis: ", values_for_redis)
 
     now = datetime.now()
 
@@ -328,8 +327,6 @@ if __name__ == '__main__':
 
     # save_tuning(tg.config, tuning)
 
-    print("Hello 0")
-
     r = redis.Redis(host='3.11.7.67',
                     port=6379,
                     encoding=u'utf-8',
@@ -337,8 +334,6 @@ if __name__ == '__main__':
                     db=0)
 
     # Save to redis as well
-
-    print("Hello 1")
 
     # Record depths to redis
     key = ":".join([tg.config["name"], "depths"])
@@ -355,8 +350,7 @@ if __name__ == '__main__':
     r.delete(key)
     r.rpush(key, *values_for_redis)
 
-    print("Hello 2")
-
+    """
     r.hmset(
         tg.config["name"],
         {
@@ -366,8 +360,6 @@ if __name__ == '__main__':
             # "values": json.dumps(values),
         })
 
-    print("Hello 3")
-    """
     pprint(tg.depths.tolist())
 
     r.hmset (
