@@ -7,6 +7,8 @@ import sys
 import logging
 from datetime import datetime, timedelta
 import math
+import redis
+
 
 mongodb = None
 config_db = None
@@ -300,8 +302,10 @@ if __name__ == '__main__':
 
     values = tg.get_values()
 
+    now = datetime.now()
+
     tuning = {
-        "ts": datetime.now(),
+        "ts": now(),
         "price_depths": tg.price_depths,
         "depths": tg.depths,
         "values": values,
@@ -312,5 +316,35 @@ if __name__ == '__main__':
     }
 
     save_tuning(tg.config, tuning)
+
+    r = redis.Redis(
+        host='3.11.7.67',
+        port=6379, 
+        encoding=u'utf-8', 
+        decode_responses=True, 
+        db=0)
+
+    # Save to redis as well
+
+    r.hmset (
+        config["name"], {
+        "price_depths": tg.price_depths,
+        "depths": tg.depths,
+        "values": values,
+     }) 
+
+    """
+    r.hmset (
+        config["name"], {
+        "_id": str(t["_id"]).encode(),
+        "e": t['e'],
+        "x": t['x'].encode(),
+        "m": t['m'].encode(),
+        "ts": str(t['ts']).encode(),
+        "ob": str(t['ob']).encode(),
+        "r": t['r'],
+        "q": t['q'],
+    }) 
+    """
 
     print("That's All Folks")
