@@ -327,7 +327,7 @@ if __name__ == '__main__':
     # Save to redis as well
 
     r.hmset (
-        config["name"], {
+        tg.config["name"], {
         "ts": now,
         "price_depths": tg.price_depths,
         "depths": tg.depths,
