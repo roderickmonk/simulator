@@ -272,7 +272,6 @@ def save_tuning(config: dict, tuning: dict) -> None:
         output_name = {"name": config["name"]}
     else:
         output_name = {"name": config["output"]}
-
     """
     Save tuning to mongodb
     """
@@ -282,7 +281,6 @@ def save_tuning(config: dict, tuning: dict) -> None:
     document = {"$set": {**output_name, **tuning}}
 
     config_db["tuning"].update_one(output_name, document, upsert=True)
-
     """
     *********************************
     Save tuning to redis
@@ -297,17 +295,17 @@ def save_tuning(config: dict, tuning: dict) -> None:
     # Record depths to redis
     key = ":".join([tg.config["name"], "depths"])
     r.delete(key)
-    r.rpush(key, *tuning.depths)
+    r.rpush(key, *tuning["depths"])
 
     # Record price_depths to redis
     key = ":".join([tg.config["name"], "price_depths"])
     r.delete(key)
-    r.rpush(key, *tuning.price_depths)
+    r.rpush(key, *tuning["price_depths"])
 
     # Record values to redis
     key = ":".join([tg.config["name"], "values"])
     r.delete(key)
-    r.rpush(key, *tuning.values)
+    r.rpush(key, *tuning["values"])
 
 
 if __name__ == '__main__':
@@ -339,14 +337,14 @@ if __name__ == '__main__':
                     .flatten() \
                     .tolist()
 
-    logging.debug (f'values: {values}')
+    logging.debug(f'values: {values}')
 
     now = datetime.now()
 
     tuning = {
         "ts": now,
-        "price_depths": tg.price_depths,
         "depths": tg.depths,
+        "price_depths": tg.price_depths,
         "values": values,
         #"remainingDepths": tg.remaining_depth,
         #"remainingPriceDepths": tg.remaining_price_depths,
@@ -355,7 +353,6 @@ if __name__ == '__main__':
     }
 
     save_tuning(tg.config, tuning)
-
     """
     r = redis.Redis(host='3.11.7.67',
                     port=6379,
