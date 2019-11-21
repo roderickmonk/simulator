@@ -326,6 +326,11 @@ if __name__ == '__main__':
 
     # Save to redis as well
 
+    key = "apple"
+    r.delete (key)
+    r.rpush (key, tg.depths)
+
+    """"
     r.hmset(
         tg.config["name"],
         {
@@ -336,7 +341,7 @@ if __name__ == '__main__':
         })
 
     pprint(tg.depths.tolist())
-    """
+
     r.hmset (
         tg.config["name"], {
         "_id": str(t["_id"]).encode(),
