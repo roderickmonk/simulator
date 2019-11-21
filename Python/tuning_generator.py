@@ -330,7 +330,7 @@ if __name__ == '__main__':
 
     print ("Hello 1")
 
-    key = "apple:123"
+    key = ":".join(tg.config["name"],"depths"])
     r.delete (key)
     r.rpush (key, *tg.depths)
 
