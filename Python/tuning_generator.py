@@ -181,11 +181,13 @@ class TuningGenerator:
 
         self.load_total_volume()
 
-        return [[
+        values = [[
             self.quadrant(self.remaining_depth[j],
                           self.remaining_price_depths[i]) / self.total_volume
             for i in range(len(self.price_depths))
         ] for j in range(len(self.depths))]
+
+        return values
 
     def quadrant(self, remaining_depth: list,
                  remaining_price_depths: list) -> None:
@@ -303,11 +305,12 @@ if __name__ == '__main__':
 
     values = tg.get_values()
 
-    junk = np.array (values)
-    print ("shape: ", junk.shape)
-    junk = junk.reshape (90000,1)
-    print ("shape: ", junk.shape)
-    junk = junk.flatten().tolist()
+    values_for_redis = np.array (values) \
+                    .reshape (len(tg.depths) * len (tg.price_depths),1) \
+                    .flatten() \
+                    .tolist()
+    #print ("shape: ", junk.shape)
+    #junk = junk.flatten().tolist()
 
     now = datetime.now()
 
@@ -324,7 +327,7 @@ if __name__ == '__main__':
 
     # save_tuning(tg.config, tuning)
 
-    print ("Hello 0")
+    print("Hello 0")
 
     r = redis.Redis(host='3.11.7.67',
                     port=6379,
@@ -334,29 +337,24 @@ if __name__ == '__main__':
 
     # Save to redis as well
 
-    print ("Hello 1")
+    print("Hello 1")
 
     # Record depths to redis
-    key = ":".join([tg.config["name"],"depths"])
-    r.delete (key)
-    r.rpush (key, *tg.depths)
+    key = ":".join([tg.config["name"], "depths"])
+    r.delete(key)
+    r.rpush(key, *tg.depths)
 
     # Record price_depths to redis
-    key = ":".join([tg.config["name"],"price_depths"])
-    r.delete (key)
-    r.rpush (key, *tg.price_depths)
-
-    print (type(tg.price_depths))
-    print (type(junk))
-
-    print(junk)
+    key = ":".join([tg.config["name"], "price_depths"])
+    r.delete(key)
+    r.rpush(key, *tg.price_depths)
 
     # Record values to redis
-    key = ":".join([tg.config["name"],"values"])
-    r.delete (key)
-    r.rpush (key, *junk)
+    key = ":".join([tg.config["name"], "values"])
+    r.delete(key)
+    r.rpush(key, *values_for_redis)
 
-    print ("Hello 2")
+    print("Hello 2")
 
     r.hmset(
         tg.config["name"],
@@ -367,8 +365,7 @@ if __name__ == '__main__':
             # "values": json.dumps(values),
         })
 
-    print ("Hello 3")
-
+    print("Hello 3")
     """
     pprint(tg.depths.tolist())
 
