@@ -330,7 +330,7 @@ if __name__ == '__main__':
 
     print ("Hello 1")
 
-    key = "apple"
+    key = "apple:123"
     # r.delete (key)
     r.rpush (key, *tg.depths)
 
