@@ -286,7 +286,8 @@ def save_tuning(config: dict, tuning: dict) -> None:
     Save tuning to redis
     *********************************
     """
-    r = redis.Redis(host='3.11.7.67',
+    assert os.environ['TUNING_GENERATOR_TARGET'], 'TUNING_GENERATOR_TARGET Not Defined'
+    r = redis.Redis(host=os.environ['TUNING_GENERATOR_TARGET'],
                     port=6379,
                     encoding=u'utf-8',
                     decode_responses=True,
