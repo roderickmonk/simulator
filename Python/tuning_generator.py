@@ -305,7 +305,7 @@ if __name__ == '__main__':
 
     junk = np.array (values)
     print ("shape: ", junk.shape)
-    junk = junk.reshape (40000,1)
+    junk = junk.reshape (90000,1)
     print ("shape: ", junk.shape)
     junk = junk.flatten().tolist()
 
