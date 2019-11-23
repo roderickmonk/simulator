@@ -181,6 +181,14 @@ class TuningGenerator:
 
         self.load_total_volume()
 
+        """
+        Some demonstration code - eventually delete
+        a = [1, 2, 3, 4]
+        b = [5, 6, 7, 8]
+        values = [[[a[i],b[j]] for i in range(len(a))] for j in range(len(b))]
+        """
+
+        # Note: values is populated in 'Fortran' order
         values = [[
             self.quadrant(self.remaining_depth[j],
                           self.remaining_price_depths[i]) / self.total_volume
@@ -333,10 +341,7 @@ if __name__ == '__main__':
 
     values = tg.get_values()
 
-    values = np.array (values) \
-                    .reshape (len(tg.depths) * len (tg.price_depths),1) \
-                    .flatten() \
-                    .tolist()
+    values = np.array(values).reshape(-1,order='F').tolist()
 
     logging.debug(f'values: {values}')
 
@@ -347,10 +352,10 @@ if __name__ == '__main__':
         "depths": tg.depths,
         "price_depths": tg.price_depths,
         "values": values,
-        #"remainingDepths": tg.remaining_depth,
-        #"remainingPriceDepths": tg.remaining_price_depths,
-        #"metaPriceDepths": tg.meta_price_depths,
-        #"metaRemainingVolumes": tg.meta_remaining_volumes,
+        # "remainingDepths": tg.remaining_depth,
+        # "remainingPriceDepths": tg.remaining_price_depths,
+        # "metaPriceDepths": tg.meta_price_depths,
+        # "metaRemainingVolumes": tg.meta_remaining_volumes,
     }
 
     save_tuning(tg.config, tuning)
@@ -374,7 +379,7 @@ if __name__ == '__main__':
     # Record values to redis
     key = ":".join([tg.config["name"], "values"])
     r.delete(key)
-    r.rpush(key, *values_for_redis)
+    r.rpush(key, *values)
     """
 
     print("That's All Folks")
