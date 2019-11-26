@@ -98,7 +98,7 @@ class Co2Validator:
         assert left.shape == right.shape, f"{what} shapes differ"
         assert left.dtype == right.dtype, f"{what} dtypes differ"
 
-        if not np.allclose(self.trader.sell_pv, sell_pv_ref, atol=0.000000005):
+        if not np.allclose(left, right, atol=0.000000005):
             logging.error("left: %r", left)
             logging.error("right: %r", right)
             logging.error(f"{what} left != right")
