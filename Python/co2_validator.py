@@ -162,6 +162,11 @@ class Co2Validator:
                             np.allclose(self.trader.buy_pv, buy_pv_ref, atol=0.000000005) and \
                             np.allclose(self.trader.sell_pv, sell_pv_ref, atol=0.000000005)  
 
+                        if PVs_identical:
+                            logging.error ("PVs are identical")
+                        else:
+                            logging.error ("PVs are not identical")
+
 
 
         except StopIteration:
