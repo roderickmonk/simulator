@@ -95,8 +95,13 @@ class Co2Validator:
             logging.error(f"({what}) sizes differ")
             return False
 
-        assert left.shape == right.shape, f"{what} shapes differ"
-        assert left.dtype == right.dtype, f"{what} dtypes differ"
+        if left.shape != right.shape:
+            logging.error (f"{what} shapes differ")
+            return False
+
+        if left.dtype != right.dtype:
+            logging.error (f"{what} dtypes differ")
+            return False
 
         if not np.allclose(left, right, atol=0.000000005):
             logging.error("left: %r", left)
