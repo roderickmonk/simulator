@@ -174,25 +174,8 @@ class Co2Validator:
                         buy_ev_ref = self.redis_get(cycle_time, "buy_ev")
                         sell_ev_ref = self.redis_get(cycle_time, "sell_ev")
 
-                        EVs_identical = \
-                            self.trader.buy_ev.size == buy_ev_ref.size and \
-                            self.trader.sell_ev.size == sell_ev_ref.size and \
-                            self.trader.buy_ev.shape == buy_ev_ref.shape and \
-                            self.trader.sell_ev.shape == sell_ev_ref.shape and \
-                            self.trader.buy_ev.dtype == buy_ev_ref.dtype and \
-                            self.trader.sell_ev.dtype == sell_ev_ref.dtype and \
-                            np.allclose(self.trader.buy_ev, buy_ev_ref, atol=0.000000005) and \
-                            np.allclose(self.trader.sell_ev,
-                                        sell_ev_ref, atol=0.000000005)
-
-                        if not EVs_identical:
-
-                            logging.error("buy_ev: %r", self.trader.buy_ev)
-                            logging.error("buy_ev_ref: %r", buy_ev_ref)
-                            logging.error("sell_ev: %r", self.trader.sell_ev)
-                            logging.error("sell_ev_ref: %r", sell_ev_ref)
-                            logging.error("EVs Not Identical")
-                            os._exit(0)
+                        assert self.compare("buy_ev", self.trader.buy_ev, buy_ev_ref)
+                        assert self.compare("sell_ev", self.trader.sell_pv, sell_ev_ref)
 
         except StopIteration:
             assert False  # Must not be here
