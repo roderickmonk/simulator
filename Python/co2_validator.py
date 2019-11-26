@@ -112,6 +112,10 @@ class Co2Validator:
 
                         logging.debug("Cycle Time: %r", cycle_time)
 
+                        # buy_pv 
+                        buy_pv = self.redis_get(cycle_time, "buy_pv")                     
+                        logging.error("buy_pv: %r", buy_pv)
+
                         # buyOB
                         buy_rates = self.redis_get(cycle_time, "buy_rates")
                         buy_quantities = self.redis_get(
