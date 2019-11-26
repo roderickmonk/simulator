@@ -162,7 +162,7 @@ class Co2Validator:
 
                         if not PVs_identical:
                         
-                            logging.error ("PVs are not identical")
+                            logging.error ("PVs Not Identical")
                             logging.error("buy_pv: %r", self.trader.buy_pv)
                             logging.error("buy_pv_ref: %r", buy_pv_ref)
                             logging.error("sell_pv: %r", self.trader.sell_pv)
@@ -185,7 +185,7 @@ class Co2Validator:
 
                         if not EVs_identical:
                         
-                            logging.error ("EVs are not identical")
+                            logging.error ("EVs Not Identical")
                             logging.error("buy_ev: %r", self.trader.buy_ev)
                             logging.error("buy_ev_ref: %r", buy_ev_ref)
                             logging.error("sell_ev: %r", self.trader.sell_ev)
