@@ -110,7 +110,7 @@ class Co2Validator:
                         cycle_time, rust_buy_rate, rust_sell_rate = itemgetter(
                             'cycle_time', 'buy_rate', 'sell_rate')(rx_msg)
 
-                        logging.debug("Cycle Time: %r", cycle_time)                
+                        logging.debug("Cycle Time: %r", cycle_time)
 
                         # buyOB
                         buy_rates = self.redis_get(cycle_time, "buy_rates")
@@ -137,8 +137,6 @@ class Co2Validator:
                         buy_rate, sell_rate = self.trader.compute_orders(
                             buyob, sellob)
 
-
-
                         logging.info(
                             "Elapsed (msecs): %d\tBest Buy: %14.8f\tBest Sell: %14.8f\n"
                             +
@@ -147,8 +145,8 @@ class Co2Validator:
                             buy_rate, sell_rate)
 
                         # Compare PVs
-                        buy_pv_ref = self.redis_get(cycle_time, "buy_pv")                     
-                        sell_pv_ref = self.redis_get(cycle_time, "sell_pv")   
+                        buy_pv_ref = self.redis_get(cycle_time, "buy_pv")
+                        sell_pv_ref = self.redis_get(cycle_time, "sell_pv")
 
                         if self.trader.buy_pv.size != buy_pv_ref.size:
                             logging.error("buy_pv: %r", self.trader.buy_pv)
@@ -162,28 +160,26 @@ class Co2Validator:
                             logging.error("sell_pv's Size Differ")
                             os._exit(0)
 
-                        PVs_identical = \
-                            self.trader.buy_pv.size == buy_pv_ref.size and \
-                            self.trader.sell_pv.size == sell_pv_ref.size and \
-                            self.trader.buy_pv.shape == buy_pv_ref.shape and \
-                            self.trader.sell_pv.shape == sell_pv_ref.shape and \
-                            self.trader.buy_pv.dtype == buy_pv_ref.dtype and \
-                            self.trader.sell_pv.dtype == sell_pv_ref.dtype and \
-                            np.allclose(self.trader.buy_pv, buy_pv_ref, atol=0.000000005) and \
-                            np.allclose(self.trader.sell_pv, sell_pv_ref, atol=0.000000005)  
+                        assert self.trader.buy_pv.shape == buy_pv_ref.shape
+                        assert self.trader.sell_pv.shape == sell_pv_ref.shape
+                        assert self.trader.buy_pv.dtype == buy_pv_ref.dtype
+                        assert self.trader.sell_pv.dtype == sell_pv_ref.dtype
 
-                        if not PVs_identical:
-                        
-                            logging.error ("PVs Not Identical")
+                        if not np.allclose(self.trader.buy_pv, buy_pv_ref, atol=0.000000005):
                             logging.error("buy_pv: %r", self.trader.buy_pv)
                             logging.error("buy_pv_ref: %r", buy_pv_ref)
+                            logging.error("buy_pv != buy_pv_ref")
+                            os._exit(0)
+
+                        if not np.allclose(self.trader.sell_pv, sell_pv_ref, atol=0.000000005):
                             logging.error("sell_pv: %r", self.trader.sell_pv)
                             logging.error("sell_pv_ref: %r", sell_pv_ref)
+                            logging.error("sell_pv != sell_pv_ref")
                             os._exit(0)
 
                         # Compare EVs
-                        buy_ev_ref = self.redis_get(cycle_time, "buy_ev")                     
-                        sell_ev_ref = self.redis_get(cycle_time, "sell_ev")     
+                        buy_ev_ref = self.redis_get(cycle_time, "buy_ev")
+                        sell_ev_ref = self.redis_get(cycle_time, "sell_ev")
 
                         EVs_identical = \
                             self.trader.buy_ev.size == buy_ev_ref.size and \
@@ -193,11 +189,12 @@ class Co2Validator:
                             self.trader.buy_ev.dtype == buy_ev_ref.dtype and \
                             self.trader.sell_ev.dtype == sell_ev_ref.dtype and \
                             np.allclose(self.trader.buy_ev, buy_ev_ref, atol=0.000000005) and \
-                            np.allclose(self.trader.sell_ev, sell_ev_ref, atol=0.000000005)  
+                            np.allclose(self.trader.sell_ev,
+                                        sell_ev_ref, atol=0.000000005)
 
                         if not EVs_identical:
-                        
-                            logging.error ("EVs Not Identical")
+
+                            logging.error("EVs Not Identical")
                             logging.error("buy_ev: %r", self.trader.buy_ev)
                             logging.error("buy_ev_ref: %r", buy_ev_ref)
                             logging.error("sell_ev: %r", self.trader.sell_ev)
