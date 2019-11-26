@@ -148,7 +148,19 @@ class Co2Validator:
 
                         # Compare PVs
                         buy_pv_ref = self.redis_get(cycle_time, "buy_pv")                     
-                        sell_pv_ref = self.redis_get(cycle_time, "sell_pv")     
+                        sell_pv_ref = self.redis_get(cycle_time, "sell_pv")   
+
+                        if self.trader.buy_pv.size != buy_pv_ref.size:
+                            logging.error("buy_pv: %r", self.trader.buy_pv)
+                            logging.error("buy_pv_ref: %r", buy_pv_ref)
+                            logging.error("buy_pv's Size Differ")
+                            os._exit(0)
+
+                        if self.trader.sell_pv.size != sell_pv_ref.size:
+                            logging.error("sell_pv: %r", self.trader.buy_pv)
+                            logging.error("sell_pv_ref: %r", sell_pv_ref)
+                            logging.error("sell_pv's Size Differ")
+                            os._exit(0)
 
                         PVs_identical = \
                             self.trader.buy_pv.size == buy_pv_ref.size and \
