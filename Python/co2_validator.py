@@ -112,9 +112,11 @@ class Co2Validator:
 
                         logging.debug("Cycle Time: %r", cycle_time)
 
-                        # buy_pv 
-                        buy_pv = self.redis_get(cycle_time, "buy_pv")                     
-                        logging.error("buy_pv: %r", buy_pv)
+                        buy_pv_ref = self.redis_get(cycle_time, "buy_pv")                     
+                        logging.error("buy_pv: %r", buy_pv_ref)
+
+                        sell_pv_ref = self.redis_get(cycle_time, "buy_pv")                     
+                        logging.error("buy_pv: %r", sell_pv_ref)
 
                         # buyOB
                         buy_rates = self.redis_get(cycle_time, "buy_rates")
@@ -141,12 +143,26 @@ class Co2Validator:
                         buy_rate, sell_rate = self.trader.compute_orders(
                             buyob, sellob)
 
+
+
                         logging.info(
                             "Elapsed (msecs): %d\tBest Buy: %14.8f\tBest Sell: %14.8f\n"
                             +
                             "\t\t\t\t\t\t\tBuy Rate: %14.8f\tSell Rate: %14.8f",
                             timer() * 1000, buy_rates[0], sell_rates[0],
                             buy_rate, sell_rate)
+
+                        PVs_identical = \
+                            self.trader.buy_pv.size == buy_pv_ref.size and \
+                            self.trader.sell_pv.size == sell_pv_ref.size and \
+                            self.trader.buy_pv.shape == buy_pv_ref.shape and \
+                            self.trader.sell_pv.shape == sell_pv_ref.shape and \
+                            self.trader.buy_pv.dtype == buy_pv_ref.dtype and \
+                            self.trader.sell_pv.dtype == sell_pv_ref.dtype and \
+                            np.allclose(self.trader.buy_pv, buy_pv_ref, atol=0.000000005) and \
+                            np.allclose(self.trader.sell_pv, sell_pv_ref, atol=0.000000005)  
+
+
 
         except StopIteration:
             assert False  # Must not be here
