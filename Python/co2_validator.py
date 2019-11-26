@@ -113,10 +113,7 @@ class Co2Validator:
                         logging.debug("Cycle Time: %r", cycle_time)
 
                         buy_pv_ref = self.redis_get(cycle_time, "buy_pv")                     
-                        logging.error("buy_pv: %r", buy_pv_ref)
-
-                        sell_pv_ref = self.redis_get(cycle_time, "buy_pv")                     
-                        logging.error("buy_pv: %r", sell_pv_ref)
+                        sell_pv_ref = self.redis_get(cycle_time, "sell_pv")                     
 
                         # buyOB
                         buy_rates = self.redis_get(cycle_time, "buy_rates")
@@ -166,6 +163,10 @@ class Co2Validator:
                             logging.error ("PVs are identical")
                         else:
                             logging.error ("PVs are not identical")
+                            logging.error("buy_pv: %r", self.trader.buy_pv)
+                            logging.error("buy_pv_ref: %r", buy_pv_ref)
+
+                            os._exit(0)
 
 
 
