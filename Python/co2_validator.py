@@ -90,8 +90,8 @@ class Co2Validator:
     def compare (self, what: str, left: np.ndarray, right: np.ndarray) -> bool:
 
         if left.size != right.size:
-            logging.error("left: %r", left)
-            logging.error("right: %r", right)
+            logging.debug("left: %r", left)
+            logging.debug("right: %r", right)
             logging.error(f"({what}) sizes differ, left.size: {left.size}, right.size: {right.size}")
             return False
 
