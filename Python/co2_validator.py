@@ -87,7 +87,7 @@ class Co2Validator:
         raw = [float(i) for i in raw]
         return np.array(raw)
 
-    def compare (what: str, left: np.ndarray, right: np.ndarray) -> bool:
+    def compare (self, what: str, left: np.ndarray, right: np.ndarray) -> bool:
 
         if left.size != right.size:
             logging.error("left: %r", left)
