@@ -87,6 +87,25 @@ class Co2Validator:
         raw = [float(i) for i in raw]
         return np.array(raw)
 
+    def compare (what: str, left: np.ndarray, right: np.ndarray) -> bool:
+
+        if left.size != right.size:
+            logging.error("left: %r", left)
+            logging.error("right: %r", right)
+            logging.error(f"({what}) sizes differ")
+            return False
+
+        assert left.shape == right.shape, f"{what} shapes differ"
+        assert left.dtype == right.dtype, f"{what} dtypes differ"
+
+        if not np.allclose(self.trader.sell_pv, sell_pv_ref, atol=0.000000005):
+            logging.error("left: %r", left)
+            logging.error("right: %r", right)
+            logging.error(f"{what} left != right")
+            return False
+
+        return True
+
     def run(self):
 
         try:
@@ -148,34 +167,8 @@ class Co2Validator:
                         buy_pv_ref = self.redis_get(cycle_time, "buy_pv")
                         sell_pv_ref = self.redis_get(cycle_time, "sell_pv")
 
-                        if self.trader.buy_pv.size != buy_pv_ref.size:
-                            logging.error("buy_pv: %r", self.trader.buy_pv)
-                            logging.error("buy_pv_ref: %r", buy_pv_ref)
-                            logging.error("buy_pv's Size Differ")
-                            os._exit(0)
-
-                        if self.trader.sell_pv.size != sell_pv_ref.size:
-                            logging.error("sell_pv: %r", self.trader.buy_pv)
-                            logging.error("sell_pv_ref: %r", sell_pv_ref)
-                            logging.error("sell_pv's Size Differ")
-                            os._exit(0)
-
-                        assert self.trader.buy_pv.shape == buy_pv_ref.shape
-                        assert self.trader.sell_pv.shape == sell_pv_ref.shape
-                        assert self.trader.buy_pv.dtype == buy_pv_ref.dtype
-                        assert self.trader.sell_pv.dtype == sell_pv_ref.dtype
-
-                        if not np.allclose(self.trader.buy_pv, buy_pv_ref, atol=0.000000005):
-                            logging.error("buy_pv: %r", self.trader.buy_pv)
-                            logging.error("buy_pv_ref: %r", buy_pv_ref)
-                            logging.error("buy_pv != buy_pv_ref")
-                            os._exit(0)
-
-                        if not np.allclose(self.trader.sell_pv, sell_pv_ref, atol=0.000000005):
-                            logging.error("sell_pv: %r", self.trader.sell_pv)
-                            logging.error("sell_pv_ref: %r", sell_pv_ref)
-                            logging.error("sell_pv != sell_pv_ref")
-                            os._exit(0)
+                        assert self.compare("buy_pv", self.trader.buy_pv, buy_pv_ref)
+                        assert self.compare("sell_pv", self.trader.sell_pv, sell_pv_ref)
 
                         # Compare EVs
                         buy_ev_ref = self.redis_get(cycle_time, "buy_ev")
@@ -194,11 +187,11 @@ class Co2Validator:
 
                         if not EVs_identical:
 
-                            logging.error("EVs Not Identical")
                             logging.error("buy_ev: %r", self.trader.buy_ev)
                             logging.error("buy_ev_ref: %r", buy_ev_ref)
                             logging.error("sell_ev: %r", self.trader.sell_ev)
                             logging.error("sell_ev_ref: %r", sell_ev_ref)
+                            logging.error("EVs Not Identical")
                             os._exit(0)
 
         except StopIteration:
