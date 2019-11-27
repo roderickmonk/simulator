@@ -107,7 +107,7 @@ class Co2Validator:
             return False
 
         if not np.allclose(left, right, atol=0.000000005):
-            logging.error(f"{what} left: %r", left[0:-1])
+            logging.error(f"{what} left: %r", left[0:20])
             logging.debug(f"{what} right: %r", right[0:20])
             logging.error(f"{what} Not Equal")
             return False
