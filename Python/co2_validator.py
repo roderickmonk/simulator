@@ -43,6 +43,8 @@ class Timer:
             datetime.timedelta(seconds=round(self(), self._round_ndigits)))
 
 
+length_limit = 4
+
 class Co2Validator:
 
     trader = None
@@ -131,9 +133,9 @@ class Co2Validator:
                         logging.debug("Cycle Time: %r", cycle_time)
 
                         # buyOB
-                        buy_rates = self.redis_get(cycle_time, "buy_rates")[0:4]
+                        buy_rates = self.redis_get(cycle_time, "buy_rates")[0:length_limit]
                         buy_quantities = self.redis_get(
-                            cycle_time, "buy_quantities")[0:3]
+                            cycle_time, "buy_quantities")[0:length_limit]
 
                         assert buy_rates.size == buy_quantities.size
 
@@ -141,9 +143,9 @@ class Co2Validator:
                         logging.debug('buyob:\n%r', buyob)
 
                         # sellOB
-                        sell_rates = self.redis_get(cycle_time, "sell_rates")[0:4]
+                        sell_rates = self.redis_get(cycle_time, "sell_rates")[0:length_limit]
                         sell_quantities = self.redis_get(
-                            cycle_time, "sell_quantities")[0:3]
+                            cycle_time, "sell_quantities")[0:length_limit]
 
                         assert sell_rates.size == sell_quantities.size
 
