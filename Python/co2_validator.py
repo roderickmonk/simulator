@@ -128,10 +128,10 @@ class Co2Validator:
                         cycle_time, rust_buy_rate, rust_sell_rate = itemgetter(
                             'cycle_time', 'buy_rate', 'sell_rate')(rx_msg)
 
-                        logging.debug("Cycle Time: %r", cycle_time)
+                        logging.debug("Cycle Time: %r", cycle_time)4
 
                         # buyOB
-                        buy_rates = self.redis_get(cycle_time, "buy_rates")[0:3]
+                        buy_rates = self.redis_get(cycle_time, "buy_rates")[0:4]
                         buy_quantities = self.redis_get(
                             cycle_time, "buy_quantities")[0:3]
 
@@ -141,7 +141,7 @@ class Co2Validator:
                         logging.debug('buyob:\n%r', buyob)
 
                         # sellOB
-                        sell_rates = self.redis_get(cycle_time, "sell_rates")[0:3]
+                        sell_rates = self.redis_get(cycle_time, "sell_rates")[0:4]
                         sell_quantities = self.redis_get(
                             cycle_time, "sell_quantities")[0:3]
 
