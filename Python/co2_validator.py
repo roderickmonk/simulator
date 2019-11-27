@@ -207,8 +207,8 @@ class Co2Validator:
                         buy_xi_ref = buy_xi_ref.reshape((-1, 2))
                         sell_xi_ref = sell_xi_ref.reshape((-1, 2))
 
-                        logging.error(f"buy_xi: {self.buy_xi}")
-                        logging.error(f"sell_xi: {self.sell_xi}")
+                        logging.error(f"buy_xi: {self.trader.buy_xi}")
+                        logging.error(f"sell_xi: {self.trader.sell_xi}")
 
                         if not self.compare("buy_xi", self.trader.buy_xi, buy_xi_ref):
                             pass  # os._exit(0)
