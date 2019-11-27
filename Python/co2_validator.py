@@ -220,7 +220,7 @@ class Co2Validator:
                         buy_ev_ref = self.redis_get(cycle_time, "buy_ev")
                         sell_ev_ref = self.redis_get(cycle_time, "sell_ev")
 
-                        logging.error(f"buy_ev:\n{buy_ev}")
+                        logging.error(f"buy_ev:\n{buy_ev_ref}")
 
 
                         if not self.compare("buy_ev", self.trader.buy_ev, buy_ev_ref):
