@@ -140,9 +140,9 @@ class Co2Validator:
                         logging.debug("Cycle Time: %r", cycle_time)
 
                         # buyOB
-                        buy_rates = self.redis_get(cycle_time, "buy_rates")
+                        buy_rates = self.redis_get(cycle_time, "buy_rates")[0:3]
                         buy_quantities = self.redis_get(
-                            cycle_time, "buy_quantities")
+                            cycle_time, "buy_quantities")[0:3]
 
                         assert buy_rates.size == buy_quantities.size
 
@@ -150,9 +150,9 @@ class Co2Validator:
                         logging.debug('buyob:\n%r', buyob)
 
                         # sellOB
-                        sell_rates = self.redis_get(cycle_time, "sell_rates")
+                        sell_rates = self.redis_get(cycle_time, "sell_rates")[0:3]
                         sell_quantities = self.redis_get(
-                            cycle_time, "sell_quantities")
+                            cycle_time, "sell_quantities")[0:3]
 
                         assert sell_rates.size == sell_quantities.size
 
