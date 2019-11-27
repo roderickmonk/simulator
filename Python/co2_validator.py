@@ -45,6 +45,7 @@ class Timer:
 
 length_limit = 4
 
+
 class Co2Validator:
 
     trader = None
@@ -133,7 +134,8 @@ class Co2Validator:
                         logging.debug("Cycle Time: %r", cycle_time)
 
                         # buyOB
-                        buy_rates = self.redis_get(cycle_time, "buy_rates")[0:length_limit]
+                        buy_rates = self.redis_get(cycle_time, "buy_rates")[
+                            0:length_limit]
                         buy_quantities = self.redis_get(
                             cycle_time, "buy_quantities")[0:length_limit]
 
@@ -143,7 +145,8 @@ class Co2Validator:
                         logging.debug('buyob:\n%r', buyob)
 
                         # sellOB
-                        sell_rates = self.redis_get(cycle_time, "sell_rates")[0:length_limit]
+                        sell_rates = self.redis_get(cycle_time, "sell_rates")[
+                            0:length_limit]
                         sell_quantities = self.redis_get(
                             cycle_time, "sell_quantities")[0:length_limit]
 
@@ -201,14 +204,17 @@ class Co2Validator:
                         buy_xi_ref = self.redis_get(cycle_time, "buy_xi")
                         sell_xi_ref = self.redis_get(cycle_time, "sell_xi")
 
-                        buy_xi_ref = buy_xi_ref.reshape ((-1,2))
-                        sell_xi_ref = sell_xi_ref.reshape ((-1,2))
+                        buy_xi_ref = buy_xi_ref.reshape((-1, 2))
+                        sell_xi_ref = sell_xi_ref.reshape((-1, 2))
+
+                        logging.error(f"buy_xi: {self.buy_xi}")
+                        logging.error(f"sell_xi: {self.sell_xi}")
 
                         if not self.compare("buy_xi", self.trader.buy_xi, buy_xi_ref):
-                            pass # os._exit(0)
+                            pass  # os._exit(0)
 
                         if not self.compare("sell_xi", self.trader.sell_xi, sell_xi_ref):
-                            pass # os._exit(0)
+                            pass  # os._exit(0)
 
                         # Compare EVs
                         buy_ev_ref = self.redis_get(cycle_time, "buy_ev")
