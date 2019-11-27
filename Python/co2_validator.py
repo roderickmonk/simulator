@@ -204,6 +204,13 @@ class Co2Validator:
                         if not self.compare("sell_candidate_rates", self.trader.sell_candidate_rates, sell_candidate_rates_ref):
                             pass  # os._exit(0)
 
+                        # Compare buy_candidate_rates and sell_candidate_rates
+                        buy_xi_ref = self.redis_get(cycle_time, "buy_xi")
+                        sell_xi_ref = self.redis_get(cycle_time, "sell_xi")
+
+                        logging.error ("buy_xi_ref: %r", buy_xi_ref)
+                        logging.debug ("sell_xi_ref: %r", sell_xi_ref)
+
                         # Compare EVs
                         buy_ev_ref = self.redis_get(cycle_time, "buy_ev")
                         sell_ev_ref = self.redis_get(cycle_time, "sell_ev")
