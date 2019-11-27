@@ -208,6 +208,8 @@ class Co2Validator:
                         buy_xi_ref = self.redis_get(cycle_time, "buy_xi")
                         sell_xi_ref = self.redis_get(cycle_time, "sell_xi")
 
+                        buy_xi_ref.reshape ((-1,2))
+
                         logging.error ("buy_xi_ref: %r", buy_xi_ref)
                         os._exit(0)
                         logging.debug ("sell_xi_ref: %r", sell_xi_ref)
