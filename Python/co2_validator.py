@@ -185,7 +185,19 @@ class Co2Validator:
                             pass # os._exit(0)
 
                         if not self.compare("sell_price_depth", self.trader.sell_price_depth, sell_price_depth_ref):
-                            pass # os._exit(0)                       
+                            pass # os._exit(0)    
+
+                        # Compare buy_candidate_rates and sell_candidate_rates
+                        buy_candidate_rates_ref = self.redis_get(cycle_time, "buy_candidate_rates")
+                        sell_candidate_rates_ref = self.redis_get(cycle_time, "sell_candidate_rates")
+
+                        if not self.compare("buy_candidate_rates", self.trader.buy_candidate_rates, buy_candidate_rates_ref):
+                            pass # os._exit(0)
+
+                        if not self.compare("sell_candidate_rates", self.trader.sell_candidate_rates_ref, sell_candidate_rates_ref):
+                            pass # os._exit(0)    
+
+                                       
 
                         # Compare EVs
                         buy_ev_ref = self.redis_get(cycle_time, "buy_ev")
