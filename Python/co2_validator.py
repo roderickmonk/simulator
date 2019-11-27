@@ -210,10 +210,11 @@ class Co2Validator:
 
                         buy_xi_ref = buy_xi_ref.reshape ((-1,2))
 
-                        logging.error ("buy_xi_ref: %r", buy_xi_ref)
-                        logging.error ("buy_xi_ref.shape: %r", buy_xi_ref.shape)
-                        os._exit(0)
-                        logging.debug ("sell_xi_ref: %r", sell_xi_ref)
+                        if not self.compare("buy_xi", self.trader.buy_xi, buy_xi_ref):
+                            pass  # os._exit(0)
+
+                        if not self.compare("sell_xi", self.trader.sell_xi, sell_xi_ref):
+                            pass  # os._exit(0)
 
                         # Compare EVs
                         buy_ev_ref = self.redis_get(cycle_time, "buy_ev")
