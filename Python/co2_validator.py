@@ -209,6 +209,7 @@ class Co2Validator:
                         sell_xi_ref = self.redis_get(cycle_time, "sell_xi")
 
                         buy_xi_ref = buy_xi_ref.reshape ((-1,2))
+                        sell_xi_ref = sell_xi_ref.reshape ((-1,2))
 
                         if not self.compare("buy_xi", self.trader.buy_xi, buy_xi_ref):
                             os._exit(0)
