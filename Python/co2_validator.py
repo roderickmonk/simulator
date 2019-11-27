@@ -99,7 +99,7 @@ class Co2Validator:
             logging.debug(f"({what}) sizes identical: {left.size}")
 
         if left.shape != right.shape:
-            logging.error(f"{what} shapes differ")
+            logging.error(f"{what} shapes differ: {left.shape}, {right.shape}")
             return False
 
         if left.dtype != right.dtype:
