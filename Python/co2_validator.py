@@ -194,7 +194,7 @@ class Co2Validator:
                         if not self.compare("buy_candidate_rates", self.trader.buy_candidate_rates, buy_candidate_rates_ref):
                             pass # os._exit(0)
 
-                        if not self.compare("sell_candidate_rates", self.trader.sell_candidate_rates_ref, sell_candidate_rates_ref):
+                        if not self.compare("sell_candidate_rates", self.trader.sell_candidate_rates, sell_candidate_rates_ref):
                             pass # os._exit(0)    
 
                                        
