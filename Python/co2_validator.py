@@ -240,10 +240,13 @@ class Co2Validator:
                                 pass  # os._exit(0)
 
                         except TypeError as msg:
-                            logging.message(f"Excpetion Detected: {msg}")
+                            logging.error(f"Excpetion Detected: {msg}")
 
                         except:
-                            logging.message("Unknown Exception Caught")
+                            logging.error("Unknown Exception Caught")
+
+                        finally:
+                            logging.error ("End of Loop")
 
         except StopIteration:
             assert False  # Must not be here
