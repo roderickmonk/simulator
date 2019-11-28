@@ -43,9 +43,6 @@ class Timer:
             datetime.timedelta(seconds=round(self(), self._round_ndigits)))
 
 
-length_limit = -1
-
-
 class Co2Validator:
 
     trader = None
@@ -140,9 +137,9 @@ class Co2Validator:
 
                             # buyOB
                             buy_rates = self.redis_get(
-                                cycle_time, "buy_rates")[0:length_limit]
+                                cycle_time, "buy_rates")
                             buy_quantities = self.redis_get(
-                                cycle_time, "buy_quantities")[0:length_limit]
+                                cycle_time, "buy_quantities")
 
                             assert buy_rates.size == buy_quantities.size
 
@@ -153,9 +150,9 @@ class Co2Validator:
 
                             # sellOB
                             sell_rates = self.redis_get(
-                                cycle_time, "sell_rates")[0:length_limit]
+                                cycle_time, "sell_rates")
                             sell_quantities = self.redis_get(
-                                cycle_time, "sell_quantities")[0:length_limit]
+                                cycle_time, "sell_quantities")
 
                             assert sell_rates.size == sell_quantities.size
 
