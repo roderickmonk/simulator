@@ -180,69 +180,71 @@ class Co2Validator:
                                 timer() * 1000, buy_rates[0], sell_rates[0],
                                 buy_rate, sell_rate)
 
-                            # Compare PVs
-                            buy_pv_ref = self.redis_get(cycle_time, "buy_pv")
-                            sell_pv_ref = self.redis_get(cycle_time, "sell_pv")
-
-                            if not self.compare("buy_pv", self.trader.buy_pv, buy_pv_ref):
-                                pass  # os._exit(0)
-                            if not self.compare("sell_pv", self.trader.sell_pv, sell_pv_ref):
-                                pass  # os_.exit(0)
-
-                            # Compare buy_price_depth and sell_price_depth
-                            buy_price_depth_ref = self.redis_get(
-                                cycle_time, "buy_price_depth")
-                            sell_price_depth_ref = self.redis_get(
-                                cycle_time, "sell_price_depth")
-
-                            if not self.compare("buy_price_depth", self.trader.buy_price_depth, buy_price_depth_ref):
-                                pass  # os._exit(0)
-
-                            if not self.compare("sell_price_depth", self.trader.sell_price_depth, sell_price_depth_ref):
-                                pass  # os._exit(0)
-
-                            # Compare buy_candidate_rates and sell_candidate_rates
-                            buy_candidate_rates_ref = self.redis_get(
-                                cycle_time, "buy_candidate_rates")
-                            sell_candidate_rates_ref = self.redis_get(
-                                cycle_time, "sell_candidate_rates")
-
-                            if not self.compare("buy_candidate_rates", self.trader.buy_candidate_rates, buy_candidate_rates_ref):
-                                pass  # os._exit(0)
-
-                            if not self.compare("sell_candidate_rates", self.trader.sell_candidate_rates, sell_candidate_rates_ref):
-                                pass  # os._exit(0)
-
-                            # Compare buy_candidate_rates and sell_candidate_rates
-                            buy_xi_ref = self.redis_get(cycle_time, "buy_xi")
-                            sell_xi_ref = self.redis_get(cycle_time, "sell_xi")
-
-                            buy_xi_ref = buy_xi_ref.reshape((-1, 2))
-                            sell_xi_ref = sell_xi_ref.reshape((-1, 2))
-
                             if __debug__:
-                                logging.debug(f"buy_xi:\n{buy_xi_ref}")
-                            if __debug__:
-                                logging.debug(f"sell_xi:\n{sell_xi_ref}")
+    
+                                # Compare PVs
+                                buy_pv_ref = self.redis_get(cycle_time, "buy_pv")
+                                sell_pv_ref = self.redis_get(cycle_time, "sell_pv")
 
-                            if not self.compare("buy_xi", self.trader.buy_xi, buy_xi_ref):
-                                pass  # os._exit(0)
+                                if not self.compare("buy_pv", self.trader.buy_pv, buy_pv_ref):
+                                    pass  # os._exit(0)
+                                if not self.compare("sell_pv", self.trader.sell_pv, sell_pv_ref):
+                                    pass  # os_.exit(0)
 
-                            if not self.compare("sell_xi", self.trader.sell_xi, sell_xi_ref):
-                                pass  # os._exit(0)
+                                # Compare buy_price_depth and sell_price_depth
+                                buy_price_depth_ref = self.redis_get(
+                                    cycle_time, "buy_price_depth")
+                                sell_price_depth_ref = self.redis_get(
+                                    cycle_time, "sell_price_depth")
 
-                            # Compare EVs
-                            buy_ev_ref = self.redis_get(cycle_time, "buy_ev")
-                            sell_ev_ref = self.redis_get(cycle_time, "sell_ev")
+                                if not self.compare("buy_price_depth", self.trader.buy_price_depth, buy_price_depth_ref):
+                                    pass  # os._exit(0)
 
-                            # logging.error(f"buy_ev: {self.trader.buy_ev}")
-                            # logging.error(f"sell_ev: {self.trader.sell_ev}")
+                                if not self.compare("sell_price_depth", self.trader.sell_price_depth, sell_price_depth_ref):
+                                    pass  # os._exit(0)
 
-                            if not self.compare("buy_ev", self.trader.buy_ev, buy_ev_ref):
-                                pass  # os._exit(0)
+                                # Compare buy_candidate_rates and sell_candidate_rates
+                                buy_candidate_rates_ref = self.redis_get(
+                                    cycle_time, "buy_candidate_rates")
+                                sell_candidate_rates_ref = self.redis_get(
+                                    cycle_time, "sell_candidate_rates")
 
-                            if not self.compare("sell_ev", self.trader.sell_ev, sell_ev_ref):
-                                pass  # os._exit(0)
+                                if not self.compare("buy_candidate_rates", self.trader.buy_candidate_rates, buy_candidate_rates_ref):
+                                    pass  # os._exit(0)
+
+                                if not self.compare("sell_candidate_rates", self.trader.sell_candidate_rates, sell_candidate_rates_ref):
+                                    pass  # os._exit(0)
+
+                                # Compare buy_candidate_rates and sell_candidate_rates
+                                buy_xi_ref = self.redis_get(cycle_time, "buy_xi")
+                                sell_xi_ref = self.redis_get(cycle_time, "sell_xi")
+
+                                buy_xi_ref = buy_xi_ref.reshape((-1, 2))
+                                sell_xi_ref = sell_xi_ref.reshape((-1, 2))
+
+                                if __debug__:
+                                    logging.debug(f"buy_xi:\n{buy_xi_ref}")
+                                if __debug__:
+                                    logging.debug(f"sell_xi:\n{sell_xi_ref}")
+
+                                if not self.compare("buy_xi", self.trader.buy_xi, buy_xi_ref):
+                                    pass  # os._exit(0)
+
+                                if not self.compare("sell_xi", self.trader.sell_xi, sell_xi_ref):
+                                    pass  # os._exit(0)
+
+                                # Compare EVs
+                                buy_ev_ref = self.redis_get(cycle_time, "buy_ev")
+                                sell_ev_ref = self.redis_get(cycle_time, "sell_ev")
+
+                                # logging.error(f"buy_ev: {self.trader.buy_ev}")
+                                # logging.error(f"sell_ev: {self.trader.sell_ev}")
+
+                                if not self.compare("buy_ev", self.trader.buy_ev, buy_ev_ref):
+                                    pass  # os._exit(0)
+
+                                if not self.compare("sell_ev", self.trader.sell_ev, sell_ev_ref):
+                                    pass  # os._exit(0)
 
                         except TypeError as msg:
                             logging.error(f"Excpetion Detected: {msg}")
