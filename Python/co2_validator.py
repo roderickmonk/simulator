@@ -233,7 +233,9 @@ class Co2Validator:
 
                         except TypeError as msg:
                             logging.message(f"Excpetion Detected: {msg}")
-                            
+
+                        except except:
+                            logging.message("Unknown Exception Caught")
 
         except StopIteration:
             assert False  # Must not be here
