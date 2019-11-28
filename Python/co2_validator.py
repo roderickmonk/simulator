@@ -162,7 +162,7 @@ class Co2Validator:
                             buy_rate, sell_rate = self.trader.compute_orders(
                                 buyob, sellob)
 
-                            logging.enable()
+                            logging.disable(logging.NOTSET)
 
                             logging.info(
                                 "Elapsed (msecs): %d\tBest Buy: %14.8f\tBest Sell: %14.8f\n"
@@ -171,7 +171,7 @@ class Co2Validator:
                                 timer() * 1000, buy_rates[0], sell_rates[0],
                                 buy_rate, sell_rate)
 
-                            logging.disabled()
+                            logging.disable()
 
                             # Compare PVs
                             buy_pv_ref = self.redis_get(cycle_time, "buy_pv")
