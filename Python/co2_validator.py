@@ -249,8 +249,8 @@ class Co2Validator:
                         except TypeError as msg:
                             logging.error(f"Exception Detected: {msg}")
 
-                        except as msg:
-                            logging.error(f"Unknown Exception Caught {msg}")
+                        except Exception as msg:
+                            logging.error(f"Exception Caught {msg}")
                             os._exit(0)
 
                         finally:
