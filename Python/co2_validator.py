@@ -165,8 +165,12 @@ class Co2Validator:
 
                             timer = Timer()
 
-                            buy_rate, sell_rate = self.trader.compute_orders(
-                                buyob, sellob)
+                            if buy_rates[0] + self.trader.tick >= sell_rates[0]:
+                                buy_rate = -1.0
+                                sell_rate = -1.0
+                            else:
+                                buy_rate, sell_rate = self.trader.compute_orders(
+                                    buyob, sellob)
 
                             logging.info(
                                 "Elapsed (msecs): %d\tBest Buy: %14.8f\tBest Sell: %14.8f\n"
