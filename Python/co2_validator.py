@@ -101,8 +101,10 @@ class Co2Validator:
             return False
 
         if not np.allclose(left, right, atol=0.000000005):
-            logging.error(f"{what} left: %r", left[0:20])
-            logging.error(f"{what} right: %r", right[0:20])
+            if __debug__:
+                logging.error(f"{what} left: %r", left[0:20])
+            if __debug__:
+                logging.error(f"{what} right: %r", right[0:20])
             logging.error(f"{what} Not Equal")
             return False
 
@@ -133,7 +135,8 @@ class Co2Validator:
                             cycle_time, rust_buy_rate, rust_sell_rate = itemgetter(
                                 'cycle_time', 'buy_rate', 'sell_rate')(rx_msg)
 
-                            logging.debug("Cycle Time: %r", cycle_time)
+                            if __debug__:
+                                logging.debug("Cycle Time: %r", cycle_time)
 
                             # buyOB
                             buy_rates = self.redis_get(cycle_time, "buy_rates")[
@@ -144,7 +147,9 @@ class Co2Validator:
                             assert buy_rates.size == buy_quantities.size
 
                             buyob = np.vstack((buy_rates, buy_quantities)).T
-                            logging.debug('buyob:\n%r', buyob)
+
+                            if __debug__:
+                                logging.debug('buyob:\n%r', buyob)
 
                             # sellOB
                             sell_rates = self.redis_get(cycle_time, "sell_rates")[
@@ -155,14 +160,13 @@ class Co2Validator:
                             assert sell_rates.size == sell_quantities.size
 
                             sellob = np.vstack((sell_rates, sell_quantities)).T
-                            logging.debug('sellob:\n%r', sellob)
+                            if __debug__:
+                                logging.debug('sellob:\n%r', sellob)
 
                             timer = Timer()
 
                             buy_rate, sell_rate = self.trader.compute_orders(
                                 buyob, sellob)
-
-                            logging.disable(logging.NOTSET)
 
                             logging.info(
                                 "Elapsed (msecs): %d\tBest Buy: %14.8f\tBest Sell: %14.8f\n"
@@ -170,8 +174,6 @@ class Co2Validator:
                                 "\t\t\t\t\t\t\tBuy Rate: %14.8f\tSell Rate: %14.8f",
                                 timer() * 1000, buy_rates[0], sell_rates[0],
                                 buy_rate, sell_rate)
-
-                            logging.disable()
 
                             # Compare PVs
                             buy_pv_ref = self.redis_get(cycle_time, "buy_pv")
@@ -213,8 +215,10 @@ class Co2Validator:
                             buy_xi_ref = buy_xi_ref.reshape((-1, 2))
                             sell_xi_ref = sell_xi_ref.reshape((-1, 2))
 
-                            logging.debug(f"buy_xi:\n{buy_xi_ref}")
-                            logging.debug(f"sell_xi:\n{sell_xi_ref}")
+                            if __debug__:
+                                logging.debug(f"buy_xi:\n{buy_xi_ref}")
+                            if __debug__:
+                                logging.debug(f"sell_xi:\n{sell_xi_ref}")
 
                             if not self.compare("buy_xi", self.trader.buy_xi, buy_xi_ref):
                                 pass  # os._exit(0)
