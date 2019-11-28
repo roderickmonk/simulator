@@ -226,7 +226,7 @@ class Co2Validator:
                         if not self.compare("buy_ev", self.trader.buy_ev, buy_ev_ref):
                             os._exit(0)
 
-                        if not self.compare("sell_ev", self.trader.sell_pv, sell_ev_ref):
+                        if not self.compare("sell_ev", self.trader.sell_ev, sell_ev_ref):
                             pass  # os._exit(0)
 
         except StopIteration:
