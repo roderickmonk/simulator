@@ -259,7 +259,7 @@ class Co2Validator:
         except StopIteration:
             assert False  # Must not be here
 
-        except:
+        except Exception as msg:
             assert False  # Must not be here
 
 
