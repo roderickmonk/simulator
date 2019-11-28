@@ -162,7 +162,7 @@ class Co2Validator:
                             buy_rate, sell_rate = self.trader.compute_orders(
                                 buyob, sellob)
 
-                            logging.enabled()
+                            logging.enable()
 
                             logging.info(
                                 "Elapsed (msecs): %d\tBest Buy: %14.8f\tBest Sell: %14.8f\n"
