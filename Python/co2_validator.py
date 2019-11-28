@@ -43,7 +43,7 @@ class Timer:
             datetime.timedelta(seconds=round(self(), self._round_ndigits)))
 
 
-length_limit = 100
+length_limit = -1
 
 
 class Co2Validator:
@@ -139,8 +139,8 @@ class Co2Validator:
                                 logging.debug("Cycle Time: %r", cycle_time)
 
                             # buyOB
-                            buy_rates = self.redis_get(cycle_time, "buy_rates")[
-                                0:length_limit]
+                            buy_rates = self.redis_get(
+                                cycle_time, "buy_rates")[0:length_limit]
                             buy_quantities = self.redis_get(
                                 cycle_time, "buy_quantities")[0:length_limit]
 
@@ -152,8 +152,8 @@ class Co2Validator:
                                 logging.debug('buyob:\n%r', buyob)
 
                             # sellOB
-                            sell_rates = self.redis_get(cycle_time, "sell_rates")[
-                                0:length_limit]
+                            sell_rates = self.redis_get(
+                                cycle_time, "sell_rates")[0:length_limit]
                             sell_quantities = self.redis_get(
                                 cycle_time, "sell_quantities")[0:length_limit]
 
@@ -179,10 +179,12 @@ class Co2Validator:
                                 buy_rate, sell_rate)
 
                             if __debug__:
-    
+
                                 # Compare PVs
-                                buy_pv_ref = self.redis_get(cycle_time, "buy_pv")
-                                sell_pv_ref = self.redis_get(cycle_time, "sell_pv")
+                                buy_pv_ref = self.redis_get(
+                                    cycle_time, "buy_pv")
+                                sell_pv_ref = self.redis_get(
+                                    cycle_time, "sell_pv")
 
                                 if not self.compare("buy_pv", self.trader.buy_pv, buy_pv_ref):
                                     pass  # os._exit(0)
@@ -214,8 +216,10 @@ class Co2Validator:
                                     pass  # os._exit(0)
 
                                 # Compare buy_candidate_rates and sell_candidate_rates
-                                buy_xi_ref = self.redis_get(cycle_time, "buy_xi")
-                                sell_xi_ref = self.redis_get(cycle_time, "sell_xi")
+                                buy_xi_ref = self.redis_get(
+                                    cycle_time, "buy_xi")
+                                sell_xi_ref = self.redis_get(
+                                    cycle_time, "sell_xi")
 
                                 buy_xi_ref = buy_xi_ref.reshape((-1, 2))
                                 sell_xi_ref = sell_xi_ref.reshape((-1, 2))
@@ -232,8 +236,10 @@ class Co2Validator:
                                     pass  # os._exit(0)
 
                                 # Compare EVs
-                                buy_ev_ref = self.redis_get(cycle_time, "buy_ev")
-                                sell_ev_ref = self.redis_get(cycle_time, "sell_ev")
+                                buy_ev_ref = self.redis_get(
+                                    cycle_time, "buy_ev")
+                                sell_ev_ref = self.redis_get(
+                                    cycle_time, "sell_ev")
 
                                 # logging.error(f"buy_ev: {self.trader.buy_ev}")
                                 # logging.error(f"sell_ev: {self.trader.sell_ev}")
@@ -252,7 +258,7 @@ class Co2Validator:
                             os._exit(0)
 
                         finally:
-                            pass # logging.error ("End of Loop")
+                            pass  # logging.error ("End of Loop")
 
         except StopIteration:
             assert False  # Must not be here
