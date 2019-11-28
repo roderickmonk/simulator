@@ -43,7 +43,7 @@ class Timer:
             datetime.timedelta(seconds=round(self(), self._round_ndigits)))
 
 
-length_limit = 4
+length_limit = 100
 
 
 class Co2Validator:
