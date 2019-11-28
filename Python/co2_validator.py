@@ -207,8 +207,8 @@ class Co2Validator:
                         buy_xi_ref = buy_xi_ref.reshape((-1, 2))
                         sell_xi_ref = sell_xi_ref.reshape((-1, 2))
 
-                        logging.error(f"buy_xi:\n{buy_xi_ref}")
-                        logging.error(f"sell_xi:\n{sell_xi_ref}")
+                        logging.debug(f"buy_xi:\n{buy_xi_ref}")
+                        logging.debug(f"sell_xi:\n{sell_xi_ref}")
 
                         if not self.compare("buy_xi", self.trader.buy_xi, buy_xi_ref):
                             pass  # os._exit(0)
@@ -220,15 +220,15 @@ class Co2Validator:
                         buy_ev_ref = self.redis_get(cycle_time, "buy_ev")
                         sell_ev_ref = self.redis_get(cycle_time, "sell_ev")
 
-                        logging.error(f"buy_ev: {self.trader.buy_ev}")
-                        logging.error(f"sell_ev: {self.trader.sell_ev}")
+                        # logging.error(f"buy_ev: {self.trader.buy_ev}")
+                        # logging.error(f"sell_ev: {self.trader.sell_ev}")
 
 
                         if not self.compare("buy_ev", self.trader.buy_ev, buy_ev_ref):
                             os._exit(0)
 
                         if not self.compare("sell_ev", self.trader.sell_ev, sell_ev_ref):
-                            pass  # os._exit(0)
+                            os._exit(0)
 
         except StopIteration:
             assert False  # Must not be here
