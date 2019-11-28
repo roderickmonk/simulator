@@ -112,6 +112,8 @@ class Co2Validator:
 
         try:
 
+            logging.disable()
+
             p = self.r.pubsub()
             p.psubscribe('*')
 
