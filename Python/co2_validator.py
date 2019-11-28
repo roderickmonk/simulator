@@ -254,6 +254,7 @@ class Co2Validator:
                             os._exit(0)
 
                         finally:
+                            pass
                             # logging.error ("End of Loop")
 
         except StopIteration:
