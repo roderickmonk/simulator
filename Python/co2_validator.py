@@ -168,6 +168,7 @@ class Co2Validator:
                             if buy_rates[0] + self.trader.tick >= sell_rates[0]:
                                 buy_rate = -1.0
                                 sell_rate = -1.0
+                                continue
                             else:
                                 buy_rate, sell_rate = self.trader.compute_orders(
                                     buyob, sellob)
