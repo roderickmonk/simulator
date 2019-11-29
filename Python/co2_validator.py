@@ -124,7 +124,7 @@ class Co2Validator:
 
                         try:
 
-                            np.set_printoptions(precision=12)
+                            np.set_printoptions(precision=10)
                             np.set_printoptions(suppress=True)
 
                             rx_msg = json.loads(message["data"])
