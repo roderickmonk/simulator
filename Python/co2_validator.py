@@ -190,7 +190,7 @@ class Co2Validator:
                                 timer() * 1000, buy_rates[0], sell_rates[0],
                                 buy_rate, sell_rate, 
                                 buy_rate-rust_buy_rate, sell_rate-rust_sell_rate,
-                                0, 0)
+                                buy_diff_count, sell_diff_count)
 
                             if __debug__:
 
