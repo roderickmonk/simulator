@@ -186,7 +186,7 @@ class Co2Validator:
                                 +
                                 "\t\t\t\t\t\t\tBuy Rate: %14.8f\tSell Rate: %14.8f\n" +
                                 "\t\t\t\t\t\t\tBuy Diff: %14.8f\tSell Diff: %14.8f\n",
-                                "\t\t\t\t\t\t\tBuy DCnt: %14d\tSell DCnt: %14d\n",
+                                "\t\t\t\t\t\t\tBuy DCnt: %d\tSell DCnt: %d\n",
                                 timer() * 1000, buy_rates[0], sell_rates[0],
                                 buy_rate, sell_rate, 
                                 buy_rate-rust_buy_rate, sell_rate-rust_sell_rate,
