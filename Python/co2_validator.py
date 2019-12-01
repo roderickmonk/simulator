@@ -118,6 +118,9 @@ class Co2Validator:
             p = self.r.pubsub()
             p.psubscribe('*')
 
+            buy_diff_count = 0
+            sell_diff_count = 0
+
             while True:
                 # print("Waiting...")
                 message = p.get_message()
@@ -172,14 +175,22 @@ class Co2Validator:
                             if buy_rate >= sell_rates[0] or sell_rate <= buy_rates[0]:
                                 buy_rate, sell_rate = -1, -1
 
+                            if not math.isclose (buy_rate, rust_buy_rate):
+                                buy_diff_count += 1
+
+                            if not math.isclose (sell_rate, rust_sell_rate):
+                                sell_diff_count += 1
+
                             logging.info(
                                 "Elapsed (msecs): %d\tBest Buy: %14.8f\tBest Sell: %14.8f\n"
                                 +
                                 "\t\t\t\t\t\t\tBuy Rate: %14.8f\tSell Rate: %14.8f\n" +
                                 "\t\t\t\t\t\t\tBuy Diff: %14.8f\tSell Diff: %14.8f\n",
+                                "\t\t\t\t\t\t\tBuy DCnt: %14d\tSell DCnt: %14d\n",
                                 timer() * 1000, buy_rates[0], sell_rates[0],
                                 buy_rate, sell_rate, 
-                                buy_rate-rust_buy_rate, sell_rate-rust_sell_rate)
+                                buy_rate-rust_buy_rate, sell_rate-rust_sell_rate,
+                                buy_diff_count, sell_diff_count)
 
                             if __debug__:
 
