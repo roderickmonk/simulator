@@ -101,7 +101,7 @@ class Co2Validator:
             logging.error(f"{what} dtypes differ")
             return False
 
-        if not np.allclose(left, right, atol=0.000005):
+        if not np.allclose(left, right, atol=0.00001):
             if __debug__:
                 logging.error(f"{what} python: %r", left[0:8].tolist())
             if __debug__:
