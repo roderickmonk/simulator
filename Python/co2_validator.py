@@ -91,6 +91,10 @@ class Co2Validator:
 
         if left.shape != right.shape:
             logging.error(f"{what} shapes differ: {left.shape}, {right.shape}")
+            if __debug__:
+                logging.error(f"{what} python: %r", left[0:8].tolist())
+            if __debug__:
+                logging.error(f"{what} rust  : %r", right[0:8].tolist())
             return False
 
         if left.dtype != right.dtype:
@@ -99,9 +103,9 @@ class Co2Validator:
 
         if not np.allclose(left, right, atol=0.000000005):
             if __debug__:
-                logging.error(f"{what} left: %r", left[0:8].tolist())
+                logging.error(f"{what} python: %r", left[0:8].tolist())
             if __debug__:
-                logging.error(f"{what} right: %r", right[0:8].tolist())
+                logging.error(f"{what} rust  : %r", right[0:8].tolist())
             logging.error(f"{what} Not Equal")
             return False
 
