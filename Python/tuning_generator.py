@@ -392,4 +392,4 @@ if __name__ == '__main__':
         r.delete(key)
         r.rpush(key, *values)
 
-    print("That's All Folks")
+    logging.error (f"That's All Folks")
