@@ -365,11 +365,11 @@ if __name__ == '__main__':
     assert os.environ['TUNING_GENERATOR_TARGET'], 'TUNING_GENERATOR_TARGET Not Defined'
     tuning_targets = os.environ['TUNING_GENERATOR_TARGET'].split(",")
 
-    logging.error (f"tuning_targets: {tuning_targets}")
+    print (f"tuning_targets: {tuning_targets}")
 
     for target in tuning_targets:
 
-        logging.error (f"target: {target}")
+        print (f"target: {target}")
 
         db = os.environ['SIMULATOR_DB']
         assert db, 'SIMULATOR_DB Not Defined'
