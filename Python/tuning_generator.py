@@ -365,7 +365,7 @@ if __name__ == '__main__':
     assert os.environ['TUNING_GENERATOR_TARGET'], 'TUNING_GENERATOR_TARGET Not Defined'
     tuning_targets = os.environ['TUNING_GENERATOR_TARGET'].split(",")
 
-    print (f"tuning_targets: {tuning_targets}")
+    logging (f"tuning_targets: {tuning_targets}")
 
     for target in tuning_targets:
 
