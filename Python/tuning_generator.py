@@ -290,9 +290,9 @@ def save_tuning(config: dict, tuning: dict) -> None:
 
     config_db["tuning"].update_one(output_name, document, upsert=True)
     
-    *********************************
-    Save tuning to redis
-    *********************************
+    # *********************************
+    # Save tuning to redis
+    # *********************************
 
     assert os.environ['TUNING_GENERATOR_TARGET'], 'TUNING_GENERATOR_TARGET Not Defined'
     tuning_targets = os.environ['TUNING_GENERATOR_TARGET'].split(",")
