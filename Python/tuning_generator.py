@@ -294,25 +294,18 @@ def save_tuning(config: dict, tuning: dict) -> None:
     # Save tuning to redis
     # *********************************
 
-    assert os.environ['TUNING_GENERATOR_TARGET'], 'TUNING_GENERATOR_TARGET Not Defined'
-    tuning_targets = os.environ['TUNING_GENERATOR_TARGET'].split(",")
-    logging.error (f"tuning_targets: {tuning_targets}")
-
     # Send tuning to all interested ec2s.
 
     assert os.environ['TUNING_GENERATOR_TARGET'], 'TUNING_GENERATOR_TARGET Not Defined'
-
-
     tuning_targets = os.environ['TUNING_GENERATOR_TARGET'].split(",")
-
     logging.error (f"tuning_targets: {tuning_targets}")
 
     for target in tuning_targets:
         print (f"target: {target}")
 
         assert os.environ['TUNING_GENERATOR_TARGET'], 'TUNING_GENERATOR_TARGET Not Defined'
-        r = redis.Redis(host=os.environ['TUNING_GENERATOR_TARGET'],
-                        port=target,
+        r = redis.Redis(host=target,
+                        port=6379,
                         encoding=u'utf-8',
                         decode_responses=True,
                         db=0)
