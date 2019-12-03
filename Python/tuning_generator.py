@@ -293,28 +293,44 @@ def save_tuning(config: dict, tuning: dict) -> None:
     *********************************
     Save tuning to redis
     *********************************
-    """
+
     assert os.environ['TUNING_GENERATOR_TARGET'], 'TUNING_GENERATOR_TARGET Not Defined'
-    r = redis.Redis(host=os.environ['TUNING_GENERATOR_TARGET'],
-                    port=6379,
-                    encoding=u'utf-8',
-                    decode_responses=True,
-                    db=0)
+    tuning_targets = os.environ['TUNING_GENERATOR_TARGET'].split(",")
+    logging.error (f"tuning_targets: {tuning_targets}")
 
-    # Record depths to redis
-    key = ":".join([tg.config["name"], "depths"])
-    r.delete(key)
-    r.rpush(key, *tuning["depths"])
+    # Send tuning to all interested ec2s.
 
-    # Record price_depths to redis
-    key = ":".join([tg.config["name"], "price_depths"])
-    r.delete(key)
-    r.rpush(key, *tuning["price_depths"])
+    assert os.environ['TUNING_GENERATOR_TARGET'], 'TUNING_GENERATOR_TARGET Not Defined'
 
-    # Record values to redis
-    key = ":".join([tg.config["name"], "values"])
-    r.delete(key)
-    r.rpush(key, *tuning["values"])
+
+    tuning_targets = os.environ['TUNING_GENERATOR_TARGET'].split(",")
+
+    logging.error (f"tuning_targets: {tuning_targets}")
+
+    for target in tuning_targets:
+        print (f"target: {target}")
+
+        assert os.environ['TUNING_GENERATOR_TARGET'], 'TUNING_GENERATOR_TARGET Not Defined'
+        r = redis.Redis(host=os.environ['TUNING_GENERATOR_TARGET'],
+                        port=target,
+                        encoding=u'utf-8',
+                        decode_responses=True,
+                        db=0)
+
+        # Record depths to redis
+        key = ":".join([tg.config["name"], "depths"])
+        r.delete(key)
+        r.rpush(key, *tuning["depths"])
+
+        # Record price_depths to redis
+        key = ":".join([tg.config["name"], "price_depths"])
+        r.delete(key)
+        r.rpush(key, *tuning["price_depths"])
+
+        # Record values to redis
+        key = ":".join([tg.config["name"], "values"])
+        r.delete(key)
+        r.rpush(key, *tuning["values"])
 
 
 if __name__ == '__main__':
@@ -359,41 +375,5 @@ if __name__ == '__main__':
     }
 
     save_tuning(tg.config, tuning)
-    
-    # Send tuning to all interested ec2s.
-
-    assert os.environ['TUNING_GENERATOR_TARGET'], 'TUNING_GENERATOR_TARGET Not Defined'
-
-
-    tuning_targets = os.environ['TUNING_GENERATOR_TARGET'].split(",")
-
-    logging.error (f"tuning_targets: {tuning_targets}")
-
-    for target in tuning_targets:
-
-        print (f"target: {target}")
-
-        db = os.environ['SIMULATOR_DB']
-        assert db, 'SIMULATOR_DB Not Defined'
-        r = redis.Redis(host=target,
-                        port=6379,
-                        encoding=u'utf-8',
-                        decode_responses=True,
-                        db=0)
-
-        # Record depths to redis
-        key = ":".join([tg.config["name"], "depths"])
-        r.delete(key)
-        r.rpush(key, *tg.depths)
-
-        # Record price_depths to redis
-        key = ":".join([tg.config["name"], "price_depths"])
-        r.delete(key)
-        r.rpush(key, *tg.price_depths)
-
-        # Record values to redis
-        key = ":".join([tg.config["name"], "values"])
-        r.delete(key)
-        r.rpush(key, *values)
 
     logging.error (f"That's All Folks")
