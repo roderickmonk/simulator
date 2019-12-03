@@ -363,9 +363,11 @@ if __name__ == '__main__':
     # Send tuning to all interested ec2s.
 
     assert os.environ['TUNING_GENERATOR_TARGET'], 'TUNING_GENERATOR_TARGET Not Defined'
+
+
     tuning_targets = os.environ['TUNING_GENERATOR_TARGET'].split(",")
 
-    logging (f"tuning_targets: {tuning_targets}")
+    logging.error (f"tuning_targets: {tuning_targets}")
 
     for target in tuning_targets:
 
