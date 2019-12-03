@@ -301,7 +301,6 @@ def save_tuning(config: dict, tuning: dict) -> None:
     logging.error (f"tuning_targets: {tuning_targets}")
 
     for target in tuning_targets:
-        print (f"target: {target}")
 
         assert os.environ['TUNING_GENERATOR_TARGET'], 'TUNING_GENERATOR_TARGET Not Defined'
         r = redis.Redis(host=target,
