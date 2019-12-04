@@ -55,7 +55,7 @@ if __name__ == '__main__':
         description='Simple Trade Quality Statistics')
     parser.add_argument("-market", type=str, default=None,
                         help="Select Market (format 'base-quote`)")
-    parser.add_argument("-clear", action='store_true', default=False, 
+    parser.add_argument("-clear", action='store_true', default=False,
                         help="Clear Statistics")
     parser.add_argument("-all", default=False, action='store_true',
                         help="Display All Markets")
@@ -83,28 +83,36 @@ if __name__ == '__main__':
         detail = history_db["trade-quality"].find_one(
             {"e": 0, "x": "bittrex", "m": market})
 
-        formatOutput(detail)
+        if detail == None:
+            logging.error(f"Market {market} Not Found")
+        else:
+            formatOutput(detail)
 
     elif market and clear:
-        history_db["trade-quality"].delete_one(
+        detail = history_db["trade-quality"].find_one(
             {"e": 0, "x": "bittrex", "m": market})
 
-        logging.error(f"Market {market} Removed from trade-quality")
+        if detail == None:
+            logging.error(f"Market {market} Not Found")
+        else:
+            history_db["trade-quality"].delete_one(
+                {"e": 0, "x": "bittrex", "m": market})
+            logging.error(f"Market {market} Removed from trade-quality")
 
     elif all and clear:
 
         history_db["trade-quality"].delete_many({})
-
         logging.error(f"All trade-quality documents removed")
 
-
     elif all:
-    
-        details = list(history_db["trade-quality"].find().sort([("m", pymongo.ASCENDING)]))
+
+        details = list(
+            history_db["trade-quality"].find().sort([("m", pymongo.ASCENDING)]))
 
         for detail in details:
             formatOutput(detail)
-            logging.info ("-----------------------------------------------------------")
+            logging.info(
+                "-----------------------------------------------------------")
 
     else:
         logging.error("Software Anomaly")
