@@ -19,7 +19,6 @@ def formatOutput(detail):
     sellRoutine = detail["sellRoutine"] if "sellRoutine" in detail else 0
     sellInteresting = detail["sellInteresting"] if "sellInteresting" in detail else 0
 
-    buyCancel = 1
     totalBuy = buyCancel + buyRoutine + buyInteresting
     totalSell = sellCancel + sellRoutine + sellInteresting
 
