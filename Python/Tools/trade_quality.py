@@ -54,10 +54,10 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser(
         description='Simple Trade Quality Statistics')
     parser.add_argument("-market", type=str, default=None,
-                        help="Define Market of interest (format 'base-quote`)")
-    parser.add_argument("-clear", type=bool, default=False,
-                        help="Clear statistics for the selected market")
-    parser.add_argument("-all", default=False, type=bool,
+                        help="Select Market (format 'base-quote`)")
+    parser.add_argument("-clear", action='store_true', default=False, 
+                        help="Clear Statistics")
+    parser.add_argument("-all", default=False, action='store_true',
                         help="Display All Markets")
 
     args = parser.parse_args()
