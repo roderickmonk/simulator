@@ -180,7 +180,7 @@ class TuningGenerator:
                       self.remaining_price_depths)
 
         self.load_total_volume()
-        logging.error(f'total_volume: {self.total_volume}')
+        logging.debug(f'total_volume: {self.total_volume}')
 
         assert self.total_volume > 0, f'({self.config["market"]}) total_volume == 0'
 
@@ -250,19 +250,17 @@ class TuningGenerator:
                 t["buy"]
             ] for t in self.trades]
 
-            logging.error("First trade: %r", self.trades[0])
-            logging.error("Last trade: %r", self.trades[-1])
+            logging.debug("First trade: %r", self.trades[0])
+            logging.debug("Last trade: %r", self.trades[-1])
 
-            logging.error(
+            logging.debug(
                 datetime.utcfromtimestamp(self.trades[0][0] /
                                           1000).strftime('%Y-%m-%d %H:%M:%S'))
-            logging.error(
+            logging.debug(
                 datetime.utcfromtimestamp(self.trades[-1][0] /
                                           1000).strftime('%Y-%m-%d %H:%M:%S'))
         else:
             self.trades = trades
-
-        logging.error("Trade Count: %d", len(self.trades))
 
     def load_config(self, configName: dict) -> None:
 
@@ -327,7 +325,7 @@ if __name__ == '__main__':
                         level=logging.ERROR,
                         datefmt='')
 
-    logging.error(f'sys.argv: {sys.argv}')
+    logging.debug(f'sys.argv: {sys.argv}')
 
     assert os.environ['MONGODB'], 'MONGODB Not Defined'
     mongodb = MongoClient(os.environ['MONGODB'])
