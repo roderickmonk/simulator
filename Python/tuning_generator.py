@@ -328,7 +328,7 @@ def save_tuning(config: dict, tuning: dict) -> None:
 if __name__ == '__main__':
 
     logging.basicConfig(format='[%(levelname)-5s] %(message)s',
-                        level=logging.ERROR,
+                        level=logging.DEBUG,
                         datefmt='')
 
     logging.error(f'sys.argv: {sys.argv}')
