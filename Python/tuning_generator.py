@@ -182,7 +182,7 @@ class TuningGenerator:
         self.load_total_volume()
         logging.error(f'total_volume: {self.total_volume}')
 
-        assert self.total_volume > 0, 'total_volume == 0'
+        assert self.total_volume > 0, f'({self.config["market"]}) total_volume == 0'
 
         # Note: values populated in 'Fortran' order
         values = [[
