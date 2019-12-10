@@ -182,14 +182,9 @@ class TuningGenerator:
         self.load_total_volume()
         logging.error(f'total_volume: {self.total_volume}')
 
-        """
-        Some demonstration code - eventually delete
-        a = [1, 2, 3, 4]
-        b = [5, 6, 7, 8]
-        values = [[[a[i],b[j]] for i in range(len(a))] for j in range(len(b))]
-        """
+        assert self.total_volume > 0, 'total_volume == 0'
 
-        # Note: values is populated in 'Fortran' order
+        # Note: values populated in 'Fortran' order
         values = [[
             self.quadrant(self.remaining_depth[j],
                           self.remaining_price_depths[i]) / self.total_volume
