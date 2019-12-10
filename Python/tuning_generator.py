@@ -180,6 +180,7 @@ class TuningGenerator:
                       self.remaining_price_depths)
 
         self.load_total_volume()
+        logging.error('total_volume:\n%r', self.total_volume)
 
         """
         Some demonstration code - eventually delete
@@ -328,7 +329,7 @@ def save_tuning(config: dict, tuning: dict) -> None:
 if __name__ == '__main__':
 
     logging.basicConfig(format='[%(levelname)-5s] %(message)s',
-                        level=logging.DEBUG,
+                        level=logging.ERROR,
                         datefmt='')
 
     logging.error(f'sys.argv: {sys.argv}')
