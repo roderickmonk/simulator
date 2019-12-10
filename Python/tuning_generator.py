@@ -244,6 +244,9 @@ class TuningGenerator:
                     "ts": ts_range
                 }).sort("ts", 1))
 
+            logging.error(f"({sys.argv[1]}) Trades Count: {len(tg.trades)}")
+            logging.debug(tg.trades)
+
             # Extract salient fields from each trade
             self.trades = [[
                 int(t["ts"].timestamp() * 1000), t["id"], t["r"], t["q"],
@@ -337,9 +340,6 @@ if __name__ == '__main__':
     if len(tg.trades) == 0:
         logging.debug("(%s) No Trades!", sys.argv[1])
         exit(0)
-
-    logging.error(f"({sys.argv[1]}) Trades Count: {len(tg.trades)}")
-    logging.debug(tg.trades)
 
     values = tg.get_values()
 
