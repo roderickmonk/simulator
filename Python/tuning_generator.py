@@ -294,7 +294,7 @@ def save_tuning(config: dict, tuning: dict) -> None:
 
     assert os.environ['TUNING_GENERATOR_TARGET'], 'TUNING_GENERATOR_TARGET Not Defined'
     tuning_targets = os.environ['TUNING_GENERATOR_TARGET'].split(",")
-    logging.error(f"tuning_targets: {tuning_targets}")
+    logging.debug(f"tuning_targets: {tuning_targets}")
 
     for target in tuning_targets:
 
@@ -340,7 +340,7 @@ if __name__ == '__main__':
         logging.debug("(%s) No Trades!", sys.argv[1])
         exit(0)
 
-    logging.error("(%s) Trades Count: %d", sys.argv[1], len(tg.trades))
+    logging.error(f"({sys.argv[1]}) Trades Count: {len(tg.trades)}")
     logging.debug(tg.trades)
 
     values = tg.get_values()
@@ -364,4 +364,4 @@ if __name__ == '__main__':
 
     save_tuning(tg.config, tuning)
 
-    logging.error(f"That's All Folks")
+    logging.debug(f"That's All Folks")
