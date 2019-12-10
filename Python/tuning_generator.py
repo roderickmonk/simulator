@@ -244,7 +244,9 @@ class TuningGenerator:
                     "ts": ts_range
                 }).sort("ts", 1))
 
-            logging.error(f"({sys.argv[1]}) Trades Count: {len(tg.trades)}")
+            assert len(self.trades) > 0, f'({sys.argv[1]}) No Trades!'
+
+            logging.error(f"({sys.argv[1]}) Trades Count: {len(self.trades)}")
             logging.debug(tg.trades)
 
             # Extract salient fields from each trade
