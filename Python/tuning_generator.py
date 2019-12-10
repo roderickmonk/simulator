@@ -180,7 +180,7 @@ class TuningGenerator:
                       self.remaining_price_depths)
 
         self.load_total_volume()
-        logging.error('total_volume:\n%r', self.total_volume)
+        logging.error(f'total_volume: {self.total_volume}')
 
         """
         Some demonstration code - eventually delete
@@ -290,7 +290,7 @@ def save_tuning(config: dict, tuning: dict) -> None:
     document = {"$set": {**output_name, **tuning}}
 
     config_db["tuning"].update_one(output_name, document, upsert=True)
-    
+
     # *********************************
     # Save tuning to redis
     # *********************************
@@ -299,7 +299,7 @@ def save_tuning(config: dict, tuning: dict) -> None:
 
     assert os.environ['TUNING_GENERATOR_TARGET'], 'TUNING_GENERATOR_TARGET Not Defined'
     tuning_targets = os.environ['TUNING_GENERATOR_TARGET'].split(",")
-    logging.error (f"tuning_targets: {tuning_targets}")
+    logging.error(f"tuning_targets: {tuning_targets}")
 
     for target in tuning_targets:
 
@@ -350,7 +350,7 @@ if __name__ == '__main__':
 
     values = tg.get_values()
 
-    values = np.array(values).reshape(-1,order='F').tolist()
+    values = np.array(values).reshape(-1, order='F').tolist()
 
     logging.debug(f'values: {values}')
 
@@ -369,4 +369,4 @@ if __name__ == '__main__':
 
     save_tuning(tg.config, tuning)
 
-    logging.error (f"That's All Folks")
+    logging.error(f"That's All Folks")
