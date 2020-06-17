@@ -180,15 +180,11 @@ class TuningGenerator:
                       self.remaining_price_depths)
 
         self.load_total_volume()
+        logging.debug(f'total_volume: {self.total_volume}')
 
-        """
-        Some demonstration code - eventually delete
-        a = [1, 2, 3, 4]
-        b = [5, 6, 7, 8]
-        values = [[[a[i],b[j]] for i in range(len(a))] for j in range(len(b))]
-        """
+        assert self.total_volume > 0, f'({self.config["market"]}) total_volume == 0'
 
-        # Note: values is populated in 'Fortran' order
+        # Note: values populated in 'Fortran' order
         values = [[
             self.quadrant(self.remaining_depth[j],
                           self.remaining_price_depths[i]) / self.total_volume
@@ -248,25 +244,28 @@ class TuningGenerator:
                     "ts": ts_range
                 }).sort("ts", 1))
 
+            assert len(self.trades) > 0, f'({sys.argv[1]}) No Trades!'
+
+            logging.error(f"({sys.argv[1]}) Trades Count: {len(self.trades)}")
+            logging.debug(tg.trades)
+
             # Extract salient fields from each trade
             self.trades = [[
                 int(t["ts"].timestamp() * 1000), t["id"], t["r"], t["q"],
                 t["buy"]
             ] for t in self.trades]
 
-            logging.error("First trade: %r", self.trades[0])
-            logging.error("Last trade: %r", self.trades[-1])
+            logging.debug("First trade: %r", self.trades[0])
+            logging.debug("Last trade: %r", self.trades[-1])
 
-            logging.error(
+            logging.debug(
                 datetime.utcfromtimestamp(self.trades[0][0] /
                                           1000).strftime('%Y-%m-%d %H:%M:%S'))
-            logging.error(
+            logging.debug(
                 datetime.utcfromtimestamp(self.trades[-1][0] /
                                           1000).strftime('%Y-%m-%d %H:%M:%S'))
         else:
             self.trades = trades
-
-        logging.error("Trade Count: %d", len(self.trades))
 
     def load_config(self, configName: dict) -> None:
 
@@ -289,7 +288,7 @@ def save_tuning(config: dict, tuning: dict) -> None:
     document = {"$set": {**output_name, **tuning}}
 
     config_db["tuning"].update_one(output_name, document, upsert=True)
-    
+
     # *********************************
     # Save tuning to redis
     # *********************************
@@ -298,7 +297,7 @@ def save_tuning(config: dict, tuning: dict) -> None:
 
     assert os.environ['TUNING_GENERATOR_TARGET'], 'TUNING_GENERATOR_TARGET Not Defined'
     tuning_targets = os.environ['TUNING_GENERATOR_TARGET'].split(",")
-    logging.error (f"tuning_targets: {tuning_targets}")
+    logging.debug(f"tuning_targets: {tuning_targets}")
 
     for target in tuning_targets:
 
@@ -331,7 +330,7 @@ if __name__ == '__main__':
                         level=logging.ERROR,
                         datefmt='')
 
-    logging.error(f'sys.argv: {sys.argv}')
+    logging.debug(f'sys.argv: {sys.argv}')
 
     assert os.environ['MONGODB'], 'MONGODB Not Defined'
     mongodb = MongoClient(os.environ['MONGODB'])
@@ -344,12 +343,9 @@ if __name__ == '__main__':
         logging.debug("(%s) No Trades!", sys.argv[1])
         exit(0)
 
-    logging.error("(%s) Trades Count: %d", sys.argv[1], len(tg.trades))
-    logging.debug(tg.trades)
-
     values = tg.get_values()
 
-    values = np.array(values).reshape(-1,order='F').tolist()
+    values = np.array(values).reshape(-1, order='F').tolist()
 
     logging.debug(f'values: {values}')
 
@@ -368,4 +364,4 @@ if __name__ == '__main__':
 
     save_tuning(tg.config, tuning)
 
-    logging.error (f"That's All Folks")
+    logging.debug(f"That's All Folks")
