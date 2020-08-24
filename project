@@ -18,3 +18,5 @@ source $SIMULATOR_PATH/bin/activate
 
 # export the version
 node -pe "require('./package.json').version"
+
+alias upgrade-modules='pip install -r requirements.txt --use-feature=2020-resolver'

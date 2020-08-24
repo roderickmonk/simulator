@@ -1,33 +1,33 @@
 import logging
-import pymongo
-from pymongo import MongoClient
-from pymongo.collection import Collection
-from functools import reduce
-from datetime import datetime, timedelta
 import os
+from datetime import datetime, timedelta
+from functools import reduce
+
 import numpy as np
+import pymongo
+from pymongo.collection import Collection
 
 try:
     profile
 except NameError:
     profile = lambda x: x
 
+
 class Orderbooks:
 
-    time_of_start_snapshot = None
     actual_end = None
     corrupt_order_book_count = 0
 
     def __init__(
-            self,
-            *,
-            orderbooks_collection: Collection,
-            envId: int,
-            exchange: str,
-            market: str,
-            depth: float,
-            start: datetime,
-            end: datetime,
+        self,
+        *,
+        ob_collection: Collection,
+        envId: int,
+        exchange: str,
+        market: str,
+        depth: float,
+        start: datetime,
+        end: datetime,
     ):
 
         self.start = start
@@ -40,11 +40,8 @@ class Orderbooks:
         self.sell_orderbook = []
 
         start_snapshot = Orderbooks.get_start_snapshot(
-            envId,
-            exchange,
-            market,
-            start,
-            orderbooks_collection=orderbooks_collection)
+            envId, exchange, market, start, ob_collection=ob_collection
+        )
 
         self.buy_orderbook = start_snapshot["buy"]
         self.sell_orderbook = start_snapshot["sell"]
@@ -53,37 +50,26 @@ class Orderbooks:
         self.buy_orderbook.sort(reverse=True)
         self.sell_orderbook.sort(reverse=False)
 
-        self.time_of_start_snapshot = start_snapshot["ts"]
-
         last_orderbook = Orderbooks.get_last_orderbook(
-            envId,
-            exchange,
-            market,
-            start,
-            end,
-            orderbooks_collection=orderbooks_collection)
+            envId, exchange, market, start, end, ob_collection=ob_collection
+        )
 
         self.actual_end = last_orderbook["ts"]
 
         if __debug__:
-            logging.debug('start_snapshot: %r', start_snapshot)
-            logging.debug('actual_end: %r', self.actual_end)
+            logging.debug("start_snapshot: %r", start_snapshot)
+            logging.debug("actual_end: %r", self.actual_end)
 
         # Setup an iterator to drive the simulation
         self.iter = iter(
-            orderbooks_collection.find(
+            ob_collection.find(
                 filter={
                     "e": envId,
                     "x": exchange,
                     "m": market,
-                    "ts": {
-                        "$gte": self.time_of_start_snapshot,
-                        "$lt": end
-                    },
-                    "s": {
-                        "$exists": True
-                    },
-                    "V": "V", # valid flag
+                    "ts": {"$gte": start_snapshot["ts"], "$lt": end},
+                    "s": {"$exists": True},
+                    "V": "V",  # valid flag
                 }
             )
         )
@@ -96,60 +82,62 @@ class Orderbooks:
                 ("ts", pymongo.ASCENDING),
             ])
     """
-    
+
     def __str__(self):
-        return str(self.__class__) + '\n' + '\n'.join(
-            '{} = {}'.format(
-                item,
-                self.__dict__[item]) for item in self.__dict__)
+        return (
+            str(self.__class__)
+            + "\n"
+            + "\n".join(
+                "{} = {}".format(item, self.__dict__[item]) for item in self.__dict__
+            )
+        )
 
     def __iter__(self):
         return self
 
     @staticmethod
     def get_start_snapshot(
-        envId: int,
-        exchange: str,
-        market: str,
-        start: datetime,
-        orderbooks_collection
+        envId: int, exchange: str, market: str, start: datetime, ob_collection
     ):
 
-        earlier_snapshots = list(orderbooks_collection.find(
-            filter={
-                "e": envId,
-                "x": exchange,
-                "m": market,
-                # Look for a snapshot within the last 3 hours
-                "ts": {
-                    "$lte": start,
-                    "$gte": start - timedelta(milliseconds=3*3600000)
-                },
-                "s": True,
-            }))
+        earlier_snapshots = list(
+            ob_collection.find(
+                filter={
+                    "e": envId,
+                    "x": exchange,
+                    "m": market,
+                    # Look for a snapshot within the last 3 hours
+                    "ts": {
+                        "$lte": start,
+                        "$gte": start - timedelta(milliseconds=3 * 3600000),
+                    },
+                    "s": True,
+                }
+            )
+        )
 
         if len(earlier_snapshots) > 0:
 
             # Work with the most recent one
             start_snapshot = reduce(
-                lambda x, y: x if x['ts'] > y['ts'] else y,
-                earlier_snapshots,
+                lambda x, y: x if x["ts"] > y["ts"] else y, earlier_snapshots,
             )
 
         else:
 
             # Nothing earlier; look for the next snapshot
             snapshots = list(
-                orderbooks_collection.find(
+                ob_collection.find(
                     filter={
                         "e": envId,
                         "x": exchange,
                         "m": market,
-                        "ts": {
-                            "$gte": start,
-                        },
+                        "ts": {"$gte": start,},
                         "s": True,
-                    }).sort("ts", 1).limit(1)
+                    }
+                )
+                .sort("ts", 1)
+                .limit(1)
             )
             if len(snapshots) == 0:
                 raise StopIteration
@@ -160,25 +148,16 @@ class Orderbooks:
 
     @staticmethod
     def get_first_orderbook(
-        envId: int,
-        exchange: str,
-        market: str,
-        start: datetime,
-        orderbooks_collection,
+        envId: int, exchange: str, market: str, start: datetime, ob_collection,
     ):
 
         # Nothing earlier; look for the next snapshot
         orderbooks = list(
-            orderbooks_collection.find(
-                filter={
-                    "e": envId,
-                    "x": exchange,
-                    "m": market,
-                    "ts": {
-                        "$gte": start,
-                    },
-                })
-            .sort("ts", 1).limit(1)
+            ob_collection.find(
+                filter={"e": envId, "x": exchange, "m": market, "ts": {"$gte": start,},}
+            )
+            .sort("ts", 1)
+            .limit(1)
         )
         if len(orderbooks) == 0:
             return None
@@ -192,21 +171,21 @@ class Orderbooks:
         market: str,
         start: datetime,
         end: datetime,
-        orderbooks_collection,
+        ob_collection,
     ):
 
         # Nothing earlier; look for the next snapshot
         orderbooks = list(
-            orderbooks_collection.find(
+            ob_collection.find(
                 filter={
                     "e": envId,
                     "x": exchange,
                     "m": market,
-                    "ts": {
-                        "$gt": start,
-                        "$lt": end,
-                    },
-                }).sort("ts", -1).limit(1)
+                    "ts": {"$gt": start, "$lt": end,},
+                }
+            )
+            .sort("ts", -1)
+            .limit(1)
         )
 
         if len(orderbooks) == 0:
@@ -221,23 +200,19 @@ class Orderbooks:
         market: str,
         start: datetime,
         end: datetime,
-        orderbooks_collection,
+        ob_collection,
     ):
 
-        return orderbooks_collection.count_documents(
+        return ob_collection.count_documents(
             filter={
                 "e": envId,
                 "x": exchange,
                 "m": market,
-                "ts": {
-                    "$gte": start,
-                    "$lt": end,
-                },
+                "ts": {"$gte": start, "$lt": end,},
                 "V": "V",
-                "s": {
-                    "$exists": True
-                }
-            })
+                "s": {"$exists": True},
+            }
+        )
 
     @staticmethod
     def count_corrupt_orderbooks(
@@ -246,28 +221,25 @@ class Orderbooks:
         market: str,
         start: datetime,
         end: datetime,
-        orderbooks_collection,
+        ob_collection,
     ):
 
-        return orderbooks_collection.count_documents(
+        return ob_collection.count_documents(
             filter={
                 "e": envId,
                 "x": exchange,
                 "m": market,
-                "ts": {
-                    "$gte": start,
-                    "$lte": end,
-                },
+                "ts": {"$gte": start, "$lte": end,},
                 "V": "C",
-            })
-
+            }
+        )
 
     @profile
     def next(self):
 
-        while True: # Until a clean OB
+        while True:  # Until a clean OB
 
-            while True: # Until prelimary OBs are removed
+            while True:  # Until prelimary OBs are removed
 
                 orderbook = self.iter.next()
 
@@ -291,7 +263,9 @@ class Orderbooks:
                     orderbook["sell"] = self.sell_orderbook
 
                 # First orderbooks not needed
-                if self.start.replace(tzinfo=None) <= orderbook["ts"].replace(tzinfo=None):
+                if self.start.replace(tzinfo=None) <= orderbook["ts"].replace(
+                    tzinfo=None
+                ):
                     break
 
             # Sanity check: best buy strictly less than best sell
@@ -303,7 +277,7 @@ class Orderbooks:
                 # Log the first instance, otherwise just keep a count
                 if self.corrupt_order_book_count == 0:
                     msg = f'OB Corruption: bestBuy={orderbook["buy"][0][0]} >= bestSell={orderbook["sell"][0][0]} @ {orderbook["ts"]}'
-                    logging.error (msg)
+                    logging.error(msg)
                 self.corrupt_order_book_count += 1
 
         orderbook["buy"] = np.array(orderbook["buy"], dtype=float)
@@ -313,7 +287,6 @@ class Orderbooks:
         assert len(orderbook["sell"]) > 0
 
         return orderbook
-
 
     def apply_deltas(self, orderbook):
 
@@ -328,12 +301,10 @@ class Orderbooks:
         self.sell_orderbook.sort(reverse=False)
 
         # Ensure buy_orderbook has unique entries
-        assert len(self.buy_orderbook) == len(
-            set([x[0] for x in self.buy_orderbook]))
+        assert len(self.buy_orderbook) == len(set([x[0] for x in self.buy_orderbook]))
 
         # Ensure sell_orderbook has unique entries
-        assert len(self.sell_orderbook) == len(
-            set([x[0] for x in self.sell_orderbook]))
+        assert len(self.sell_orderbook) == len(set([x[0] for x in self.sell_orderbook]))
 
     def apply_delta(self, orderbook, deltas):
 
@@ -343,7 +314,7 @@ class Orderbooks:
                 if entry[0] == delta[1]:
                     del orderbook[idx]
 
-            if delta[0] == 0:   # Insert
+            if delta[0] == 0:  # Insert
                 orderbook.append([delta[1], delta[2]])
 
             elif delta[0] == 1:  # Remove

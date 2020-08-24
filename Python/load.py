@@ -34,7 +34,7 @@ try:
     profile
 except NameError:
     def profile(x): return x
-        
+
 orderbook_trades = {}
 
 
@@ -102,6 +102,7 @@ def find_trades(trades, filter):
 
     return buy_trades, sell_trades
 
+
 if __name__ == '__main__':
 
     returncode = 0
@@ -113,7 +114,7 @@ if __name__ == '__main__':
     total_size_of_python_objects = 0
 
     try:
-        
+
         logging.basicConfig(
             format='[%(levelname)-5s] %(message)s',
             level=logging.INFO,
@@ -169,8 +170,8 @@ if __name__ == '__main__':
             ], unique=True
         )
 
-        logging.info (
-            "{0:25}{1:10}".format( 
+        logging.info(
+            "{0:25}{1:10}".format(
                 "Channel:",
                 ":".join([
                     str(config["envId"]),
@@ -182,11 +183,11 @@ if __name__ == '__main__':
 
         logging.info(
             "{0:25}{1:10}".format(
-                'Start Time:', 
+                'Start Time:',
                 str(config["timeFrame"]["startTime"])))
         logging.info(
             "{0:25}{1:10}".format(
-                'End Time:', 
+                'End Time:',
                 str(config["timeFrame"]["endTime"])))
 
         trades = remote_mongo_client.history.trades
@@ -228,16 +229,16 @@ if __name__ == '__main__':
 
         logging.info(
             "{0:25}{1:10}".format(
-            'Actual Start:', 
-            str(actual_start)))
+                'Actual Start:',
+                str(actual_start)))
         logging.info(
             "{0:25}{1:10}".format(
-            'Actual End:', 
-            str(actual_end)))
+                'Actual End:',
+                str(actual_end)))
 
         assert actual_start < actual_end
 
-            # Count the number of orderbooks
+        # Count the number of orderbooks
         number_orderbooks = Orderbooks.count_orderbooks(
 
             config["envId"],
@@ -293,12 +294,12 @@ if __name__ == '__main__':
         total_trades = 0
         last_ob_timestamp = None
         corrupt_orderbooks = 0
-        
+
         r = redis.Redis(
-            host='localhost', 
-            port=6379, 
-            encoding=u'utf-8', 
-            decode_responses=True, 
+            host='localhost',
+            port=6379,
+            encoding=u'utf-8',
+            decode_responses=True,
             db=0)
 
         try:
@@ -339,8 +340,8 @@ if __name__ == '__main__':
                     x["ob"] = str(x["ob"])
                     x["ts"] = str(x["ts"])
 
-                logging.debug ("buy_trades: %r", buy_trades)
-                logging.debug ("sell_trades: %r", sell_trades)
+                logging.debug("buy_trades: %r", buy_trades)
+                logging.debug("sell_trades: %r", sell_trades)
 
                 if (__debug__ and
                             (
@@ -352,14 +353,14 @@ if __name__ == '__main__':
                     logging.debug('len(sell_trades): ' + str(len(sell_trades)))
 
                 if config["onlyOrderbooksWithTrades"] and (
-                    len(buy_trades) > 0 or 
+                    len(buy_trades) > 0 or
                     len(sell_trades) > 0
-                    ):
+                ):
 
                     saved_orderbook_count += 1
 
-                    logging.debug ("buy_trades: %r", buy_trades)
-                    logging.debug ("sell_trades: %r", sell_trades)
+                    logging.debug("buy_trades: %r", buy_trades)
+                    logging.debug("sell_trades: %r", sell_trades)
 
                     orderbook["s"] = True
 
@@ -396,58 +397,62 @@ if __name__ == '__main__':
                         pass
 
                     if config["saveRedis"]:
-                        redis_key = str(orderbook['e']) + ':' + orderbook['x'] + ':' + orderbook['m']
+
+                        redis_key = str(
+                            orderbook['e']) + ':' + orderbook['x'] + ':' + orderbook['m']
                         redis_score = int(orderbook["ts"].timestamp()*1000)
 
-                        r.zadd (redis_key, {str(orderbook['_id']): redis_score} )
+                        r.zadd(redis_key, {str(orderbook['_id']): redis_score})
 
                         # load buy_trades
                         score = 0
                         for t in buy_trades:
-                            hmset_key = ":".join([str(orderbook['_id']), str(score), "buy_trades"])
-                            r.hmset (
+                            hmset_key = ":".join(
+                                [str(orderbook['_id']), str(score), "buy_trades"])
+                            r.hmset(
                                 hmset_key, {
-                                "_id": str(t["_id"]).encode(),
-                                "e": t['e'],
-                                "x": t['x'].encode(),
-                                "m": t['m'].encode(),
-                                "ts": str(t['ts']).encode(),
-                                "ob": str(t['ob']).encode(),
-                                "r": t['r'],
-                                "q": t['q'],
-                            }) 
-                            r.zadd (
+                                    "_id": str(t["_id"]).encode(),
+                                    "e": t['e'],
+                                    "x": t['x'].encode(),
+                                    "m": t['m'].encode(),
+                                    "ts": str(t['ts']).encode(),
+                                    "ob": str(t['ob']).encode(),
+                                    "r": t['r'],
+                                    "q": t['q'],
+                                })
+                            r.zadd(
                                 ":".join([
-                                    str(orderbook['_id']), 
+                                    str(orderbook['_id']),
                                     "buy_trades",
-                                    ]), 
-                                {hmset_key : score} )
+                                ]),
+                                {hmset_key: score})
                             score += 1
 
                         # load sell_trades
                         score = 0
                         for t in sell_trades:
-                            hmset_key = ":".join([str(orderbook['_id']), str(score), "sell_trades"])
-                            r.hmset (
+                            hmset_key = ":".join(
+                                [str(orderbook['_id']), str(score), "sell_trades"])
+                            r.hmset(
                                 hmset_key, {
-                                "_id": str(t["_id"]).encode(),
-                                "e": t['e'],
-                                "x": t['x'].encode(),
-                                "m": t['m'].encode(),
-                                "ts": str(t['ts']).encode(),
-                                "ob": str(t['ob']).encode(),
-                                "r": t['r'],
-                                "q": t['q'],
-                            }) 
-                            r.zadd (
+                                    "_id": str(t["_id"]).encode(),
+                                    "e": t['e'],
+                                    "x": t['x'].encode(),
+                                    "m": t['m'].encode(),
+                                    "ts": str(t['ts']).encode(),
+                                    "ob": str(t['ob']).encode(),
+                                    "r": t['r'],
+                                    "q": t['q'],
+                                })
+                            r.zadd(
                                 ":".join([
-                                    str(orderbook['_id']), 
+                                    str(orderbook['_id']),
                                     "sell_trades",
-                                    ]), 
-                                {hmset_key : score} )
+                                ]),
+                                {hmset_key: score})
                             score += 1
 
-                        r.hmset (str(orderbook['_id']), {
+                        r.hmset(str(orderbook['_id']), {
                             "e": orderbook['e'],
                             "x": orderbook['x'].encode(),
                             "m": orderbook['m'].encode(),
@@ -456,26 +461,30 @@ if __name__ == '__main__':
                             "V": str(orderbook['V']).encode(),
                         })
 
-                        buy_rates_key = ":".join([str(orderbook['_id']),"buy_rates"])
-                        r.delete (buy_rates_key)
-                        r.rpush (buy_rates_key, *orderbook['buy'][:, 0])
+                        buy_rates_key = ":".join(
+                            [str(orderbook['_id']), "buy_rates"])
+                        r.delete(buy_rates_key)
+                        r.rpush(buy_rates_key, *orderbook['buy'][:, 0])
 
-                        buy_quantities_key = ":".join([str(orderbook['_id']),"buy_quantities"])
-                        r.delete (buy_quantities_key)
-                        r.rpush (buy_quantities_key, *orderbook['buy'][:, 1])
+                        buy_quantities_key = ":".join(
+                            [str(orderbook['_id']), "buy_quantities"])
+                        r.delete(buy_quantities_key)
+                        r.rpush(buy_quantities_key, *orderbook['buy'][:, 1])
 
-                        sell_rates_key = ":".join([str(orderbook['_id']),"sell_rates"])
-                        r.delete (sell_rates_key)
-                        r.rpush (sell_rates_key, *orderbook['sell'][:, 0])
+                        sell_rates_key = ":".join(
+                            [str(orderbook['_id']), "sell_rates"])
+                        r.delete(sell_rates_key)
+                        r.rpush(sell_rates_key, *orderbook['sell'][:, 0])
 
-                        sell_quantities_key = ":".join([str(orderbook['_id']),"sell_quantities"])
-                        r.delete (sell_quantities_key)
-                        r.rpush (sell_quantities_key, *orderbook['sell'][:, 1])
-
+                        sell_quantities_key = ":".join(
+                            [str(orderbook['_id']), "sell_quantities"])
+                        r.delete(sell_quantities_key)
+                        r.rpush(sell_quantities_key, *orderbook['sell'][:, 1])
 
         except StopIteration:
             if orderbooks.corrupt_order_book_count > 0:
-                logging.info(f'Corrupt Orderbook Count:  {orderbooks.corrupt_order_book_count}')
+                logging.info(
+                    f'Corrupt Orderbook Count:  {orderbooks.corrupt_order_book_count}')
 
             returncode = 0
 
@@ -497,26 +506,26 @@ if __name__ == '__main__':
         logging.info('Orderbook Gaps (HH:MM:SS):')
         for gap in max_time_diffs:
             gap_minutes = gap.total_seconds() // 60
-            gap_time = "{0:25}{1}:{2}:{3}".format (
+            gap_time = "{0:25}{1}:{2}:{3}".format(
                 "",
                 f'{int(gap_minutes // 60):02}',
                 f'{int(gap_minutes % 60):02}',
-                f'{int(gap.total_seconds() % 60):02}')  
-            logging.info (gap_time)              
+                f'{int(gap.total_seconds() % 60):02}')
+            logging.info(gap_time)
 
         load_time = round(time.time()-start_execution)
         load_minutes = load_time // 60
-        load_time_formatted = "{0:25}{1}:{2}:{3}".format (
-            "Load Time (HH:MM:SS):", 
+        load_time_formatted = "{0:25}{1}:{2}:{3}".format(
+            "Load Time (HH:MM:SS):",
             f'{load_minutes // 60:02}',
             f'{load_minutes % 60:02}',
             f'{load_time % 60:02}')
 
-        logging.info (load_time_formatted)
+        logging.info(load_time_formatted)
         FORMAT = "{0:25}{1:<d}"
         logging.info(f'LOAD RESULTS')
-        logging.info(FORMAT.format('    Buy Trades:',buy_trades_count))
-        logging.info(FORMAT.format('    Sell Trades:',sell_trades_count))
-        logging.info(FORMAT.format('    Saved OBs:',saved_orderbook_count))
+        logging.info(FORMAT.format('    Buy Trades:', buy_trades_count))
+        logging.info(FORMAT.format('    Sell Trades:', sell_trades_count))
+        logging.info(FORMAT.format('    Saved OBs:', saved_orderbook_count))
 
         sys.exit(returncode)
