@@ -7,17 +7,8 @@ import numpy as np
 import pymongo
 from pymongo.collection import Collection
 
-try:
-    profile
-except NameError:
-    profile = lambda x: x
-
 
 class Orderbooks:
-
-    actual_end = None
-    corrupt_order_book_count = 0
-
     def __init__(
         self,
         *,
@@ -30,16 +21,22 @@ class Orderbooks:
         end: datetime,
     ):
 
+        self.ob_collection = ob_collection
+        self.envId = envId
+        self.exchange = exchange
+        self.market = market
+        self.depth = depth
         self.start = start
         self.end = end
-        self.depth = depth
 
         assert start < end
 
         self.buy_orderbook = []
         self.sell_orderbook = []
 
-        start_snapshot = Orderbooks.get_start_snapshot(
+        corrupt_order_book_count = 0
+
+        start_snapshot = self.get_start_snapshot(
             envId, exchange, market, start, ob_collection=ob_collection
         )
 
@@ -54,11 +51,9 @@ class Orderbooks:
             envId, exchange, market, start, end, ob_collection=ob_collection
         )
 
-        self.actual_end = last_orderbook["ts"]
-
         if __debug__:
             logging.debug("start_snapshot: %r", start_snapshot)
-            logging.debug("actual_end: %r", self.actual_end)
+            logging.debug("actual_end: %r", last_orderbook["ts"])
 
         # Setup an iterator to drive the simulation
         self.iter = iter(
@@ -95,21 +90,18 @@ class Orderbooks:
     def __iter__(self):
         return self
 
-    @staticmethod
-    def get_start_snapshot(
-        envId: int, exchange: str, market: str, start: datetime, ob_collection
-    ):
+    def get_start_snapshot(self):
 
         earlier_snapshots = list(
-            ob_collection.find(
+            self.ob_collection.find(
                 filter={
-                    "e": envId,
-                    "x": exchange,
-                    "m": market,
+                    "e": self.envId,
+                    "x": self.exchange,
+                    "m": self.market,
                     # Look for a snapshot within the last 3 hours
                     "ts": {
-                        "$lte": start,
-                        "$gte": start - timedelta(milliseconds=3 * 3600000),
+                        "$lte": self.start,
+                        "$gte": self.start - timedelta(milliseconds=3 * 3600000),
                     },
                     "s": True,
                 }
@@ -129,10 +121,10 @@ class Orderbooks:
             snapshots = list(
                 ob_collection.find(
                     filter={
-                        "e": envId,
-                        "x": exchange,
-                        "m": market,
-                        "ts": {"$gte": start,},
+                        "e": self.envId,
+                        "x": self.exchange,
+                        "m": self.market,
+                        "ts": {"$gte": self.start,},
                         "s": True,
                     }
                 )
@@ -146,15 +138,17 @@ class Orderbooks:
 
         return start_snapshot
 
-    @staticmethod
-    def get_first_orderbook(
-        envId: int, exchange: str, market: str, start: datetime, ob_collection,
-    ):
+    def get_first_orderbook(self):
 
         # Nothing earlier; look for the next snapshot
         orderbooks = list(
-            ob_collection.find(
-                filter={"e": envId, "x": exchange, "m": market, "ts": {"$gte": start,},}
+            self.ob_collection.find(
+                filter={
+                    "e": self.envId,
+                    "x": self.exchange,
+                    "m": self.market,
+                    "ts": {"$gte": self.start,},
+                }
             )
             .sort("ts", 1)
             .limit(1)
@@ -164,24 +158,16 @@ class Orderbooks:
         else:
             return orderbooks[0]
 
-    @staticmethod
-    def get_last_orderbook(
-        envId: int,
-        exchange: str,
-        market: str,
-        start: datetime,
-        end: datetime,
-        ob_collection,
-    ):
+    def get_last_orderbook():
 
         # Nothing earlier; look for the next snapshot
         orderbooks = list(
-            ob_collection.find(
+            self.ob_collection.find(
                 filter={
-                    "e": envId,
-                    "x": exchange,
-                    "m": market,
-                    "ts": {"$gt": start, "$lt": end,},
+                    "e": self.envId,
+                    "x": self.exchange,
+                    "m": self.market,
+                    "ts": {"$gt": self.start, "$lt": self.end,},
                 }
             )
             .sort("ts", -1)
@@ -193,48 +179,31 @@ class Orderbooks:
         else:
             return orderbooks[0]
 
-    @staticmethod
-    def count_orderbooks(
-        envId: int,
-        exchange: str,
-        market: str,
-        start: datetime,
-        end: datetime,
-        ob_collection,
-    ):
+    def count_orderbooks(self):
 
-        return ob_collection.count_documents(
+        return self.ob_collection.count_documents(
             filter={
-                "e": envId,
-                "x": exchange,
-                "m": market,
-                "ts": {"$gte": start, "$lt": end,},
+                "e": self.envId,
+                "x": self.exchange,
+                "m": self.market,
+                "ts": {"$gte": self.start, "$lt": self.end,},
                 "V": "V",
                 "s": {"$exists": True},
             }
         )
 
-    @staticmethod
-    def count_corrupt_orderbooks(
-        envId: int,
-        exchange: str,
-        market: str,
-        start: datetime,
-        end: datetime,
-        ob_collection,
-    ):
+    def count_corrupt_orderbooks(self):
 
-        return ob_collection.count_documents(
+        return self.ob_collection.count_documents(
             filter={
-                "e": envId,
-                "x": exchange,
-                "m": market,
-                "ts": {"$gte": start, "$lte": end,},
+                "e": self.envId,
+                "x": self.exchange,
+                "m": self.market,
+                "ts": {"$gte": self.start, "$lte": self.end,},
                 "V": "C",
             }
         )
 
-    @profile
     def next(self):
 
         while True:  # Until a clean OB

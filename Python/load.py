@@ -149,7 +149,7 @@ if __name__ == '__main__':
         assert config, 'Unknown Configuration'
         logging.debug("Load Configuration...\n%s", pformat(config, indent=4))
 
-        input_orderbooks = remote_mongo_client.history.orderbooks
+        ob_collection = remote_mongo_client.history.orderbooks
 
         # Ensure the output collection exists and is indexed
         try:
@@ -206,7 +206,7 @@ if __name__ == '__main__':
             exchange=config["exchange"],
             market=config["market"],
             start=config["timeFrame"]["startTime"],
-            orderbooks_collection=input_orderbooks
+            orderbooks_collection=ob_collection
         )
 
         last_orderbook = Orderbooks.get_last_orderbook(
@@ -217,7 +217,7 @@ if __name__ == '__main__':
             start=config["timeFrame"]["startTime"],
             end=config["timeFrame"]["endTime"],
 
-            orderbooks_collection=input_orderbooks
+            orderbooks_collection=ob_collection
         )
 
         if first_orderbook == None or last_orderbook == None:
@@ -276,7 +276,7 @@ if __name__ == '__main__':
 
         try:
             orderbooks = Orderbooks(
-                orderbooks_collection=input_orderbooks,
+                ob_collection=ob_collection,
                 envId=config["envId"],
                 exchange=config["exchange"],
                 market=config["market"],

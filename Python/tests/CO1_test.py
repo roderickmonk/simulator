@@ -20,7 +20,6 @@ from matching_engine import MatchingEngine
 import sim_config
 from copy import copy
 from matching_engine import MatchingEngine
-from orderbooks import Orderbooks
 import pytest
 from fixtures import delete_test_orderbooks
 import numpy as np

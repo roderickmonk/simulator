@@ -106,7 +106,7 @@ def test_orderbook_snapshot_found_immediately(delete_test_orderbooks):
         })
 
         Orderbooks(
-            orderbooks_collection=orderbooks,
+            ob_collection=orderbooks,
             envId=int(99),
             exchange="test-exchange",
             market="base-quote",
@@ -124,7 +124,7 @@ def test_orderbook_snapshot_missing(delete_test_orderbooks):
     try:
 
         Orderbooks(
-            orderbooks_collection=orderbooks,
+            ob_collection=orderbooks,
             envId=int(99),
             exchange="test-exchange",
             market="base-quote",
@@ -167,7 +167,7 @@ def test_orderbook_snapshot_found_later(delete_test_orderbooks):
         })
 
         Orderbooks(
-            orderbooks_collection=orderbooks,
+            ob_collection=orderbooks,
             envId=int(99),
             exchange="test-exchange",
             market="base-quote",
@@ -197,7 +197,7 @@ def test_orderbook_snapshot_not_found_within_last_3_hours(delete_test_orderbooks
         })
 
         Orderbooks(
-            orderbooks_collection=orderbooks,
+            ob_collection=orderbooks,
             envId=int(99),
             exchange="test-exchange",
             market="base-quote",
@@ -240,7 +240,7 @@ def test_orderbook_next_0_deltas(delete_test_orderbooks):
         })
 
         OBs = Orderbooks(
-            orderbooks_collection=orderbooks,
+            ob_collection=orderbooks,
             envId=int(99),
             exchange="test-exchange",
             market="base-quote",
@@ -290,7 +290,7 @@ def test_orderbook_1_late_delta_then_next(delete_test_orderbooks):
         })
 
         OBs = Orderbooks(
-            orderbooks_collection=orderbooks,
+            ob_collection=orderbooks,
             envId=int(99),
             exchange="test-exchange",
             market="base-quote",
@@ -353,7 +353,7 @@ def test_orderbook_1_delta(delete_test_orderbooks):
         )
 
         OBs = Orderbooks(
-            orderbooks_collection=orderbooks,
+            ob_collection=orderbooks,
             envId=int(99),
             exchange="test-exchange",
             market="base-quote",

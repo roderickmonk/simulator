@@ -1,28 +1,27 @@
 
+import datetime as DT
+import importlib
+import json
+import logging
+import math
+import operator
 import os
 import sys
-import json
-import datetime as DT
-import pymongo
-import math
-from pprint import pprint
-from pymongo import MongoClient
-from datetime import datetime
-import dateutil.parser
-import dateutil.parser as parser
-import importlib
-import logging
-from schema import Schema, And, Use, Optional, SchemaError
-from bson.objectid import ObjectId
-import operator
-import numpy
-from matching_engine import MatchingEngine
-import sim_config
 from copy import copy
-from matching_engine import MatchingEngine
-from orderbooks import Orderbooks
+from datetime import datetime
+from pprint import pprint
+
+import numpy
+import pymongo
+from bson.objectid import ObjectId
+from pymongo import MongoClient
+
+import dateutil.parser as parser
 import pytest
+import sim_config
 from fixtures import delete_test_orderbooks
+from matching_engine import MatchingEngine
+from schema import And, Optional, Schema, SchemaError, Use
 from simulate import find_trades
 
 assert os.environ['MONGODB'], 'MONGODB Not Defined'
