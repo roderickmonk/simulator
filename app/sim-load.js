@@ -36,7 +36,7 @@ const config_generator_1 = require("./config-generator");
 const async_1 = require("async");
 const child_process_1 = require("child_process");
 const _ = __importStar(require("lodash"));
-const mongodb_1 = require("mongodb");
+const MongoClient = require("mongodb").MongoClient;
 let configName = '';
 const removeDuplicates = (arr) => arr.reduce((acc, current) => {
     for (const obj of acc) {
@@ -167,11 +167,18 @@ const copyTunings = (tuningsRemote, tuningsLocal) => __awaiter(void 0, void 0, v
         console.log({ argv: process.argv });
         assert(process.env.MONGODB, 'MONGODB Not Defined');
         assert(process.env.SIMULATOR_DB, 'SIMULATOR_DB Not Defined');
+        const mongoConnectOptions = {
+            useNewUrlParser: true,
+            useUnifiedTopology: true,
+        };
         console.log(`Connecting to remote: ${process.env.MONGODB}`);
-        const mongoRemote = yield mongodb_1.MongoClient.connect(process.env.MONGODB);
+        const mongoRemote = yield MongoClient.connect(process.env.MONGODB, {
+            useNewUrlParser: true,
+            useUnifiedTopology: true,
+        });
         console.log("Connected remote");
         assert(process.env.LOCALDB, 'LOCALDB Not Defined');
-        const mongoLocal = yield mongodb_1.MongoClient.connect(process.env.LOCALDB);
+        const mongoLocal = yield MongoClient.connect(process.env.LOCALDB);
         const simConfigDb = mongoRemote.db("sim_configuration");
         const localSimConfigDb = mongoLocal.db("sim_configuration");
         const simDb = mongoRemote.db(process.env.SIMULATOR_DB);

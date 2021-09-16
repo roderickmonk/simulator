@@ -12,11 +12,13 @@ import * as _ from "lodash";
 import {
     Collection,
     Db,
-    MongoClient,
+    // MongoClient,
     MongoError,
     ObjectID,
     ObjectId,
 } from "mongodb";
+
+const MongoClient = require ("mongodb").MongoClient;
 
 let configName = '';
 
@@ -235,13 +237,22 @@ const copyTunings = async (
         assert(process.env.MONGODB, 'MONGODB Not Defined');
         assert(process.env.SIMULATOR_DB, 'SIMULATOR_DB Not Defined');
 
+        const mongoConnectOptions = {
+            useNewUrlParser: true,
+            useUnifiedTopology: true,
+        };
+
         console.log (`Connecting to remote: ${process.env.MONGODB!}`);
 
+        const mongoRemote = await MongoClient.connect(process.env.MONGODB, {
+            useNewUrlParser: true,
+            useUnifiedTopology: true,
+        });
 
-        const mongoRemote =
-            await MongoClient.connect(
-                process.env.MONGODB!
-            );
+        // const mongoRemote =
+        //     await MongoClient.connect(
+        //         process.env.MONGODB!, mongoConnectOptions
+        //     );
 
         console.log ("Connected remote")
 
