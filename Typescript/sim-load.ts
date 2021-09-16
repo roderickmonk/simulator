@@ -12,13 +12,11 @@ import * as _ from "lodash";
 import {
     Collection,
     Db,
-    // MongoClient,
+    MongoClient,
     MongoError,
     ObjectID,
     ObjectId,
 } from "mongodb";
-
-const MongoClient = require ("mongodb").MongoClient;
 
 let configName = '';
 
@@ -244,7 +242,7 @@ const copyTunings = async (
 
         console.log (`Connecting to remote: ${process.env.MONGODB!}`);
 
-        const mongoRemote = await MongoClient.connect(process.env.MONGODB, {
+        const mongoRemote = await MongoClient.connect(process.env.MONGODB!, {
             useNewUrlParser: true,
             useUnifiedTopology: true,
         });
@@ -256,18 +254,18 @@ const copyTunings = async (
 
         console.log ("Connected remote")
 
-        assert(process.env.LOCALDB, 'LOCALDB Not Defined');
+        // assert(process.env.LOCALDB, 'LOCALDB Not Defined');
 
-        const mongoLocal =
-            await MongoClient.connect(
-                process.env.LOCALDB!            
-            );
+        // const mongoLocal =
+        //     await MongoClient.connect(
+        //         process.env.LOCALDB!            
+        //     );
 
         const simConfigDb: Db = mongoRemote.db("sim_configuration");
-        const localSimConfigDb: Db = mongoLocal.db("sim_configuration");
+        // const localSimConfigDb: Db = mongoLocal.db("sim_configuration");
         const simDb: Db = mongoRemote.db(process.env.SIMULATOR_DB);
 
-        console.log ("here-1");
+        console.log (`here-1: ${configName}`);
 
         // await copyTunings(
         //     simConfigDb.collection("tunings"),
@@ -275,6 +273,9 @@ const copyTunings = async (
         // );
 
         const configGenerator = new ConfigGenerator(configName, simConfigDb);
+
+        console.log ("here-3");
+        
         await start(configGenerator, simDb);
 
     } catch (err) {
