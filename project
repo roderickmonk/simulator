@@ -16,5 +16,5 @@ export PYTHONPATH=./Python:~/traders:.:$PYTHONPATH
 
 source ./.venv/bin/activate
 
-echo -n "simulator version: ";node -pe "require('./package.json').version"
+echo -n "Simulator version: ";node -pe "require('./package.json').version"
 
