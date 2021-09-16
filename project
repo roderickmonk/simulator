@@ -6,7 +6,7 @@ conda deactivate >/dev/null 2>&1 || true
 deactivate >/dev/null 2>&1 || true
 set +e
 
-export PATH=$PATH:./scripts:./Python
+export PATH=./scripts:./Python:$PATH
 
 # Assume production
 export NODE_ENV=production
@@ -14,7 +14,7 @@ export NODE_ENV=production
 # Give Python access to traders
 export PYTHONPATH=./Python:~/traders:.:$PYTHONPATH
 
-source ./.venv/bin/activate
+source .venv/bin/activate
 
 echo -n "Simulator version: ";node -pe "require('./package.json').version"
 
