@@ -195,7 +195,7 @@ export class ConfigGenerator {
 
             this.config = await this.simConfigurationDb
                 .collection('configurations')
-                .findOne({ name: this.configName });
+                .findOne({ name: this.configName }) as SimConfiguration;
 
             debug(JSON.stringify(this.config, null, 4));
 

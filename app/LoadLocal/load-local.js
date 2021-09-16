@@ -16,7 +16,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const assert_1 = __importDefault(require("assert"));
 const chalk = require('chalk');
 const debug_1 = require("../debug");
-const child_process_1 = require("child_process");
 const async_1 = require("async");
 const moment_1 = __importDefault(require("moment"));
 const { promisify } = require("util");
@@ -121,51 +120,51 @@ const validateMultiplyConfig = (simConfig) => {
     schema.shift();
     let properties = [];
     for (const level of schema) {
-        debug_1.debug('level:\n', JSON.stringify(level, null, 4));
+        (0, debug_1.debug)('level:\n', JSON.stringify(level, null, 4));
         for (const prop of Object.keys(level.properties)) {
             properties.push(prop);
             propertySchema.set(prop, level.properties[prop]);
         }
     }
     for (const [prop, entry] of propertySchema.entries()) {
-        assert_1.default(entry.type === 'array', `Parameter "${prop}" Data Not Array`);
+        (0, assert_1.default)(entry.type === 'array', `Parameter "${prop}" Data Not Array`);
         if (multiplyConfigParams.hasOwnProperty(prop)) {
-            assert_1.default(multiplyConfigParams[prop].items.type === entry.items.type, `Parameter "${prop}" Wrong Type`);
+            (0, assert_1.default)(multiplyConfigParams[prop].items.type === entry.items.type, `Parameter "${prop}" Wrong Type`);
         }
         Object.keys(multiplyConfigParams).forEach(property => {
-            assert_1.default(propertySchema.has(property), `Required Parameter "${property}" Not Found`);
+            (0, assert_1.default)(propertySchema.has(property), `Required Parameter "${property}" Not Found`);
         });
     }
-    assert_1.default((new Set(properties)).size === properties.length, 'Duplicate Parameters Detected');
+    (0, assert_1.default)((new Set(properties)).size === properties.length, 'Duplicate Parameters Detected');
     for (const [i, config] of simConfig.entries()) {
         const levelConfig = i === 0 ?
             config["0"] :
             config;
-        debug_1.debug({ levelConfig });
+        (0, debug_1.debug)({ levelConfig });
         for (const prop in levelConfig) {
-            debug_1.debug(chalk.red(`${prop}[${levelConfig[prop]}]`));
-            assert_1.default(levelConfig[prop].length > 0, 'Empty Configuration Parameter Array');
+            (0, debug_1.debug)(chalk.red(`${prop}[${levelConfig[prop]}]`));
+            (0, assert_1.default)(levelConfig[prop].length > 0, 'Empty Configuration Parameter Array');
             propertyLength.set(prop, levelConfig[prop].length);
             propertyData.set(prop, levelConfig[prop]);
             propertyLevel.set(prop, i);
         }
     }
-    debug_1.debug(propertyData);
-    debug_1.debug(propertyLevel);
-    debug_1.debug(propertyLength);
+    (0, debug_1.debug)(propertyData);
+    (0, debug_1.debug)(propertyLevel);
+    (0, debug_1.debug)(propertyLength);
     const levels = simConfig.length;
-    debug_1.debug({ levels });
+    (0, debug_1.debug)({ levels });
     for (let i = 0; i < simConfig.length; ++i) {
         const levelProperties = Array.from(propertyLevel)
             .filter(level => level[1] === i)
             .map(level => level[0]);
-        debug_1.debug({ levelProperties });
+        (0, debug_1.debug)({ levelProperties });
         const levelPropertiesSameLength = levelProperties
             .map(prop => propertyLength.get(prop))
             .every((val, i, arr) => val === arr[0]);
-        assert_1.default(levelPropertiesSameLength, 'Mismatched Parameter Array Lengths');
+        (0, assert_1.default)(levelPropertiesSameLength, 'Mismatched Parameter Array Lengths');
     }
-    debug_1.debug('levels: ', schema.length);
+    (0, debug_1.debug)('levels: ', schema.length);
 };
 function* generatorSimParameters(level) {
     const levelProperties = Array.from(propertyLevel)
@@ -205,6 +204,7 @@ const getTrades = (params) => __awaiter(void 0, void 0, void 0, function* () {
                 $lte: endTime,
             }
         };
+        console.log("here-0");
         const tradesCount = yield params.mongoClient.db('history').collection('trades').count(filter);
         console.log({ tradesCount });
         const cursor = params.mongoClient.db('history').collection('trades').find(filter);
@@ -255,30 +255,30 @@ const getOrderbooks = (params) => __awaiter(void 0, void 0, void 0, function* ()
     const startProcessTime = process.hrtime();
     const startTime = new Date();
     try {
-        assert_1.default(process.env.MONGODB, 'MONGODB Not Defined');
-        assert_1.default(process.env.SIMULATOR_DB, 'SIMULATOR_DB Not Defined');
+        (0, assert_1.default)(process.env.MONGODB, 'MONGODB Not Defined');
+        (0, assert_1.default)(process.env.SIMULATOR_DB, 'SIMULATOR_DB Not Defined');
         const sim_db = process.env.SIMULATOR_DB;
         const runId = new mongodb_1.ObjectId();
-        const mainMongoClient = yield mongodb_1.MongoClient.connect(process.env.MONGODB, { useNewUrlParser: true });
+        const mainMongoClient = yield mongodb_1.MongoClient.connect(process.env.MONGODB);
         const simDb = mainMongoClient.db(sim_db);
         const configName = process.argv[2];
         const config = yield simDb.collection('configurations').findOne({ name: configName });
-        assert_1.default(config, 'Unknown Configuration');
-        debug_1.debug({ config });
+        (0, assert_1.default)(config, 'Unknown Configuration');
+        (0, debug_1.debug)({ config });
         validateMultiplyConfig(config.simConfig);
         const trades = yield getTrades({
             mongoClient: mainMongoClient,
             exchange: 'bittrex',
             market: 'btc-eth',
-            startTime: moment_1.default("2018-10-01"),
-            endTime: moment_1.default("2018-10-04"),
+            startTime: (0, moment_1.default)("2018-10-01"),
+            endTime: (0, moment_1.default)("2018-10-04"),
         });
         const orderbooks = yield getOrderbooks({
             mongoClient: mainMongoClient,
             exchange: 'bittrex',
             market: 'btc-eth',
-            startTime: moment_1.default("2018-10-01"),
-            endTime: moment_1.default("2018-10-04"),
+            startTime: (0, moment_1.default)("2018-10-01"),
+            endTime: (0, moment_1.default)("2018-10-04"),
         });
         process.exit(1);
         const genLoop = generatorSimParameters(0);
@@ -297,13 +297,13 @@ const getOrderbooks = (params) => __awaiter(void 0, void 0, void 0, function* ()
                 minNotional: config.minNotional ? config.minNotional : 0.0005,
                 saveRedis: config.saveRedis,
             }, nextSimConfig);
-            debug_1.debug(JSON.stringify(simulationObj, null, 4));
+            (0, debug_1.debug)(JSON.stringify(simulationObj, null, 4));
             const { insertedId: sim_id } = yield simDb.collection('simulations')
                 .insertOne(simulationObj);
             simulations.push((callback) => {
                 try {
                     console.log(`Simulation ${sim_id} Activated`);
-                    child_process_1.exec(`simulator.py ${sim_id}`, (err, stdout, stderr) => {
+                    (0, child_process_1.exec)(`simulator.py ${sim_id}`, (err, stdout, stderr) => {
                         callback(err, stderr);
                     });
                 }
@@ -312,7 +312,7 @@ const getOrderbooks = (params) => __awaiter(void 0, void 0, void 0, function* ()
                 }
             });
         }
-        async_1.parallelLimit(simulations, config.parallelSimulations, (err, stdoutArray) => __awaiter(void 0, void 0, void 0, function* () {
+        (0, async_1.parallelLimit)(simulations, config.parallelSimulations, (err, stdoutArray) => __awaiter(void 0, void 0, void 0, function* () {
             try {
                 if (err) {
                     console.log({ err });

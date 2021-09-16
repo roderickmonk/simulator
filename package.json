@@ -21,20 +21,23 @@
   "homepage": "https://github.com/1057405bcltd/simulator#readme",
   "dependencies": {
     "@types/ajv": "^1.0.0",
-    "@types/assert": "^1.4.3",
-    "@types/async": "^2.4.2",
+    "@types/assert": "^1.5.6",
+    "@types/async": "^3.2.7",
     "@types/chalk": "^2.2.0",
-    "@types/lodash": "^4.14.142",
-    "@types/mongodb": "^3.3.6",
-    "@types/node": "^12.7.12",
-    "ajv": "^6.10.2",
-    "async": "^3.1.0",
-    "chalk": "^2.4.2",
-    "debug": "^4.1.1",
+    "@types/lodash": "^4.14.173",
+    "@types/mongodb": "^4.0.7",
+    "@types/node": "^14.17.16",
+    "ajv": "^6.12.6",
+    "async": "^3.2.1",
+    "chalk": "^4.1.2",
+    "debug": "^4.3.2",
     "generate-schema": "^2.6.0",
-    "lodash": "^4.17.15",
-    "moment": "^2.24.0",
-    "mongodb": "^3.3.2",
-    "redis": "^2.8.0"
+    "lodash": "^4.17.21",
+    "moment": "^2.29.1",
+    "mongodb": "^4.1.2",
+    "redis": "^3.1.2"
+  },
+  "devDependencies": {
+    "typescript": "^4.4.3"
   }
 }

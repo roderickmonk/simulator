@@ -29,7 +29,7 @@ const start = (configGenerator, simDb) => __awaiter(void 0, void 0, void 0, func
             const { value: nextSimConfig, done } = generator.next();
             if (done)
                 break;
-            debug_1.debug({ nextSimConfig });
+            (0, debug_1.debug)({ nextSimConfig });
             const taskObj = Object.assign({
                 runId,
                 simVersion: process.env.SIM_VERSION,
@@ -41,13 +41,13 @@ const start = (configGenerator, simDb) => __awaiter(void 0, void 0, void 0, func
                 trim: configGenerator.config.trim,
                 saveRedis: configGenerator.config.saveRedis,
             }, nextSimConfig);
-            debug_1.debug('taskObj:\n', JSON.stringify(taskObj, null, 4));
+            (0, debug_1.debug)('taskObj:\n', JSON.stringify(taskObj, null, 4));
             const { insertedId: simId } = yield simDb.collection('simulations')
                 .insertOne(taskObj);
             tasks.push((callback) => {
                 try {
                     console.log(chalk.blue(`Simulation (${configName}) ${simId} Activated`));
-                    child_process_1.exec(`simulator ${simId}`, (err, stdout, stderr) => {
+                    (0, child_process_1.exec)(`simulator ${simId}`, (err, stdout, stderr) => {
                         callback(err, stderr);
                     });
                 }
@@ -57,7 +57,7 @@ const start = (configGenerator, simDb) => __awaiter(void 0, void 0, void 0, func
             });
         }
         assert(configGenerator.config, "configGenerator.config Not Defined");
-        async_1.parallelLimit(tasks, configGenerator.config.parallelSimulations, (err, stdoutArray) => __awaiter(void 0, void 0, void 0, function* () {
+        (0, async_1.parallelLimit)(tasks, configGenerator.config.parallelSimulations, (err, stdoutArray) => __awaiter(void 0, void 0, void 0, function* () {
             try {
                 if (err) {
                     console.log({ err });
@@ -106,7 +106,7 @@ const start = (configGenerator, simDb) => __awaiter(void 0, void 0, void 0, func
         configName = process.argv[2];
         assert(process.env.MONGODB, 'MONGODB Not Defined');
         assert(process.env.SIMULATOR_DB, 'SIMULATOR_DB Not Defined');
-        const mongoRemote = yield mongodb_1.MongoClient.connect(process.env.MONGODB, { useNewUrlParser: true });
+        const mongoRemote = yield mongodb_1.MongoClient.connect(process.env.MONGODB);
         const simConfigDb = mongoRemote.db("sim_configuration");
         const simDb = mongoRemote.db(process.env.SIMULATOR_DB);
         const simConfig = new config_generator_1.ConfigGenerator(configName, simConfigDb);

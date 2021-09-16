@@ -3,6 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.configValidator = void 0;
 const ajv_1 = __importDefault(require("ajv"));
 const ajv = new ajv_1.default({
     allErrors: true,
@@ -47,7 +48,7 @@ const simSchema = {
         "multiplyConfig",
     ]
 };
-exports.configValidator = (simConfig) => {
+const configValidator = (simConfig) => {
     try {
         const ajv = new ajv_1.default({
             allErrors: true,
@@ -67,3 +68,4 @@ exports.configValidator = (simConfig) => {
         return Promise.reject(err);
     }
 };
+exports.configValidator = configValidator;

@@ -1,39 +1,9 @@
 # Sentient Trading Simulator #
-## AWS ec2 Preparation ##
-
-To the target AWS ec2 apply the following changes:
-
-1. Add the following `export` to ~/.profile:
-
-    `export MONGODB=mongodb://<username>:<password>@<database_host>:<port>/admin?readPreference=primary`
-
-3. After saving the file, ensure that the above exports are applied:
-
-    `$ source ~/.profile`
-
 ## Software Installation ##
 
-It is assumed that Python 3.6.5 has already been installed on the target ec2.  What follows are instructions to install the simulation software.
+It is assumed that the mandated Python version has already been installed on the target ec2.  What follows are instructions to install the simulation software.
 
-1. Install the software:
-
-    `$ git clone https://github.com/1057405bcltd/simulator.git`
-    
-2. Create a Python virtual environment in the same folder:
-
-    `$ python3.7 -m venv simulator`
-
-3. Activate the virtual environment:
-
-    `source ./simulator/bin/activate`
-
-4. `$ cd simulator`
-
-5. Prepare the simulator environment:
-
-    `$ source ./Scripts/project`
-
-6. Install the required Python packages:
+1. Install the requisite Python modules:
 
     `$ pip install -r Python/requirements.txt`
 

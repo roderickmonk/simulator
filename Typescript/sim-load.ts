@@ -212,6 +212,7 @@ const copyTunings = async (
         // Clear out all local Tunings
         await tuningsLocal.deleteMany({});
 
+        //@ts-ignore
         tuningsRemote.find({}).forEach(async (pdf) => {
             await tuningsLocal.insertOne(pdf);
         }, (err) => {
@@ -229,31 +230,33 @@ const copyTunings = async (
 
         configName = process.argv[2];
 
+        console.log ({argv: process.argv})
+
         assert(process.env.MONGODB, 'MONGODB Not Defined');
         assert(process.env.SIMULATOR_DB, 'SIMULATOR_DB Not Defined');
 
         const mongoRemote =
             await MongoClient.connect(
-                process.env.MONGODB!,
-                { useNewUrlParser: true },
+                process.env.MONGODB!
             );
 
         assert(process.env.LOCALDB, 'LOCALDB Not Defined');
 
         const mongoLocal =
             await MongoClient.connect(
-                process.env.LOCALDB!,
-                { useNewUrlParser: true },
+                process.env.LOCALDB!            
             );
 
         const simConfigDb: Db = mongoRemote.db("sim_configuration");
         const localSimConfigDb: Db = mongoLocal.db("sim_configuration");
         const simDb: Db = mongoRemote.db(process.env.SIMULATOR_DB);
 
-        await copyTunings(
-            simConfigDb.collection("tunings"),
-            localSimConfigDb.collection("tunings")
-        );
+        console.log ("here-1");
+
+        // await copyTunings(
+        //     simConfigDb.collection("tunings"),
+        //     localSimConfigDb.collection("tunings")
+        // );
 
         const configGenerator = new ConfigGenerator(configName, simConfigDb);
         await start(configGenerator, simDb);

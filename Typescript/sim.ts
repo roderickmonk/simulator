@@ -172,7 +172,6 @@ const start = async (
         const mongoRemote =
             await MongoClient.connect(
                 process.env.MONGODB!,
-                { useNewUrlParser: true },
             );
 
         const simConfigDb: Db = mongoRemote.db("sim_configuration");

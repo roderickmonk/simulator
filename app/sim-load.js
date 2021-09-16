@@ -1,5 +1,24 @@
 #!/usr/bin/env node
 "use strict";
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -8,13 +27,6 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
-};
-var __importStar = (this && this.__importStar) || function (mod) {
-    if (mod && mod.__esModule) return mod;
-    var result = {};
-    if (mod != null) for (var k in mod) if (Object.hasOwnProperty.call(mod, k)) result[k] = mod[k];
-    result["default"] = mod;
-    return result;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const assert = require('assert');
@@ -63,7 +75,7 @@ const start = (configGenerator, simDb) => __awaiter(void 0, void 0, void 0, func
             const { value: next, done } = generator.next();
             if (done)
                 break;
-            debug_1.debug({ next });
+            (0, debug_1.debug)({ next });
             loadConfigs.push({
                 exchange: next.exchange,
                 market: next.market,
@@ -82,19 +94,19 @@ const start = (configGenerator, simDb) => __awaiter(void 0, void 0, void 0, func
             }, loadConfig);
             taskObjs.push(taskObj);
         }
-        debug_1.debug({ taskObjs });
+        (0, debug_1.debug)({ taskObjs });
         taskObjs = removeDuplicates(taskObjs);
-        debug_1.debug({ taskObjs });
+        (0, debug_1.debug)({ taskObjs });
         taskObjs = removeDepthOverlap(taskObjs);
-        debug_1.debug({ taskObjs });
+        (0, debug_1.debug)({ taskObjs });
         taskObjs = removeRedundantPDFs(taskObjs);
-        debug_1.debug({ taskObjs });
+        (0, debug_1.debug)({ taskObjs });
         for (const taskObj of taskObjs) {
             const { insertedId: taskId } = yield simDb.collection('loads').insertOne(taskObj);
             tasks.push((callback) => {
                 try {
                     console.log(chalk.blue(`Load (${configName}) ${taskId} Activated`));
-                    child_process_1.exec(`load.py ${taskId}`, (err, stdout, stderr) => {
+                    (0, child_process_1.exec)(`load.py ${taskId}`, (err, stdout, stderr) => {
                         callback(err, stderr);
                     });
                 }
@@ -103,7 +115,7 @@ const start = (configGenerator, simDb) => __awaiter(void 0, void 0, void 0, func
                 }
             });
         }
-        async_1.parallelLimit(tasks, configGenerator.config.parallelSimulations, (err, stdoutArray) => __awaiter(void 0, void 0, void 0, function* () {
+        (0, async_1.parallelLimit)(tasks, configGenerator.config.parallelSimulations, (err, stdoutArray) => __awaiter(void 0, void 0, void 0, function* () {
             try {
                 if (err) {
                     console.log({ err });
@@ -152,15 +164,16 @@ const copyTunings = (tuningsRemote, tuningsLocal) => __awaiter(void 0, void 0, v
 (() => __awaiter(void 0, void 0, void 0, function* () {
     try {
         configName = process.argv[2];
+        console.log({ argv: process.argv });
         assert(process.env.MONGODB, 'MONGODB Not Defined');
         assert(process.env.SIMULATOR_DB, 'SIMULATOR_DB Not Defined');
-        const mongoRemote = yield mongodb_1.MongoClient.connect(process.env.MONGODB, { useNewUrlParser: true });
+        const mongoRemote = yield mongodb_1.MongoClient.connect(process.env.MONGODB);
         assert(process.env.LOCALDB, 'LOCALDB Not Defined');
-        const mongoLocal = yield mongodb_1.MongoClient.connect(process.env.LOCALDB, { useNewUrlParser: true });
+        const mongoLocal = yield mongodb_1.MongoClient.connect(process.env.LOCALDB);
         const simConfigDb = mongoRemote.db("sim_configuration");
         const localSimConfigDb = mongoLocal.db("sim_configuration");
         const simDb = mongoRemote.db(process.env.SIMULATOR_DB);
-        yield copyTunings(simConfigDb.collection("tunings"), localSimConfigDb.collection("tunings"));
+        console.log("here-1");
         const configGenerator = new config_generator_1.ConfigGenerator(configName, simConfigDb);
         yield start(configGenerator, simDb);
     }

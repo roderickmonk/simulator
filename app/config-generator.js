@@ -1,5 +1,24 @@
 #!/usr/bin/env node
 "use strict";
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -9,14 +28,8 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-var __importStar = (this && this.__importStar) || function (mod) {
-    if (mod && mod.__esModule) return mod;
-    var result = {};
-    if (mod != null) for (var k in mod) if (Object.hasOwnProperty.call(mod, k)) result[k] = mod[k];
-    result["default"] = mod;
-    return result;
-};
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.ConfigGenerator = void 0;
 const assert = require('assert');
 const _ = __importStar(require("lodash"));
 const chalk = require('chalk');
@@ -33,12 +46,12 @@ class ConfigGenerator {
         this.propertySchema = new Map();
         this.config = null;
         this.validateMultiplyConfig = (multipleParams, simConfig) => {
-            debug_1.debug("simConfig:\n", JSON.stringify(simConfig, null, 4));
+            (0, debug_1.debug)("simConfig:\n", JSON.stringify(simConfig, null, 4));
             let schema = GenerateSchema.json('Product', simConfig.multiplyConfig).items.oneOf;
             schema.shift();
             let properties = [];
             for (const level of schema) {
-                debug_1.debug('level:\n', JSON.stringify(level, null, 4));
+                (0, debug_1.debug)('level:\n', JSON.stringify(level, null, 4));
                 for (const prop of Object.keys(level.properties)) {
                     properties.push(prop);
                     this.propertySchema.set(prop, level.properties[prop]);
@@ -57,39 +70,39 @@ class ConfigGenerator {
                 const levelConfig = i === 0 ?
                     config["0"] :
                     config;
-                debug_1.debug({ levelConfig });
+                (0, debug_1.debug)({ levelConfig });
                 for (const prop in levelConfig) {
-                    debug_1.debug(chalk.red(`${prop}[${levelConfig[prop]}]`));
+                    (0, debug_1.debug)(chalk.red(`${prop}[${levelConfig[prop]}]`));
                     assert(levelConfig[prop].length > 0, 'Empty Configuration Parameter Array');
                     this.propertyLength.set(prop, levelConfig[prop].length);
                     this.propertyData.set(prop, levelConfig[prop]);
                     this.propertyLevel.set(prop, i);
                 }
             }
-            debug_1.debug(this.propertyData);
-            debug_1.debug(this.propertyLevel);
-            debug_1.debug(this.propertyLength);
+            (0, debug_1.debug)(this.propertyData);
+            (0, debug_1.debug)(this.propertyLevel);
+            (0, debug_1.debug)(this.propertyLength);
             const levels = simConfig.multiplyConfig.length;
-            debug_1.debug({ levels });
+            (0, debug_1.debug)({ levels });
             for (let i = 0; i < simConfig.multiplyConfig.length; ++i) {
                 const levelProperties = Array.from(this.propertyLevel)
                     .filter(level => level[1] === i)
                     .map(level => level[0]);
-                debug_1.debug({ levelProperties });
+                (0, debug_1.debug)({ levelProperties });
                 const levelPropertiesSameLength = levelProperties
                     .map(prop => this.propertyLength.get(prop))
                     .every((val, i, arr) => val === arr[0]);
                 assert(levelPropertiesSameLength, 'Mismatched Parameter Array Lengths');
             }
-            debug_1.debug('levels: ', simConfig.multiplyConfig.length);
+            (0, debug_1.debug)('levels: ', simConfig.multiplyConfig.length);
         };
         this.getGenerator = () => __awaiter(this, void 0, void 0, function* () {
             try {
                 process.on('unhandledRejection', _.noop);
-                this.config = yield this.simConfigurationDb
+                this.config = (yield this.simConfigurationDb
                     .collection('configurations')
-                    .findOne({ name: this.configName });
-                debug_1.debug(JSON.stringify(this.config, null, 4));
+                    .findOne({ name: this.configName }));
+                (0, debug_1.debug)(JSON.stringify(this.config, null, 4));
                 if (this.config) {
                     const multiplyConfigParams = yield this.simConfigurationDb
                         .collection('trader.multiply.params')
@@ -97,9 +110,9 @@ class ConfigGenerator {
                         name: this.config.multiplyConfigParams
                     });
                     const multiplyParams = multiplyConfigParams.params;
-                    debug_1.debug(JSON.stringify(multiplyParams, null, 4));
-                    const validConfig = yield config_manager_1.configValidator(this.config);
-                    debug_1.debug(JSON.stringify(this.config, null, 4));
+                    (0, debug_1.debug)(JSON.stringify(multiplyParams, null, 4));
+                    const validConfig = yield (0, config_manager_1.configValidator)(this.config);
+                    (0, debug_1.debug)(JSON.stringify(this.config, null, 4));
                     if (validConfig) {
                         this.validateMultiplyConfig(multiplyParams, this.config);
                         return this.generate(0);

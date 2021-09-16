@@ -5,18 +5,10 @@ export PATH=$PATH:$SIMULATOR_PATH/scripts:$SIMULATOR_PATH/Python
 # Assume production
 export NODE_ENV=production
 
-# Various useful functions
-source $SIMULATOR_PATH/scripts/bash-functions
-
-# Various useful aliases
-source $SIMULATOR_PATH/scripts/aliases
-
 # Give Python access to traders
 export PYTHONPATH=$SIMULATOR_PATH/Python:~/traders:.:$PYTHONPATH
 
-source $SIMULATOR_PATH/bin/activate
+source $SIMULATOR_PATH/.venv/bin/activate
 
-# export the version
-node -pe "require('./package.json').version"
+echo -n "simulator version: ";node -pe "require('./package.json').version"
 
-alias upgrade-modules='pip install -r requirements.txt --use-feature=2020-resolver'
