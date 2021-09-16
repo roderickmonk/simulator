@@ -1,14 +1,14 @@
 #!/bin/bash
 
-export PATH=$PATH:$SIMULATOR_PATH/scripts:$SIMULATOR_PATH/Python
+export PATH=$PATH:./scripts:./Python
 
 # Assume production
 export NODE_ENV=production
 
 # Give Python access to traders
-export PYTHONPATH=$SIMULATOR_PATH/Python:~/traders:.:$PYTHONPATH
+export PYTHONPATH=./Python:~/traders:.:$PYTHONPATH
 
-source $SIMULATOR_PATH/.venv/bin/activate
+source ./.venv/bin/activate
 
 echo -n "simulator version: ";node -pe "require('./package.json').version"
 
