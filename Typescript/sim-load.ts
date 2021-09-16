@@ -235,10 +235,15 @@ const copyTunings = async (
         assert(process.env.MONGODB, 'MONGODB Not Defined');
         assert(process.env.SIMULATOR_DB, 'SIMULATOR_DB Not Defined');
 
+        console.log (`Connecting to remote: ${process.env.MONGODB!}`);
+
+
         const mongoRemote =
             await MongoClient.connect(
                 process.env.MONGODB!
             );
+
+        console.log ("Connected remote")
 
         assert(process.env.LOCALDB, 'LOCALDB Not Defined');
 

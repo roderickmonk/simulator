@@ -167,7 +167,9 @@ const copyTunings = (tuningsRemote, tuningsLocal) => __awaiter(void 0, void 0, v
         console.log({ argv: process.argv });
         assert(process.env.MONGODB, 'MONGODB Not Defined');
         assert(process.env.SIMULATOR_DB, 'SIMULATOR_DB Not Defined');
+        console.log(`Connecting to remote: ${process.env.MONGODB}`);
         const mongoRemote = yield mongodb_1.MongoClient.connect(process.env.MONGODB);
+        console.log("Connected remote");
         assert(process.env.LOCALDB, 'LOCALDB Not Defined');
         const mongoLocal = yield mongodb_1.MongoClient.connect(process.env.LOCALDB);
         const simConfigDb = mongoRemote.db("sim_configuration");
