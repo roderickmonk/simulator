@@ -1,5 +1,11 @@
 #!/bin/bash
 
+# Ensure any existing python environments are deactivated
+set -e
+conda deactivate >/dev/null 2>&1 || true
+deactivate >/dev/null 2>&1 || true
+set +e
+
 export PATH=$PATH:./scripts:./Python
 
 # Assume production
