@@ -3,24 +3,20 @@ import warnings
 
 warnings.filterwarnings("ignore", category=UserWarning)
 
-import functools
 import importlib
 import logging
 import math
 import operator
 import os
 import sys
-from copy import copy
 from datetime import datetime
 
-import dateutil.parser as parser
 import numpy as np
 from bson.objectid import ObjectId
 from pymongo import MongoClient
 from schema import And, Optional, Schema, SchemaError, Use
 
 import sim_config
-from match_result import MatchResult
 from matching_engine import MatchingEngine
 from orderbooks import Orderbooks
 
@@ -61,8 +57,6 @@ def simulate():
     CO_calls = 0
     matching_engine_calls = 0
     returncode = 0
-    max_time_diffs = np.array([])
-    last_ob_timestamp = None
 
     buy_trades_count = 0
     sell_trades_count = 0
@@ -72,7 +66,7 @@ def simulate():
     try:
 
         logging.basicConfig(
-            format="[%(levelname)-5s] %(message)s", level=logging.INFO, datefmt=""
+            format="[%(levelname)-5s] %(message)s", level=logging.DEBUG, datefmt=""
         )
 
         logging.debug(f"simulate args: {sys.argv}")
