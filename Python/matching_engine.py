@@ -119,7 +119,6 @@ class MatchingEngine:
 
         return buy_result, sell_result
 
-    @profile
     def buy(
         self,
         start_assets: np.array,
@@ -225,7 +224,6 @@ class MatchingEngine:
             self.buy_unmatchable_count += 1
             return MatchResult.UNMATCHABLE
 
-    @profile
     def sell(
         self,
         start_assets: np.array,
