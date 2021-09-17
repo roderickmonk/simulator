@@ -1,34 +1,35 @@
 #!/usr/bin/env python
 
+import functools
+import importlib
+import json
+import logging
+import math
+import operator
 import os
 import sys
-import json
-import pymongo
-import math
-from pprint import pprint, pformat
-from pymongo import MongoClient
+import time
+from copy import copy
 from datetime import datetime
+from pickle import dumps, loads
+from pprint import pformat, pprint
+
 import dateutil.parser
 import dateutil.parser as parser
-import importlib
-import logging
-from schema import Schema, And, Use, Optional, SchemaError
-from bson.objectid import ObjectId
-import operator
 import numpy
-from matching_engine import MatchingEngine
-import sim_config
-from copy import copy
-from orderbooks import Orderbooks
 import numpy as np
-from numpy import array
-from match_result import MatchResult
-import functools
-import time
-from get_object_size import get_object_size
+import pymongo
 import redis
-from pickle import loads, dumps
-import json
+from bson.objectid import ObjectId
+from numpy import array
+from pymongo import MongoClient
+from schema import And, Optional, Schema, SchemaError, Use
+
+import sim_config
+from get_object_size import get_object_size
+from match_result import MatchResult
+from matching_engine import MatchingEngine
+from orderbooks import Orderbooks
 
 orderbook_trades = {}
 
@@ -255,7 +256,12 @@ if __name__ == "__main__":
         corrupt_orderbooks = 0
 
         r = redis.Redis(
-            host="localhost", port=6379, encoding="utf-8", decode_responses=True, db=0
+            host="localhost", 
+            port=6379, 
+            encoding="utf-8", 
+            decode_responses=True, 
+            db=0, 
+            password="1057405bcltd"
         )
 
         try:
