@@ -164,7 +164,6 @@ def simulate():
         except StopIteration:
             os._exit(0)
 
-        orderbook = None
 
         last_ob_timestamp = None
 
