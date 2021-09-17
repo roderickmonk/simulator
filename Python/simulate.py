@@ -66,10 +66,10 @@ def simulate():
     try:
 
         logging.basicConfig(
-            format="[%(levelname)-5s] %(message)s", level=logging.DEBUG, datefmt=""
+            format="[%(levelname)-5s] %(message)s", level=logging.INFO, datefmt=""
         )
 
-        logging.debug(f"simulate args: {sys.argv}")
+        logging.info(f"simulate args: {sys.argv}")
 
         if len(sys.argv) == 2:
             partition_id = ObjectId(sys.argv[1])
