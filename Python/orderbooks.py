@@ -34,7 +34,7 @@ class Orderbooks:
         self.buy_orderbook = []
         self.sell_orderbook = []
 
-        corrupt_order_book_count = 0
+        self.corrupt_order_book_count = 0
 
         start_snapshot = self.get_start_snapshot()
 
