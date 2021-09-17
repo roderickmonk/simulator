@@ -1,5 +1,9 @@
 #!/usr/bin/env python
 
+import warnings
+
+warnings.filterwarnings("ignore", category=UserWarning)
+
 import functools
 import importlib
 import json
@@ -105,7 +109,6 @@ if __name__ == "__main__":
     buy_trades_count = 0
     sell_trades_count = 0
     saved_orderbook_count = 0
-    total_size_of_python_objects = 0
 
     try:
 
@@ -116,35 +119,24 @@ if __name__ == "__main__":
 
         logging.debug(f"load {load_id}")
 
-        assert os.environ["MONGODB"], "MONGODB Not Defined"
         remote_mongo_client = MongoClient(os.environ["MONGODB"])
-        if remote_mongo_client == None:
-            raise Exception("Unable to Connect to Remote MongoDB")
 
-        # Prep for remote mongodb access
-        assert os.environ["SIMULATOR_DB"], "SIMULATOR_DB Not Defined"
         sim_db = remote_mongo_client[os.environ["SIMULATOR_DB"]]
-        if sim_db == None:
-            raise Exception("Unable to Connect to Main MongoDB")
 
-        # Prep for local mongodb access
-        assert os.environ["LOCALDB"], "LOCALDB Not Defined"
         local_mongo_client = MongoClient(os.environ["LOCALDB"])
-        assert local_mongo_client, "Unable to Connect to Local MongoDB"
+
         local_sim_db = local_mongo_client["sim"]
-        if local_sim_db == None:
-            raise Exception("Unable to Connect to Local MongoDB")
 
         # Load and check configuration
         config = sim_db.loads.find_one({"_id": ObjectId(load_id)})
         assert config, "Unknown Configuration"
-        logging.debug("Load Configuration...\n%s", pformat(config, indent=4))
+        logging.info(f"Load Configuration...\n {pformat(config, indent=4)}")
 
         ob_collection = remote_mongo_client.history.orderbooks
 
         # Ensure the output collection exists and is indexed
         try:
-            sim_db.create_collection("orderbooks")
+            local_sim_db.create_collection("orderbooks")
 
         except pymongo.errors.OperationFailure:
             pass  # Ignore error if collection already exists
@@ -152,7 +144,7 @@ if __name__ == "__main__":
         except pymongo.errors.CollectionInvalid:
             pass  # Ignore error if collection already exists
 
-        sim_db.orderbooks.create_index(
+        local_sim_db.orderbooks.create_index(
             [
                 ("e", pymongo.ASCENDING),
                 ("x", pymongo.ASCENDING),
@@ -162,18 +154,12 @@ if __name__ == "__main__":
             unique=True,
         )
 
-        # logging.info(
-        #     "{0:25}{1:10}".format(
-        #         "Channel:",
-        #         ":".join([
-        #             str(config["envId"]),
-        #             config["exchange"],
-        #             config["market"]
-        #         ])
-        #     )
-        # )
-
-        logging.info(f"{config['envId']=}, {config['exchange']=}, {config['market']=}")
+        logging.info(
+            "{0:25}{1:10}".format(
+                "Channel:",
+                ":".join([str(config["envId"]), config["exchange"], config["market"]]),
+            )
+        )
 
         logging.info(
             "{0:25}{1:10}".format("Start Time:", str(config["timeFrame"]["startTime"]))
@@ -192,8 +178,6 @@ if __name__ == "__main__":
             end=config["timeFrame"]["endTime"],
         )
 
-        # Get first and last orderbook
-
         orderbooks = Orderbooks(
             ob_collection=ob_collection,
             envId=config["envId"],
@@ -204,12 +188,12 @@ if __name__ == "__main__":
             end=config["timeFrame"]["endTime"],
         )
 
+        # Get first and last orderbook
         first_orderbook = orderbooks.get_first_orderbook()
-
         last_orderbook = orderbooks.get_last_orderbook()
 
         if first_orderbook == None or last_orderbook == None:
-            logging.info("No Orderbooks")
+            logging.error("No Orderbooks")
             os._exit(0)
 
         actual_start = first_orderbook["ts"]
@@ -348,15 +332,15 @@ if __name__ == "__main__":
                     insertObj["buy"] = insertObj["buy"].tolist()
                     insertObj["sell"] = insertObj["sell"].tolist()
 
-                    try:
-                        local_sim_db.orderbooks.replace_one(
-                            filter={"_id": insertObj["_id"]},
-                            replacement=insertObj,
-                            upsert=True,
-                        )
+                    # try:
+                    local_sim_db.orderbooks.replace_one(
+                        filter={"_id": insertObj["_id"]},
+                        replacement=insertObj,
+                        upsert=True,
+                    )
 
-                    except pymongo.errors.DuplicateKeyError:
-                        pass
+                    # except pymongo.errors.DuplicateKeyError:
+                    #     pass
 
                     if config["saveRedis"]:
 

@@ -1,5 +1,4 @@
 import os
-import pytest
 import sim_config
 import logging
 from bson.objectid import ObjectId
