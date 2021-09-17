@@ -75,8 +75,8 @@ class MatchingEngine:
         self,
         buy_rate: float,
         sell_rate: float,
-        buy_trades: List(dict),
-        sell_trades: List(dict),
+        buy_trades: List[dict],
+        sell_trades: List[dict],
     ):
 
         assert buy_rate > 0 and sell_rate > 0
@@ -125,7 +125,7 @@ class MatchingEngine:
         start_assets: np.array,
         buy_rate: float,
         sell_rate: float,
-        sell_trades: List(dict),
+        sell_trades: List[dict],
     ) -> MatchResult:
 
         if len(sell_trades) == 0:
@@ -230,7 +230,7 @@ class MatchingEngine:
         self,
         start_assets: np.array,
         sell_rate: float,
-        buy_trades: List(dict),
+        buy_trades: List[dict],
     ) -> MatchResult:
 
         _, inventory = start_assets
