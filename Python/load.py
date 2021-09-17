@@ -261,7 +261,7 @@ if __name__ == "__main__":
             encoding="utf-8", 
             decode_responses=True, 
             db=0, 
-            password="1057405bcltd"
+            password=os.environ.get ("REDIS_PASSWORD")
         )
 
         try:
