@@ -13,7 +13,7 @@ import fixtures
 import numpy as np
 from match_result import MatchResult
 
-remote_mongo_client = MongoClient(os.environ['MONGODB'])
+remote_mongo_client = MongoClient(os.environ["MONGODB"])
 sim_db = remote_mongo_client.sim_dev
 sim_config.trades_collection = sim_db.trades
 
@@ -23,16 +23,17 @@ matching_engine = MatchingEngine(
     assets=np.array([math.inf, 0]),
     actual_fee_rate=0.0027,
     min_notional=0.0005,
-    trades_collection=sim_db.trades)
+    trades_collection=sim_db.trades,
+)
 
 
 def conduct_buy_test(
-        buy_rate: float,
-        sell_rate: float,
-        expected_trade_count: int,
-        sell_trades: [dict],
-        start_assets: np.array,
-        first_used_trade: int = 0,
+    buy_rate: float,
+    sell_rate: float,
+    expected_trade_count: int,
+    sell_trades: [dict],
+    start_assets: np.array,
+    first_used_trade: int = 0,
 ):
 
     assert not sim_config.sim_id == None
@@ -53,11 +54,11 @@ def conduct_buy_test(
 
 
 def conduct_sell_test(
-        sell_rate: float,
-        expected_trade_count: int,
-        buy_trades: [dict],
-        start_assets: np.array = matching_engine.assets,
-        first_used_trade: int = 0,
+    sell_rate: float,
+    expected_trade_count: int,
+    buy_trades: [dict],
+    start_assets: np.array = matching_engine.assets,
+    first_used_trade: int = 0,
 ):
 
     assert not sim_config.sim_id == None
@@ -77,10 +78,10 @@ def conduct_sell_test(
 
 
 def conduct_buy_low_ceiling_test(
-        buy_rate: float,
-        sell_rate: float,
-        expected_trade_count: int,
-        sell_trades: [],
+    buy_rate: float,
+    sell_rate: float,
+    expected_trade_count: int,
+    sell_trades: [],
 ):
 
     assert not sim_config.sim_id == None
@@ -92,17 +93,20 @@ def conduct_buy_low_ceiling_test(
         sell_trades=sell_trades,
     )
 
-    sim_trades = list(sim_config.trades_collection.find(
-        {"o": sim_config.orderbook_id}))
+    sim_trades = list(
+        sim_config.trades_collection.find(
+            {"o": sim_config.orderbook_id}, no_cursor_timeout=True
+        )
+    )
 
     assert len(sim_trades) == expected_trade_count
 
 
 def conduct_sell_low_ceiling_test(
-        sell_rate: float,
-        expected_trade_count: int,
-        buy_trades: [],
-        start_assets: np.array,
+    sell_rate: float,
+    expected_trade_count: int,
+    buy_trades: [],
+    start_assets: np.array,
 ):
 
     assert not sim_config.sim_id == None
@@ -113,26 +117,32 @@ def conduct_sell_low_ceiling_test(
         buy_trades=buy_trades,
     )
 
-    sim_trades = list(sim_config.trades_collection.find(
-        {"o": sim_config.orderbook_id}))
+    sim_trades = list(
+        sim_config.trades_collection.find(
+            {"o": sim_config.orderbook_id}, no_cursor_timeout=True
+        )
+    )
 
     assert len(sim_trades) == expected_trade_count
 
 
 def sim_trade_checker(
-        buy_side: bool,
-        expected_trade_count: int,
-        trades: [],
-        first_used_trade: int = 0,
+    buy_side: bool,
+    expected_trade_count: int,
+    trades: [],
+    first_used_trade: int = 0,
 ):
 
     trades = trades[first_used_trade:]
 
-    sim_trades = list(sim_config.trades_collection.find(
-        {"o": sim_config.orderbook_id}))
+    sim_trades = list(
+        sim_config.trades_collection.find(
+            {"o": sim_config.orderbook_id}, no_cursor_timeout=True
+        )
+    )
 
-    logging.debug(f'sim_trades: {sim_trades}')
-    logging.debug(f'trades: {trades}')
+    logging.debug(f"sim_trades: {sim_trades}")
+    logging.debug(f"trades: {trades}")
 
     assert len(sim_trades) == expected_trade_count
 
@@ -143,23 +153,16 @@ def sim_trade_checker(
             fee = sim_trade["q"] * matching_engine.actual_fee_rate
             b = sim_trade["q"] * sim_trade["r"]
 
-            logging.debug(
-                f'buy fee: {round(fee,8)}, '
-                f'buy b: {round(b,8)}'
-            )
+            logging.debug(f"buy fee: {round(fee,8)}, " f"buy b: {round(b,8)}")
 
             assert math.isclose(sim_trade["buyFee"], fee)
 
         else:
 
-            fee = abs(sim_trade["q"]) * sim_trade["r"] * \
-                matching_engine.actual_fee_rate
+            fee = abs(sim_trade["q"]) * sim_trade["r"] * matching_engine.actual_fee_rate
             b = abs(sim_trade["q"]) * sim_trade["r"]
 
-            logging.debug(
-                f'sell fee: {round(fee,8)}, '
-                f'sell b: {round(b,8)}'
-            )
+            logging.debug(f"sell fee: {round(fee,8)}, " f"sell b: {round(b,8)}")
             assert math.isclose(sim_trade["sellFee"], fee, abs_tol=1e-7)
 
         assert sim_trade["s"] == sim_config.sim_id
@@ -170,11 +173,17 @@ def sim_trade_checker(
 
 def test_buy_0_from_0_trades(buying, load_object_ids):
 
-    trade_Qs = [0.02/0.20] * 0
+    trade_Qs = [0.02 / 0.20] * 0
 
     trades = []
     for i in range(len(trade_Qs)):
-        trades.append({"_id":  ObjectId(), "r": 0.20, "q": trade_Qs[i], })
+        trades.append(
+            {
+                "_id": ObjectId(),
+                "r": 0.20,
+                "q": trade_Qs[i],
+            }
+        )
 
     conduct_buy_test(
         buy_rate=0.25,
@@ -198,12 +207,17 @@ def buy_n_from_m(
     matching_engine.actual_fee_rate = actual_fee_rate
     matching_engine.QL = QL
     matching_engine.IL = QL
-    matching_engine.assets = np.array(
-        [init_funds, init_inventory], dtype=float)
+    matching_engine.assets = np.array([init_funds, init_inventory], dtype=float)
 
     trades = []
     for i in range(trade_count):
-        trades.append({"_id":  ObjectId(), "r": r, "q": QL/(2*r), })
+        trades.append(
+            {
+                "_id": ObjectId(),
+                "r": r,
+                "q": QL / (2 * r),
+            }
+        )
 
     expected_base = -QL
     expected_inventory = (QL / r) * (1 - actual_fee_rate)
@@ -211,7 +225,7 @@ def buy_n_from_m(
     conduct_buy_test(
         start_assets=matching_engine.assets,
         buy_rate=r,
-        sell_rate=r+0.0001,
+        sell_rate=r + 0.0001,
         expected_trade_count=expected_trade_count,
         sell_trades=trades,
     )
@@ -227,7 +241,13 @@ def sell_n_from_m(
 
     trades = []
     for i in range(trade_count):
-        trades.append({"_id":  ObjectId(), "r": r, "q": quantity/(2*r), })
+        trades.append(
+            {
+                "_id": ObjectId(),
+                "r": r,
+                "q": quantity / (2 * r),
+            }
+        )
 
     fee = quantity * matching_engine.actual_fee_rate
     expected_base = quantity - fee
@@ -246,7 +266,13 @@ def test_sell_0_from_0_trades(selling, load_object_ids):
 
     trades = []
     for i in range(len(trade_Qs)):
-        trades.append({"_id":  ObjectId(), "r": 0.30, "q": trade_Qs[i], })
+        trades.append(
+            {
+                "_id": ObjectId(),
+                "r": 0.30,
+                "q": trade_Qs[i],
+            }
+        )
 
     conduct_sell_test(
         sell_rate=0.20,
@@ -265,20 +291,19 @@ def test_buy_1_from_1_trades(buying, load_object_ids):
     trades = []
     r = 0.20
     q = round(quantity / 0.20, 8)
-    b = round(r*q, 8)
+    b = round(r * q, 8)
 
     for i in range(trade_count):
-        trades.append({"_id":  ObjectId(), "r": r, "q": q, "b": b})
+        trades.append({"_id": ObjectId(), "r": r, "q": q, "b": b})
 
-    logging.debug('trades:\n' + str(trades))
+    logging.debug("trades:\n" + str(trades))
 
     expected_funds = -quantity
-    expected_inventory = (quantity / buy_rate) * \
-        (1 - matching_engine.actual_fee_rate)
+    expected_inventory = (quantity / buy_rate) * (1 - matching_engine.actual_fee_rate)
 
     conduct_buy_test(
         buy_rate=buy_rate,
-        sell_rate=buy_rate+1,
+        sell_rate=buy_rate + 1,
         expected_trade_count=1,
         start_assets=matching_engine.assets,
         sell_trades=trades,
@@ -286,7 +311,7 @@ def test_buy_1_from_1_trades(buying, load_object_ids):
 
     funds, inventory = matching_engine.assets
 
-    #assert expected_funds == funds
+    # assert expected_funds == funds
     # assert expected_inventory = inventory
 
 
@@ -311,13 +336,13 @@ def test_sell_1_from_1_trades(selling, load_object_ids):
 
     trades = []
     for i in range(trade_count):
-        trades.append({"_id":  ObjectId(), "r": r, "q": q, "b": r*q})
+        trades.append({"_id": ObjectId(), "r": r, "q": q, "b": r * q})
 
     fee = QL * matching_engine.actual_fee_rate
 
     logging.debug(
-        'min (QL, trade[q] * rate): %r ',
-        min(QL, trades[0]['q'] * sell_rate),
+        "min (QL, trade[q] * rate): %r ",
+        min(QL, trades[0]["q"] * sell_rate),
     )
 
     conduct_sell_test(
@@ -329,9 +354,9 @@ def test_sell_1_from_1_trades(selling, load_object_ids):
     )
 
     funds, inventory = matching_engine.assets
-    logging.debug('assets: %r', matching_engine.assets)
-    logging.debug('expected funds: %r', init_funds + QL - fee)
-    logging.debug('expected inventory: %r', init_inventory - QL / sell_rate)
+    logging.debug("assets: %r", matching_engine.assets)
+    logging.debug("expected funds: %r", init_funds + QL - fee)
+    logging.debug("expected inventory: %r", init_inventory - QL / sell_rate)
 
     assert math.isclose(funds, init_funds + QL - fee)
     assert math.isclose(inventory, init_inventory - QL / sell_rate)
@@ -353,12 +378,7 @@ def test_sell_2_from_2_trades(selling, load_object_ids):
     )
 
 
-def test_buy_2_from_3_trades(
-    buying,
-    load_object_ids
-
-
-):
+def test_buy_2_from_3_trades(buying, load_object_ids):
 
     buy_n_from_m(
         expected_trade_count=2,
@@ -402,7 +422,13 @@ def test_sell_3_from_10_trades_low_ceiling(selling, load_object_ids):
 
     trades = []
     for i in range(10):
-        trades.append({"_id":  ObjectId(), "r": r, "q": QL/(2*r), })
+        trades.append(
+            {
+                "_id": ObjectId(),
+                "r": r,
+                "q": QL / (2 * r),
+            }
+        )
 
     conduct_sell_low_ceiling_test(
         sell_rate=0.25,
@@ -421,12 +447,18 @@ def test_buy_3_from_100_trades(buying, load_object_ids):
     matching_engine.QL = QL
     matching_engine.IL = QL
     matching_engine.actual_fee_rate = 0.0
-    matching_engine.assets = np.array([math.inf, IL-3 * 0.04], dtype=float)
+    matching_engine.assets = np.array([math.inf, IL - 3 * 0.04], dtype=float)
 
     trades = []
     trade_Qs = [0.01] * 100
     for i in range(len(trade_Qs)):
-        trades.append({"_id":  ObjectId(), "r": 0.20, "q": trade_Qs[i], })
+        trades.append(
+            {
+                "_id": ObjectId(),
+                "r": 0.20,
+                "q": trade_Qs[i],
+            }
+        )
 
     conduct_buy_low_ceiling_test(
         expected_trade_count=4,
@@ -448,7 +480,13 @@ def test_sell_3_from_100_trades_zero_ceiling(selling, load_object_ids):
     trade_Qs = [0.01] * 100
 
     for i in range(len(trade_Qs)):
-        trades.append({"_id":  ObjectId(), "r": 0.30, "q": trade_Qs[i], })
+        trades.append(
+            {
+                "_id": ObjectId(),
+                "r": 0.30,
+                "q": trade_Qs[i],
+            }
+        )
 
     conduct_sell_low_ceiling_test(
         sell_rate=0.25,
@@ -461,11 +499,41 @@ def test_sell_3_from_100_trades_zero_ceiling(selling, load_object_ids):
 def test_first_buy_trades_rate_too_high(buying, load_object_ids):
 
     trades = []
-    trades.append({"_id":  ObjectId(), "r": 0.15, "q": 0.01, })
-    trades.append({"_id":  ObjectId(), "r": 0.20, "q": 0.01, })
-    trades.append({"_id":  ObjectId(), "r": 0.25, "q": 0.01, })
-    trades.append({"_id":  ObjectId(), "r": 0.26, "q": 0.01, })
-    trades.append({"_id":  ObjectId(), "r": 0.27, "q": 0.01, })
+    trades.append(
+        {
+            "_id": ObjectId(),
+            "r": 0.15,
+            "q": 0.01,
+        }
+    )
+    trades.append(
+        {
+            "_id": ObjectId(),
+            "r": 0.20,
+            "q": 0.01,
+        }
+    )
+    trades.append(
+        {
+            "_id": ObjectId(),
+            "r": 0.25,
+            "q": 0.01,
+        }
+    )
+    trades.append(
+        {
+            "_id": ObjectId(),
+            "r": 0.26,
+            "q": 0.01,
+        }
+    )
+    trades.append(
+        {
+            "_id": ObjectId(),
+            "r": 0.27,
+            "q": 0.01,
+        }
+    )
 
     expected_base = 0
     expected_inventory = 0
@@ -475,9 +543,8 @@ def test_first_buy_trades_rate_too_high(buying, load_object_ids):
     first_used_trade = 2
 
     for trade in trades[first_used_trade:]:
-        expected_base -= trade['q'] * trade['r']
-        expected_inventory += trade['q'] * \
-            (1 - matching_engine.actual_fee_rate)
+        expected_base -= trade["q"] * trade["r"]
+        expected_inventory += trade["q"] * (1 - matching_engine.actual_fee_rate)
 
         logging.debug(
             f"expected_base: {expected_base}, "
@@ -500,21 +567,56 @@ def test_first_sell_trades_rate_too_low(selling, load_object_ids):
     matching_engine.actual_fee_rate = 0.0027
 
     trades = []
-    trades.append({"_id":  ObjectId(), "r": 0.23, "q": 0.01, })
-    trades.append({"_id":  ObjectId(), "r": 0.24, "q": 0.01, })
-    trades.append({"_id":  ObjectId(), "r": 0.24999, "q": 0.01, })
-    trades.append({"_id":  ObjectId(), "r": 0.25, "q": 0.01, })
-    trades.append({"_id":  ObjectId(), "r": 0.26, "q": 0.01, })
-    trades.append({"_id":  ObjectId(), "r": 0.27, "q": 0.01, })
+    trades.append(
+        {
+            "_id": ObjectId(),
+            "r": 0.23,
+            "q": 0.01,
+        }
+    )
+    trades.append(
+        {
+            "_id": ObjectId(),
+            "r": 0.24,
+            "q": 0.01,
+        }
+    )
+    trades.append(
+        {
+            "_id": ObjectId(),
+            "r": 0.24999,
+            "q": 0.01,
+        }
+    )
+    trades.append(
+        {
+            "_id": ObjectId(),
+            "r": 0.25,
+            "q": 0.01,
+        }
+    )
+    trades.append(
+        {
+            "_id": ObjectId(),
+            "r": 0.26,
+            "q": 0.01,
+        }
+    )
+    trades.append(
+        {
+            "_id": ObjectId(),
+            "r": 0.27,
+            "q": 0.01,
+        }
+    )
     expected_base = 0
     expected_inventory = 0
 
     first_used_trade = 3
 
     for trade in trades[first_used_trade:]:
-        expected_base += trade['q'] * trade['r'] * \
-            (1 - matching_engine.actual_fee_rate)
-        expected_inventory -= trade['q']
+        expected_base += trade["q"] * trade["r"] * (1 - matching_engine.actual_fee_rate)
+        expected_inventory -= trade["q"]
         logging.debug(
             f"expected_base: {expected_base}, "
             f"expected_inventory: {expected_inventory}"
@@ -533,11 +635,41 @@ def test_buy_all_trade_rates_too_low(buying, load_object_ids):
     matching_engine.assets = np.array([math.inf, 0], dtype=float)
 
     trades = []
-    trades.append({"_id":  ObjectId(), "r": 0.29, "q": 0.01, })
-    trades.append({"_id":  ObjectId(), "r": 0.27, "q": 0.01, })
-    trades.append({"_id":  ObjectId(), "r": 0.28, "q": 0.01, })
-    trades.append({"_id":  ObjectId(), "r": 0.26, "q": 0.01, })
-    trades.append({"_id":  ObjectId(), "r": 0.25, "q": 0.01, })
+    trades.append(
+        {
+            "_id": ObjectId(),
+            "r": 0.29,
+            "q": 0.01,
+        }
+    )
+    trades.append(
+        {
+            "_id": ObjectId(),
+            "r": 0.27,
+            "q": 0.01,
+        }
+    )
+    trades.append(
+        {
+            "_id": ObjectId(),
+            "r": 0.28,
+            "q": 0.01,
+        }
+    )
+    trades.append(
+        {
+            "_id": ObjectId(),
+            "r": 0.26,
+            "q": 0.01,
+        }
+    )
+    trades.append(
+        {
+            "_id": ObjectId(),
+            "r": 0.25,
+            "q": 0.01,
+        }
+    )
 
     conduct_buy_test(
         buy_rate=0.24,
@@ -551,11 +683,41 @@ def test_buy_all_trade_rates_too_low(buying, load_object_ids):
 def test_sell_all_trade_rates_too_high(selling, load_object_ids):
 
     trades = []
-    trades.append({"_id":  ObjectId(), "r": 0.21, "q": 0.01, })
-    trades.append({"_id":  ObjectId(), "r": 0.22, "q": 0.01, })
-    trades.append({"_id":  ObjectId(), "r": 0.23, "q": 0.01, })
-    trades.append({"_id":  ObjectId(), "r": 0.24, "q": 0.01, })
-    trades.append({"_id":  ObjectId(), "r": 0.249999, "q": 0.01, })
+    trades.append(
+        {
+            "_id": ObjectId(),
+            "r": 0.21,
+            "q": 0.01,
+        }
+    )
+    trades.append(
+        {
+            "_id": ObjectId(),
+            "r": 0.22,
+            "q": 0.01,
+        }
+    )
+    trades.append(
+        {
+            "_id": ObjectId(),
+            "r": 0.23,
+            "q": 0.01,
+        }
+    )
+    trades.append(
+        {
+            "_id": ObjectId(),
+            "r": 0.24,
+            "q": 0.01,
+        }
+    )
+    trades.append(
+        {
+            "_id": ObjectId(),
+            "r": 0.249999,
+            "q": 0.01,
+        }
+    )
 
     conduct_sell_test(
         sell_rate=1.0,
@@ -565,7 +727,8 @@ def test_sell_all_trade_rates_too_high(selling, load_object_ids):
 
 
 def test_buy_side_no_trades(
-        buying, load_object_ids,
+    buying,
+    load_object_ids,
 ):
 
     sell_trades = []
@@ -579,15 +742,23 @@ def test_buy_side_no_trades(
 
     assert result == MatchResult.NO_TRADES
 
+
 def test_buy_side_blocked_no_ceiling(
-        buying, load_object_ids,
+    buying,
+    load_object_ids,
 ):
 
     matching_engine.QL = 0.01
     matching_engine.IL = 0.01
 
     sell_trades = []
-    sell_trades.append({"_id":  ObjectId(), "r": 1.0, "q": 0.01, })
+    sell_trades.append(
+        {
+            "_id": ObjectId(),
+            "r": 1.0,
+            "q": 0.01,
+        }
+    )
 
     result = matching_engine.buy(
         start_assets=np.array([math.inf, 0.01]),
@@ -598,15 +769,23 @@ def test_buy_side_blocked_no_ceiling(
 
     assert result == MatchResult.BLOCKED
 
+
 def test_buy_side_blocked_no_funds(
-        buying, load_object_ids,
+    buying,
+    load_object_ids,
 ):
 
     matching_engine.QL = 0.01
     matching_engine.IL = 0.01
 
     sell_trades = []
-    sell_trades.append({"_id":  ObjectId(), "r": 1.0, "q": 0.01, })
+    sell_trades.append(
+        {
+            "_id": ObjectId(),
+            "r": 1.0,
+            "q": 0.01,
+        }
+    )
 
     result = matching_engine.buy(
         start_assets=np.array([0, 0]),
@@ -619,14 +798,21 @@ def test_buy_side_blocked_no_funds(
 
 
 def test_buy_side_unmatchable(
-        buying, load_object_ids,
+    buying,
+    load_object_ids,
 ):
 
     buy_rate = 1.0
 
     sell_trades = []
     # Set the minimum rate slightly larger than the buy_rate
-    sell_trades.append({"_id":  ObjectId(), "r": (buy_rate * 1.00001), "q": 0.01, })
+    sell_trades.append(
+        {
+            "_id": ObjectId(),
+            "r": (buy_rate * 1.00001),
+            "q": 0.01,
+        }
+    )
 
     result = matching_engine.buy(
         start_assets=np.array([math.inf, 0]),
@@ -639,13 +825,20 @@ def test_buy_side_unmatchable(
 
 
 def test_buy_side_min_notional_failure(
-        buying, load_object_ids,
+    buying,
+    load_object_ids,
 ):
 
     matching_engine.min_notional = 0.011
 
     sell_trades = []
-    sell_trades.append({"_id":  ObjectId(), "r": 1.0, "q": 0.01, })
+    sell_trades.append(
+        {
+            "_id": ObjectId(),
+            "r": 1.0,
+            "q": 0.01,
+        }
+    )
 
     result = matching_engine.buy(
         start_assets=np.array([math.inf, 0]),
@@ -656,14 +849,22 @@ def test_buy_side_min_notional_failure(
 
     assert result == MatchResult.MIN_NOTIONAL_FAILURE
 
+
 def test_buy_side_matched(
-        buying, load_object_ids,
+    buying,
+    load_object_ids,
 ):
 
     matching_engine.min_notional = 0.01
 
     sell_trades = []
-    sell_trades.append({"_id":  ObjectId(), "r": 1.0, "q": 0.01, })
+    sell_trades.append(
+        {
+            "_id": ObjectId(),
+            "r": 1.0,
+            "q": 0.01,
+        }
+    )
 
     result = matching_engine.buy(
         start_assets=np.array([math.inf, 0]),
@@ -676,7 +877,8 @@ def test_buy_side_matched(
 
 
 def test_sell_side_no_trades(
-        buying, load_object_ids,
+    buying,
+    load_object_ids,
 ):
 
     buy_trades = []
@@ -691,14 +893,21 @@ def test_sell_side_no_trades(
 
 
 def test_sell_side_blocked_no_inventory(
-        buying, load_object_ids,
+    buying,
+    load_object_ids,
 ):
 
     matching_engine.QL = 0.01
     matching_engine.IL = 0.01
 
     buy_trades = []
-    buy_trades.append({"_id":  ObjectId(), "r": 1.0, "q": 0.01, })
+    buy_trades.append(
+        {
+            "_id": ObjectId(),
+            "r": 1.0,
+            "q": 0.01,
+        }
+    )
 
     result = matching_engine.sell(
         start_assets=np.array([0, 0]),
@@ -710,14 +919,21 @@ def test_sell_side_blocked_no_inventory(
 
 
 def test_sell_side_unmatchable(
-        buying, load_object_ids,
+    buying,
+    load_object_ids,
 ):
 
     sell_rate = 1.0
 
     buy_trades = []
     # Set the minimum buy rate slightly larger than the sell rate
-    buy_trades.append({"_id":  ObjectId(), "r": sell_rate * 0.99999, "q": 0.01, })
+    buy_trades.append(
+        {
+            "_id": ObjectId(),
+            "r": sell_rate * 0.99999,
+            "q": 0.01,
+        }
+    )
 
     result = matching_engine.sell(
         start_assets=np.array([math.inf, 0.1]),
@@ -729,13 +945,20 @@ def test_sell_side_unmatchable(
 
 
 def test_sell_side_min_notional_failure(
-        buying, load_object_ids,
+    buying,
+    load_object_ids,
 ):
 
     matching_engine.min_notional = 0.011
 
     buy_trades = []
-    buy_trades.append({"_id":  ObjectId(), "r": 1.0, "q": 0.01, })
+    buy_trades.append(
+        {
+            "_id": ObjectId(),
+            "r": 1.0,
+            "q": 0.01,
+        }
+    )
 
     result = matching_engine.sell(
         start_assets=np.array([math.inf, 0.01]),
@@ -745,14 +968,22 @@ def test_sell_side_min_notional_failure(
 
     assert result == MatchResult.MIN_NOTIONAL_FAILURE
 
+
 def test_sell_side_matched(
-        buying, load_object_ids,
+    buying,
+    load_object_ids,
 ):
 
     matching_engine.min_notional = 0.01
 
     buy_trades = []
-    buy_trades.append({"_id":  ObjectId(), "r": 1.0, "q": 0.01, })
+    buy_trades.append(
+        {
+            "_id": ObjectId(),
+            "r": 1.0,
+            "q": 0.01,
+        }
+    )
 
     result = matching_engine.sell(
         start_assets=np.array([math.inf, 0.01]),

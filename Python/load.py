@@ -55,7 +55,7 @@ def get_trades(
             },
         }
 
-        for trade in trades.find(filter):
+        for trade in trades.find(filter, no_cursor_timeout=True):
 
             if "ob" in trade:
                 if trade["ob"] in orderbook_trades:
@@ -80,7 +80,7 @@ def find_trades(trades, filter):
     buy_trades = []
     sell_trades = []
 
-    for trade in trades.find(filter=filter):
+    for trade in trades.find(filter=filter, no_cursor_timeout=True):
 
         # Corral the buy and sell trades into separate lists
         if trade["buy"]:
@@ -256,12 +256,12 @@ if __name__ == "__main__":
         corrupt_orderbooks = 0
 
         r = redis.Redis(
-            host="localhost", 
-            port=6379, 
-            encoding="utf-8", 
-            decode_responses=True, 
-            db=0, 
-            password=os.environ.get ("REDIS_PASSWORD")
+            host="localhost",
+            port=6379,
+            encoding="utf-8",
+            decode_responses=True,
+            db=0,
+            password=os.environ.get("REDIS_PASSWORD"),
         )
 
         try:
@@ -379,7 +379,7 @@ if __name__ == "__main__":
                             )
                             r.hset(
                                 hset_key,
-                                mapping = {
+                                mapping={
                                     "_id": str(t["_id"]).encode(),
                                     "e": t["e"],
                                     "x": t["x"].encode(),
@@ -409,7 +409,7 @@ if __name__ == "__main__":
                             )
                             r.hset(
                                 hset_key,
-                                mapping = {
+                                mapping={
                                     "_id": str(t["_id"]).encode(),
                                     "e": t["e"],
                                     "x": t["x"].encode(),
@@ -433,7 +433,7 @@ if __name__ == "__main__":
 
                         r.hset(
                             str(orderbook["_id"]),
-                            mapping = {
+                            mapping={
                                 "e": orderbook["e"],
                                 "x": orderbook["x"].encode(),
                                 "m": orderbook["m"].encode(),
