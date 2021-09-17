@@ -1,34 +1,28 @@
 #!/usr/bin/env python
+import warnings
 
-import os
-import sys
-import pymongo
-import math
-from pymongo import MongoClient
-from datetime import datetime
-import dateutil.parser
-import dateutil.parser as parser
+warnings.filterwarnings("ignore", category=UserWarning)
+
+import functools
 import importlib
 import logging
-from schema import Schema, And, Use, Optional, SchemaError
-from bson.objectid import ObjectId
+import math
 import operator
-import numpy
-from matching_engine import MatchingEngine
-import sim_config
+import os
+import sys
 from copy import copy
-from orderbooks import Orderbooks
+from datetime import datetime
+
+import dateutil.parser as parser
 import numpy as np
+from bson.objectid import ObjectId
+from pymongo import MongoClient
+from schema import And, Optional, Schema, SchemaError, Use
+
+import sim_config
 from match_result import MatchResult
-import functools
-import redis
-
-try:
-    profile
-except NameError:
-
-    def profile(x):
-        return x
+from matching_engine import MatchingEngine
+from orderbooks import Orderbooks
 
 
 def check(conf_schema, conf):
@@ -61,7 +55,6 @@ def find_trades(trades, filter):
     return buy_trades, sell_trades
 
 
-@profile
 def simulate():
 
     matching_engine: MatchingEngine = None
@@ -165,7 +158,7 @@ def simulate():
 
         try:
             orderbooks = Orderbooks(
-                orderbooks_collection=local_sim_db.orderbooks,
+                ob_collection=local_sim_db.orderbooks,
                 envId=sim_config.partition_config["envId"],
                 exchange=sim_config.partition_config["exchange"].lower(),
                 market=sim_config.partition_config["market"].lower(),

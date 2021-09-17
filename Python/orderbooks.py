@@ -118,7 +118,7 @@ class Orderbooks:
 
             # Nothing earlier; look for the next snapshot
             snapshots = list(
-                ob_collection.find(
+                self.ob_collection.find(
                     filter={
                         "e": self.envId,
                         "x": self.exchange,
