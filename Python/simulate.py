@@ -164,9 +164,6 @@ def simulate():
         except StopIteration:
             os._exit(0)
 
-
-        last_ob_timestamp = None
-
         try:
 
             while True:
