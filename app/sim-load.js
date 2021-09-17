@@ -73,6 +73,7 @@ const start = (configGenerator, simDb) => __awaiter(void 0, void 0, void 0, func
         let loadConfigs = [];
         while (true) {
             const { value: next, done } = generator.next();
+            console.log({ next });
             if (done)
                 break;
             (0, debug_1.debug)({ next });
@@ -83,6 +84,7 @@ const start = (configGenerator, simDb) => __awaiter(void 0, void 0, void 0, func
                 timeFrame: next.timeFrame,
             });
         }
+        console.log({ loadConfigs });
         let taskObjs = [];
         yield simDb.collection('loads').deleteMany({});
         for (const loadConfig of loadConfigs) {
@@ -177,7 +179,9 @@ const copyTunings = (tuningsRemote, tuningsLocal) => __awaiter(void 0, void 0, v
             useUnifiedTopology: true,
         });
         console.log("Connected remote");
+        const mongoLocal = yield mongodb_1.MongoClient.connect(process.env.LOCALDB);
         const simConfigDb = mongoRemote.db("sim_configuration");
+        const localSimConfigDb = mongoLocal.db("sim_configuration");
         const simDb = mongoRemote.db(process.env.SIMULATOR_DB);
         console.log(`here-1: ${configName}`);
         const configGenerator = new config_generator_1.ConfigGenerator(configName, simConfigDb);

@@ -80,6 +80,8 @@ const start = async (
 
             const { value: next, done } = generator.next();
 
+            console.log ({next});
+
             if (done) break;
 
             debug({ next });
@@ -91,6 +93,8 @@ const start = async (
                 timeFrame: next.timeFrame,
             });
         }
+
+        console.log ({loadConfigs});
 
         let taskObjs: Array<object> = [];
 
@@ -247,22 +251,17 @@ const copyTunings = async (
             useUnifiedTopology: true,
         });
 
-        // const mongoRemote =
-        //     await MongoClient.connect(
-        //         process.env.MONGODB!, mongoConnectOptions
-        //     );
-
         console.log ("Connected remote")
 
         // assert(process.env.LOCALDB, 'LOCALDB Not Defined');
 
-        // const mongoLocal =
-        //     await MongoClient.connect(
-        //         process.env.LOCALDB!            
-        //     );
+        const mongoLocal =
+            await MongoClient.connect(
+                process.env.LOCALDB!            
+            );
 
         const simConfigDb: Db = mongoRemote.db("sim_configuration");
-        // const localSimConfigDb: Db = mongoLocal.db("sim_configuration");
+        const localSimConfigDb: Db = mongoLocal.db("sim_configuration");
         const simDb: Db = mongoRemote.db(process.env.SIMULATOR_DB);
 
         console.log (`here-1: ${configName}`);
@@ -275,7 +274,7 @@ const copyTunings = async (
         const configGenerator = new ConfigGenerator(configName, simConfigDb);
 
         console.log ("here-3");
-        
+
         await start(configGenerator, simDb);
 
     } catch (err) {

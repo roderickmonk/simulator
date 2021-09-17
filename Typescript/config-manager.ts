@@ -42,7 +42,7 @@ const simSchema = {
         "name",
         "envId",
         "minNotional",
-        "trim",
+        // "trim",
         "parallelSimulations",
         "saveRedis",
         "onlyOrderbooksWithTrades",

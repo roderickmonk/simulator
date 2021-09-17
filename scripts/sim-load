@@ -1,2 +1,2 @@
 #!/usr/bin/env bash
-node --trace-warnings app/sim-load $1
+node --trace-warnings --no-deprecation --no-warnings app/sim-load $1

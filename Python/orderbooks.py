@@ -36,9 +36,7 @@ class Orderbooks:
 
         corrupt_order_book_count = 0
 
-        start_snapshot = self.get_start_snapshot(
-            envId, exchange, market, start, ob_collection=ob_collection
-        )
+        start_snapshot = self.get_start_snapshot()
 
         self.buy_orderbook = start_snapshot["buy"]
         self.sell_orderbook = start_snapshot["sell"]
@@ -47,9 +45,7 @@ class Orderbooks:
         self.buy_orderbook.sort(reverse=True)
         self.sell_orderbook.sort(reverse=False)
 
-        last_orderbook = Orderbooks.get_last_orderbook(
-            envId, exchange, market, start, end, ob_collection=ob_collection
-        )
+        last_orderbook = self.get_last_orderbook()
 
         if __debug__:
             logging.debug("start_snapshot: %r", start_snapshot)
@@ -65,7 +61,8 @@ class Orderbooks:
                     "ts": {"$gte": start_snapshot["ts"], "$lt": end},
                     "s": {"$exists": True},
                     "V": "V",  # valid flag
-                }
+                },
+                no_cursor_timeout=True
             )
         )
 
@@ -112,7 +109,8 @@ class Orderbooks:
 
             # Work with the most recent one
             start_snapshot = reduce(
-                lambda x, y: x if x["ts"] > y["ts"] else y, earlier_snapshots,
+                lambda x, y: x if x["ts"] > y["ts"] else y,
+                earlier_snapshots,
             )
 
         else:
@@ -124,7 +122,9 @@ class Orderbooks:
                         "e": self.envId,
                         "x": self.exchange,
                         "m": self.market,
-                        "ts": {"$gte": self.start,},
+                        "ts": {
+                            "$gte": self.start,
+                        },
                         "s": True,
                     }
                 )
@@ -147,7 +147,9 @@ class Orderbooks:
                     "e": self.envId,
                     "x": self.exchange,
                     "m": self.market,
-                    "ts": {"$gte": self.start,},
+                    "ts": {
+                        "$gte": self.start,
+                    },
                 }
             )
             .sort("ts", 1)
@@ -158,7 +160,7 @@ class Orderbooks:
         else:
             return orderbooks[0]
 
-    def get_last_orderbook():
+    def get_last_orderbook(self):
 
         # Nothing earlier; look for the next snapshot
         orderbooks = list(
@@ -167,7 +169,10 @@ class Orderbooks:
                     "e": self.envId,
                     "x": self.exchange,
                     "m": self.market,
-                    "ts": {"$gt": self.start, "$lt": self.end,},
+                    "ts": {
+                        "$gt": self.start,
+                        "$lt": self.end,
+                    },
                 }
             )
             .sort("ts", -1)
@@ -186,7 +191,10 @@ class Orderbooks:
                 "e": self.envId,
                 "x": self.exchange,
                 "m": self.market,
-                "ts": {"$gte": self.start, "$lt": self.end,},
+                "ts": {
+                    "$gte": self.start,
+                    "$lt": self.end,
+                },
                 "V": "V",
                 "s": {"$exists": True},
             }
@@ -199,7 +207,10 @@ class Orderbooks:
                 "e": self.envId,
                 "x": self.exchange,
                 "m": self.market,
-                "ts": {"$gte": self.start, "$lte": self.end,},
+                "ts": {
+                    "$gte": self.start,
+                    "$lte": self.end,
+                },
                 "V": "C",
             }
         )
