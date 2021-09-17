@@ -102,7 +102,6 @@ class ConfigGenerator {
                 this.config = (yield this.simConfigurationDb
                     .collection('configurations')
                     .findOne({ name: this.configName }));
-                console.log("here-4", this.configName);
                 (0, debug_1.debug)(`config: ${JSON.stringify(this.config, null, 4)}`);
                 if (this.config) {
                     const multiplyConfigParams = yield this.simConfigurationDb

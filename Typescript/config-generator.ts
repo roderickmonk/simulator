@@ -197,8 +197,6 @@ export class ConfigGenerator {
                 .collection('configurations')
                 .findOne({ name: this.configName }) as SimConfiguration;
 
-            console.log ("here-4", this.configName);
-
             debug(`config: ${JSON.stringify(this.config, null, 4)}`);
 
             if (this.config) {

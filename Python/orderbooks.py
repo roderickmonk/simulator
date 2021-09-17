@@ -62,7 +62,7 @@ class Orderbooks:
                     "s": {"$exists": True},
                     "V": "V",  # valid flag
                 },
-                no_cursor_timeout=True
+                no_cursor_timeout=True,
             )
         )
 
@@ -101,7 +101,8 @@ class Orderbooks:
                         "$gte": self.start - timedelta(milliseconds=3 * 3600000),
                     },
                     "s": True,
-                }
+                },
+                no_cursor_timeout=True,
             )
         )
 
@@ -126,7 +127,8 @@ class Orderbooks:
                             "$gte": self.start,
                         },
                         "s": True,
-                    }
+                    },
+                    no_cursor_timeout=True,
                 )
                 .sort("ts", 1)
                 .limit(1)
@@ -150,7 +152,8 @@ class Orderbooks:
                     "ts": {
                         "$gte": self.start,
                     },
-                }
+                },
+                no_cursor_timeout=True,
             )
             .sort("ts", 1)
             .limit(1)
@@ -173,7 +176,8 @@ class Orderbooks:
                         "$gt": self.start,
                         "$lt": self.end,
                     },
-                }
+                },
+                no_cursor_timeout=True,
             )
             .sort("ts", -1)
             .limit(1)

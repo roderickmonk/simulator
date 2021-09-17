@@ -183,9 +183,7 @@ const copyTunings = (tuningsRemote, tuningsLocal) => __awaiter(void 0, void 0, v
         const simConfigDb = mongoRemote.db("sim_configuration");
         const localSimConfigDb = mongoLocal.db("sim_configuration");
         const simDb = mongoRemote.db(process.env.SIMULATOR_DB);
-        console.log(`here-1: ${configName}`);
         const configGenerator = new config_generator_1.ConfigGenerator(configName, simConfigDb);
-        console.log("here-3");
         yield start(configGenerator, simDb);
     }
     catch (err) {
