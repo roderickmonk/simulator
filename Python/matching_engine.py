@@ -1,24 +1,17 @@
 import datetime
-import importlib
-import json
 import logging
 import math
-import operator
-import os
-import sys
 from copy import copy
 from datetime import datetime
 from pprint import pprint
 from typing import List
 
-import dateutil.parser
-import numpy
+import numpy as np
 from bson.objectid import ObjectId
 from schema import And, Optional, Schema, SchemaError, Use
 
 import sim_config
 from match_result import MatchResult
-import numpy as np
 
 
 class MatchingEngine:
