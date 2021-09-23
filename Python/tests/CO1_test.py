@@ -73,7 +73,7 @@ def test_co1_test1():
             "inventoryLimit": 0.1,
             "feeRate": 0.002,
             "actualFeeRate": 0.002,
-            "precison": 6,
+            "precision": 6,
             "pdf": "not-used",
             "allowOrderConflicts": False,
         }
