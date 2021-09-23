@@ -116,6 +116,7 @@ def simulate():
                 "quantityLimit",
                 "pdf",
                 "tick",
+                "precision",
             ]
         )
         trader_config |= {"sim_db": remote_mongo_client["sim_configuration"]}
