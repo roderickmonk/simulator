@@ -120,7 +120,7 @@ def simulate():
         )
         trader_config |= {"sim_db": remote_mongo_client["sim_configuration"]}
 
-        logging.info(f"{trader_config=}")
+        logging.debug(f"{trader_config=}")
 
         # Matching Engine
         matching_engine = MatchingEngine(
