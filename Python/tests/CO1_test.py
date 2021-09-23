@@ -37,7 +37,6 @@ def test_co1_test0():
             "actualFeeRate": 0.002,
             "allowOrderConflicts": False,
             "precision": 8,
-            "pdf": None,
         }
 
         pdf_x = np.array([0.01, 0.1])
@@ -74,7 +73,6 @@ def test_co1_test1():
             "feeRate": 0.002,
             "actualFeeRate": 0.002,
             "precision": 6,
-            "pdf": "not-used",
             "allowOrderConflicts": False,
         }
 
@@ -146,7 +144,6 @@ def test_traders_in_real_time():
             "feeRate": bot_config["feeRate"],
             "actualFeeRate": 0.0027,
             "tick": bot_config["tick"],
-            "pdf": "not-used",
             "allowOrderConflicts": bot_config["allowOrderConflicts"],
         }
 
@@ -410,7 +407,6 @@ def test_compare_bots():
             "feeRate": bot_config["feeRate"],
             "actualFeeRate": 0.0027,
             "tick": bot_config["tick"],
-            "pdf": "not-used",
             "allowOrderConflicts": bot_config["allowOrderConflicts"],
             "priceDepthLimit": bot_config["priceDepthLimit"],
         }
@@ -658,7 +654,6 @@ def test_CO1_BUY_get_pv_and_rates_allow_order_conflicts_false_1():
             "feeRate": 0.002,
             "actualFeeRate": 0.002,
             "precision": 2,
-            "pdf": "not-used",
             "allowOrderConflicts": False,
         }
 
@@ -693,7 +688,6 @@ def test_CO1_BUY_get_pv_and_rates_allow_order_conflicts_true_1():
             "feeRate": 0.002,
             "actualFeeRate": 0.002,
             "precision": 2,
-            "pdf": "not-used",
             "allowOrderConflicts": True,
         }
 
@@ -731,7 +725,6 @@ def test_CO1_BUY_get_pv_and_rates_allow_order_conflicts_false_2():
             "feeRate": 0.002,
             "actualFeeRate": 0.002,
             "precision": 1,
-            "pdf": "not-used",
             "allowOrderConflicts": False,
         }
 
@@ -774,7 +767,6 @@ def test_CO1_BUY_get_pv_and_rates_allow_order_conflicts_true_2():
         "feeRate": 0.002,
         "actualFeeRate": 0.002,
         "precision": 1,
-        "pdf": "not-used",
         "allowOrderConflicts": True,
     }
 
@@ -816,7 +808,6 @@ def test_CO1_BUY_get_pv_and_rates_3():
             "feeRate": 0.002,
             "actualFeeRate": 0.002,
             "precision": 2,
-            "pdf": "not-used",
             "allowOrderConflicts": False,
         }
 
@@ -852,7 +843,6 @@ def test_CO1_SELL_get_pv_and_rates_1():
             "feeRate": 0.002,
             "actualFeeRate": 0.002,
             "precision": 2,
-            "pdf": "not-used",
             "allowOrderConflicts": False,
         }
 
@@ -890,7 +880,6 @@ def test_CO1_SELL_get_pv_and_rates_2():
             "feeRate": 0.002,
             "actualFeeRate": 0.002,
             "precision": 1,
-            "pdf": "not-used",
             "allowOrderConflicts": False,
         }
 
@@ -932,7 +921,6 @@ def test_CO1_SELL_get_pv_and_rates_3():
             "feeRate": 0.002,
             "actualFeeRate": 0.002,
             "precision": 2,
-            "pdf": "not-used",
             "allowOrderConflicts": False,
         }
 
@@ -974,7 +962,6 @@ def test_evol_1():
             "feeRate": 0.002,
             "actualFeeRate": 0.002,
             "precision": 8,
-            "pdf": "not-used",
             "allowOrderConflicts": False,
         }
 
@@ -1011,7 +998,6 @@ def test_evol_2():
             "feeRate": 0.002,
             "actualFeeRate": 0.002,
             "precision": 8,
-            "pdf": "not-used",
             "allowOrderConflicts": False,
         }
 
@@ -1049,7 +1035,6 @@ def test_evol_3():
             "feeRate": 0.002,
             "actualFeeRate": 0.002,
             "precision": 8,
-            "pdf": "not-used",
             "allowOrderConflicts": False,
         }
 
@@ -1080,7 +1065,6 @@ def test_evol_4():
             "feeRate": 0.002,
             "actualFeeRate": 0.002,
             "precision": 8,
-            "pdf": "not-used",
             "allowOrderConflicts": False,
         }
 
@@ -1112,7 +1096,6 @@ def test_evol_5():
             "feeRate": 0.002,
             "actualFeeRate": 0.002,
             "precision": 8,
-            "pdf": "not-used",
             "allowOrderConflicts": False,
         }
 
@@ -1148,7 +1131,6 @@ def test_evol_6():
             "feeRate": 0.002,
             "actualFeeRate": 0.002,
             "precision": 8,
-            "pdf": "not-used",
             "allowOrderConflicts": False,
         }
 
