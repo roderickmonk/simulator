@@ -221,7 +221,7 @@ def test_load_trades_volumes_3():
     tg.load_trades_volumes()
 
     # meta_remaining_volumes
-    logging.error("tg.meta_remaining_volumes:\n%r", tg.meta_remaining_volumes)
+    logging.info("tg.meta_remaining_volumes:\n%r", tg.meta_remaining_volumes)
     expected = [[450, 270, 120]]
     assert compare2D(tg.meta_remaining_volumes, expected)
 
@@ -705,8 +705,8 @@ def test_load_remaining_price_depths_1():
     tg.trades_price_depth()
     tg.load_remaining_price_depths()
 
-    logging.error("depths:\n%r", tg.depths)
-    logging.error("price_depths:\n%r", tg.price_depths)
+    logging.debug("depths:\n%r", tg.depths)
+    logging.debug("price_depths:\n%r", tg.price_depths)
     logging.debug("remaining_price_depths:\n%r", tg.remaining_price_depths)
     expected = [[3780.01, 3780, 300, 150, 350], [3180.01, 2880, 0.0, 0.0, 150],
                 [3180.01, 2880, 0.0, 0.0, 150], [2880.0, 2880, 0.0, 0.0, 0.0]]
@@ -792,7 +792,7 @@ def test_get_values_0():
         [0.999961290323, 0.232258064516, 0.232258064516, 0.232258064516],
         [0.612903225806, 0.232258064516, 0.232258064516, 0.232258064516]
     ]
-    logging.error("values:\n%r", np.array(values))
+    logging.info("values:\n%r", np.array(values))
     assert compare2D(values, expected)
 
 
@@ -840,7 +840,7 @@ def test_get_values_1():
                     0.9500624219725343, 0.7191011235955056, 0.7191011235955056,
                     0.7191011235955056
                 ]]
-    logging.error("values:\n%r", np.array(values))
+    logging.info("values:\n%r", np.array(values))
     assert compare2D(values, expected)
 
 
@@ -867,6 +867,6 @@ def test_meta_remaining_volumes_0():
     tg.load_trades (trades=trades)
     tg.get_values()
 
-    logging.error("tg.meta_remaining_volumes:\n%r", tg.meta_remaining_volumes)
+    logging.info("tg.meta_remaining_volumes:\n%r", tg.meta_remaining_volumes)
     expected = [[450, 270, 120]]
     assert compare2D(tg.meta_remaining_volumes, expected)

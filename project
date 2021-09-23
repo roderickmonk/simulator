@@ -16,4 +16,9 @@ export PYTHONPATH=./Python:~/traders:.:$PYTHONPATH
 
 source .venv/bin/activate --prompt Simulator
 
+pytests () {
+    PYTHONOPTIMIZE= pytest --disable-warnings Python
+}
+
+
 echo -n "Simulator version: ";node -pe "require('./package.json').version"

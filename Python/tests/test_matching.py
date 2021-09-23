@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+
 import os
 import sim_config
 import logging

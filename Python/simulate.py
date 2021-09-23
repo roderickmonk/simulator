@@ -124,25 +124,6 @@ def simulate():
 
         logging.info(f"{trader_config=}")
 
-        """
-        # Load optional PDF data
-        if sim_config.partition_config["pdf"]:
-
-            # Load PDF
-            pdf = sim_config.sim_db.tunings.find_one(
-                filter={
-                    "name": sim_config.partition_config["pdf"]
-                }
-            )
-            assert "x" in pdf and "y" in pdf
-            pdf["x"] = list(map(lambda x:pow(10,x),pdf["x"]))
-            sim_config.pdf_x = np.array(pdf["x"])
-            assert len(sim_config.pdf_x) > 0
-            sim_config.pdf_y = np.array(pdf["y"])
-            assert len(sim_config.pdf_y) > 0
-            assert sim_config.pdf_x.shape == sim_config.pdf_y.shape
-        """
-
         # Matching Engine
         matching_engine = MatchingEngine(
             assets=np.array([math.inf, 0], dtype=float),
