@@ -657,7 +657,7 @@ def test_CO1_BUY_get_pv_and_rates_allow_order_conflicts_false_1():
             "inventoryLimit": 0.1,
             "feeRate": 0.002,
             "actualFeeRate": 0.002,
-            "precison": 2,
+            "precision": 2,
             "pdf": "not-used",
             "allowOrderConflicts": False,
         }
@@ -692,7 +692,7 @@ def test_CO1_BUY_get_pv_and_rates_allow_order_conflicts_true_1():
             "inventoryLimit": 0.1,
             "feeRate": 0.002,
             "actualFeeRate": 0.002,
-            "precison": 2,
+            "precision": 2,
             "pdf": "not-used",
             "allowOrderConflicts": True,
         }
@@ -730,7 +730,7 @@ def test_CO1_BUY_get_pv_and_rates_allow_order_conflicts_false_2():
             "inventoryLimit": 0.1,
             "feeRate": 0.002,
             "actualFeeRate": 0.002,
-            "precison": 1,
+            "precision": 1,
             "pdf": "not-used",
             "allowOrderConflicts": False,
         }
