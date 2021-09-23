@@ -11,7 +11,6 @@ from datetime import datetime
 from operator import itemgetter
 from pprint import pprint
 
-import co1
 import dateutil.parser as parser
 import numpy as np
 import pytest
