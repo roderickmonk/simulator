@@ -118,6 +118,7 @@ def simulate():
                 "tick",
             ]
         )
+        trader_config |= {"sim_db": remote_mongo_client[os.environ["SIMULATOR_DB"]]}
 
         logging.info(f"{trader_config=}")
 
@@ -137,8 +138,7 @@ def simulate():
 
         if __debug__:
             from traders.co1 import Trader
-
-            trader = Trader(sim_config)
+            trader = Trader(trader_config)
 
         else:
             trader = importlib.import_module(
