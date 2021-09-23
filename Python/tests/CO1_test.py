@@ -986,14 +986,14 @@ def test_evol_1():
 
     try:
 
-        sim_config.partition_config = {
+        trader_config = {
             "_id": "00000000",
             "name": "config-name",
             "quantityLimit": 0.1,
             "inventoryLimit": 0.1,
             "feeRate": 0.002,
             "actualFeeRate": 0.002,
-            "tick": 1e-8,
+            "precision": 8,
             "pdf": "not-used",
             "allowOrderConflicts": False,
         }
@@ -1001,9 +1001,7 @@ def test_evol_1():
         pdf_x = np.array([0.1])
         pdf_y = np.array([1])
 
-        sim_config.init(sim_config.partition_config)
-
-        trader = co1.Trader(sim_config, pdf_x, pdf_y)
+        trader = co1.Trader(trader_config, pdf_x, pdf_y)
 
         pv = np.array([0, 10, 20, 30])
 
@@ -1025,14 +1023,14 @@ def test_evol_2():
 
     try:
 
-        sim_config.partition_config = {
+        trader_config = {
             "_id": "00000000",
             "name": "config-name",
             "quantityLimit": 0.1,
             "inventoryLimit": 0.1,
             "feeRate": 0.002,
             "actualFeeRate": 0.002,
-            "tick": 1e-8,
+            "precision": 8,
             "pdf": "not-used",
             "allowOrderConflicts": False,
         }
@@ -1040,9 +1038,8 @@ def test_evol_2():
         pdf_x = np.array([0.1, 1.0])
         pdf_y = np.array([0.9, 0.1])
 
-        sim_config.init(sim_config.partition_config)
 
-        trader = co1.Trader(sim_config, pdf_x, pdf_y)
+        trader = co1.Trader(trader_config, pdf_x, pdf_y)
 
         pv = np.array([0, 10, 20, 30])
 
@@ -1064,14 +1061,14 @@ def test_evol_3():
 
     try:
 
-        sim_config.partition_config = {
+        trader_config = {
             "_id": "00000000",
             "name": "config-name",
             "quantityLimit": 0.1,
             "inventoryLimit": 0.1,
             "feeRate": 0.002,
             "actualFeeRate": 0.002,
-            "tick": 1e-8,
+            "precision": 8,
             "pdf": "not-used",
             "allowOrderConflicts": False,
         }
@@ -1079,9 +1076,7 @@ def test_evol_3():
         pdf_x = np.array([0.1, 1.0, 2.0])
         pdf_y = np.array([0.8, 0.1, 0.1])
 
-        sim_config.init(sim_config.partition_config)
-
-        trader = co1.Trader(sim_config, pdf_x, pdf_y)
+        trader = co1.Trader(trader_config, pdf_x, pdf_y)
 
         pv = np.array([0, 10, 20, 30])
         evol = trader.evol(pv)
@@ -1097,14 +1092,14 @@ def test_evol_4():
 
     try:
 
-        sim_config.partition_config = {
+        trader_config = {
             "_id": "00000000",
             "name": "config-name",
             "quantityLimit": 0.05,
             "inventoryLimit": 0.1,
             "feeRate": 0.002,
             "actualFeeRate": 0.002,
-            "tick": 1e-8,
+            "precision": 8,
             "pdf": "not-used",
             "allowOrderConflicts": False,
         }
@@ -1112,9 +1107,7 @@ def test_evol_4():
         pdf_x = np.array([0.1, 1.0, 2.0])
         pdf_y = np.array([0.8, 0.1, 0.1])
 
-        sim_config.init(sim_config.partition_config)
-
-        trader = co1.Trader(sim_config, pdf_x, pdf_y)
+        trader = co1.Trader(trader_config, pdf_x, pdf_y)
 
         pv = np.array([0, 10, 20, 30])
 
@@ -1138,7 +1131,6 @@ def test_evol_5():
             "inventoryLimit": 0.1,
             "feeRate": 0.002,
             "actualFeeRate": 0.002,
-            # "tick": 1e-8,
             "precision": 8,
             "pdf": "not-used",
             "allowOrderConflicts": False,
@@ -1146,8 +1138,6 @@ def test_evol_5():
 
         pdf_x = np.array([0.1, 1.0])
         pdf_y = np.array([0.5, 0.5])
-
-        # sim_config.init(sim_config.partition_config)
 
         trader = co1.Trader(trader_config, pdf_x, pdf_y)
 
@@ -1170,14 +1160,14 @@ def test_evol_6():
 
     try:
 
-        sim_config.partition_config = {
+        trader_config = {
             "_id": "00000000",
             "name": "config-name",
             "quantityLimit": 0.05,
             "inventoryLimit": 0.1,
             "feeRate": 0.002,
             "actualFeeRate": 0.002,
-            "tick": 1e-8,
+            "precision": 8,
             "pdf": "not-used",
             "allowOrderConflicts": False,
         }
@@ -1185,9 +1175,7 @@ def test_evol_6():
         pdf_x = np.array([0.1, 1.0, 2.0])
         pdf_y = np.array([0.5, 0.25])
 
-        sim_config.init(sim_config.partition_config)
-
-        trader = co1.Trader(sim_config, pdf_x, pdf_y)
+        trader = co1.Trader(trader_config, pdf_x, pdf_y)
 
         pv = np.array([0, 0.05, 0.10, 0.15])
 
