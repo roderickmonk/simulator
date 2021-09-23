@@ -36,7 +36,7 @@ def test_co1_test0():
             "feeRate": 0.002,
             "actualFeeRate": 0.002,
             "allowOrderConflicts": False,
-            "tick": 1e-8,
+            "precision": 8,
             "pdf": None,
         }
 
@@ -73,7 +73,7 @@ def test_co1_test1():
             "inventoryLimit": 0.1,
             "feeRate": 0.002,
             "actualFeeRate": 0.002,
-            "tick": 1e-6,
+            "precison": 6,
             "pdf": "not-used",
             "allowOrderConflicts": False,
         }
@@ -650,14 +650,14 @@ def test_CO1_BUY_get_pv_and_rates_allow_order_conflicts_false_1():
 
     try:
 
-        sim_config.partition_config = {
+        trader_config = {
             "_id": "00000000",
             "name": "config-name",
             "quantityLimit": 0.1,
             "inventoryLimit": 0.1,
             "feeRate": 0.002,
             "actualFeeRate": 0.002,
-            "tick": 0.01,
+            "precison": 2,
             "pdf": "not-used",
             "allowOrderConflicts": False,
         }
@@ -665,9 +665,7 @@ def test_CO1_BUY_get_pv_and_rates_allow_order_conflicts_false_1():
         pdf_x = np.array([0.01, 0.1])
         pdf_y = np.array([0.8, 0.2])
 
-        sim_config.init(sim_config.partition_config)
-
-        trader = co1.Trader(sim_config, pdf_x, pdf_y)
+        trader = co1.Trader(trader_config, pdf_x, pdf_y)
 
         ob = np.array([[0.4, 10], [0.3, 20], [0.2, 30], [0.1, 40]])
 
@@ -687,14 +685,14 @@ def test_CO1_BUY_get_pv_and_rates_allow_order_conflicts_true_1():
 
     try:
 
-        sim_config.partition_config = {
+        trader_config = {
             "_id": "00000000",
             "name": "config-name",
             "quantityLimit": 0.1,
             "inventoryLimit": 0.1,
             "feeRate": 0.002,
             "actualFeeRate": 0.002,
-            "tick": 0.01,
+            "precison": 2,
             "pdf": "not-used",
             "allowOrderConflicts": True,
         }
@@ -702,9 +700,7 @@ def test_CO1_BUY_get_pv_and_rates_allow_order_conflicts_true_1():
         pdf_x = np.array([0.01, 0.1])
         pdf_y = np.array([0.8, 0.2])
 
-        sim_config.init(sim_config.partition_config)
-
-        trader = co1.Trader(sim_config, pdf_x, pdf_y)
+        trader = co1.Trader(trader_config, pdf_x, pdf_y)
 
         ob = np.array([[0.4, 10], [0.3, 20], [0.2, 30], [0.1, 40]])
 
@@ -727,14 +723,14 @@ def test_CO1_BUY_get_pv_and_rates_allow_order_conflicts_false_2():
 
     try:
 
-        sim_config.partition_config = {
+        trader_config = {
             "_id": "00000000",
             "name": "config-name",
             "quantityLimit": 0.1,
             "inventoryLimit": 0.1,
             "feeRate": 0.002,
             "actualFeeRate": 0.002,
-            "tick": 0.1,
+            "precison": 1,
             "pdf": "not-used",
             "allowOrderConflicts": False,
         }
@@ -742,9 +738,7 @@ def test_CO1_BUY_get_pv_and_rates_allow_order_conflicts_false_2():
         pdf_x = np.array([0.01, 0.1])
         pdf_y = np.array([0.8, 0.2])
 
-        sim_config.init(sim_config.partition_config)
-
-        trader = co1.Trader(sim_config, pdf_x, pdf_y)
+        trader = co1.Trader(trader_config, pdf_x, pdf_y)
 
         ob = np.array(
             [
@@ -772,14 +766,14 @@ def test_CO1_BUY_get_pv_and_rates_allow_order_conflicts_true_2():
     No room for a new order near the top
     """
 
-    sim_config.partition_config = {
+    trader_config = {
         "_id": "00000000",
         "name": "config-name",
         "quantityLimit": 0.1,
         "inventoryLimit": 0.1,
         "feeRate": 0.002,
         "actualFeeRate": 0.002,
-        "tick": 0.1,
+        "precision": 1,
         "pdf": "not-used",
         "allowOrderConflicts": True,
     }
@@ -787,9 +781,7 @@ def test_CO1_BUY_get_pv_and_rates_allow_order_conflicts_true_2():
     pdf_x = np.array([0.01, 0.1])
     pdf_y = np.array([0.8, 0.2])
 
-    sim_config.init(sim_config.partition_config)
-
-    trader = co1.Trader(sim_config, pdf_x, pdf_y)
+    trader = co1.Trader(trader_config, pdf_x, pdf_y)
 
     ob = np.array(
         [
@@ -816,14 +808,14 @@ def test_CO1_BUY_get_pv_and_rates_3():
 
     try:
 
-        sim_config.partition_config = {
+        trader_config = {
             "_id": "00000000",
             "name": "config-name",
             "quantityLimit": 0.1,
             "inventoryLimit": 0.1,
             "feeRate": 0.002,
             "actualFeeRate": 0.002,
-            "tick": 0.01,
+            "precision": 2,
             "pdf": "not-used",
             "allowOrderConflicts": False,
         }
@@ -831,9 +823,7 @@ def test_CO1_BUY_get_pv_and_rates_3():
         pdf_x = np.array([0.01, 0.1])
         pdf_y = np.array([0.8, 0.2])
 
-        sim_config.init(sim_config.partition_config)
-
-        trader = co1.Trader(sim_config, pdf_x, pdf_y)
+        trader = co1.Trader(trader_config, pdf_x, pdf_y)
 
         ob = np.array(
             [
@@ -854,14 +844,14 @@ def test_CO1_SELL_get_pv_and_rates_1():
 
     try:
 
-        sim_config.partition_config = {
+        trader_config = {
             "_id": "00000000",
             "name": "config-name",
             "quantityLimit": 0.1,
             "inventoryLimit": 0.1,
             "feeRate": 0.002,
             "actualFeeRate": 0.002,
-            "tick": 0.01,
+            "precision": 2,
             "pdf": "not-used",
             "allowOrderConflicts": False,
         }
@@ -869,9 +859,7 @@ def test_CO1_SELL_get_pv_and_rates_1():
         pdf_x = np.array([0.01, 0.1])
         pdf_y = np.array([0.8, 0.2])
 
-        sim_config.init(sim_config.partition_config)
-
-        trader = co1.Trader(sim_config, pdf_x, pdf_y)
+        trader = co1.Trader(trader_config, pdf_x, pdf_y)
 
         ob = np.array([[0.2, 10], [0.3, 20], [0.4, 30], [0.5, 40]])
 
@@ -894,14 +882,14 @@ def test_CO1_SELL_get_pv_and_rates_2():
 
     try:
 
-        sim_config.partition_config = {
+        trader_config = {
             "_id": "00000000",
             "name": "config-name",
             "quantityLimit": 0.1,
             "inventoryLimit": 0.1,
             "feeRate": 0.002,
             "actualFeeRate": 0.002,
-            "tick": 0.1,
+            "precision": 1,
             "pdf": "not-used",
             "allowOrderConflicts": False,
         }
@@ -909,9 +897,7 @@ def test_CO1_SELL_get_pv_and_rates_2():
         pdf_x = np.array([0.01, 0.1])
         pdf_y = np.array([0.8, 0.2])
 
-        sim_config.init(sim_config.partition_config)
-
-        trader = co1.Trader(sim_config, pdf_x, pdf_y)
+        trader = co1.Trader(trader_config, pdf_x, pdf_y)
 
         ob = np.array(
             [
@@ -938,14 +924,14 @@ def test_CO1_SELL_get_pv_and_rates_3():
 
     try:
 
-        sim_config.partition_config = {
+        trader_config = {
             "_id": "00000000",
             "name": "config-name",
             "quantityLimit": 0.1,
             "inventoryLimit": 0.1,
             "feeRate": 0.002,
             "actualFeeRate": 0.002,
-            "tick": 0.01,
+            "precision": 2,
             "pdf": "not-used",
             "allowOrderConflicts": False,
         }
@@ -953,9 +939,7 @@ def test_CO1_SELL_get_pv_and_rates_3():
         pdf_x = np.array([0.01, 0.1])
         pdf_y = np.array([0.8, 0.2])
 
-        sim_config.init(sim_config.partition_config)
-
-        trader = co1.Trader(sim_config, pdf_x, pdf_y)
+        trader = co1.Trader(trader_config, pdf_x, pdf_y)
 
         ob = np.array(
             [
