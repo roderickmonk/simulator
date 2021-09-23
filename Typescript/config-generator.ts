@@ -47,7 +47,7 @@ export class ConfigGenerator {
         let schema: Array<{ properties: any }> =
             GenerateSchema.json('Product', simConfig.multiplyConfig).items.oneOf;
 
-            schema.shift(); // Skip first one
+        schema.shift(); // Skip first one
 
         let properties: Array<string> = [];
         for (const level of schema) {
@@ -79,6 +79,10 @@ export class ConfigGenerator {
             }
 
             // Ensure required params 
+
+            console.log({ multipleParams });
+            console.log({ propertyScheam: this.propertySchema });
+            
             Object.keys(multipleParams).forEach(property => {
 
                 assert(
@@ -214,11 +218,11 @@ export class ConfigGenerator {
                 const validConfig = await configValidator(this.config);
 
                 debug(JSON.stringify(this.config, null, 4));
-               
+
                 if (validConfig) {
 
                     this.validateMultiplyConfig(
-                        multiplyParams, 
+                        multiplyParams,
                         this.config);
                     return this.generate(0);
 
