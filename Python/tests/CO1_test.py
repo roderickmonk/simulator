@@ -761,8 +761,8 @@ def test_CO1_BUY_get_pv_and_rates_allow_order_conflicts_false_2():
 
         pv, rates = trader.get_pv_and_rates(ob, is_buy=True)
 
-        logging.error("pv: %r", pv)
-        logging.error("rates: %r", rates)
+        logging.debug("pv: %r", pv)
+        logging.debug("rates: %r", rates)
 
         assert np.array_equal(pv, np.array([0]))
         assert np.array_equal(rates, np.array([0.5]))
@@ -806,8 +806,8 @@ def test_CO1_BUY_get_pv_and_rates_allow_order_conflicts_true_2():
 
     pv, rates = trader.get_pv_and_rates(ob, is_buy=True)
 
-    logging.error("pv: %r", pv)
-    logging.error("rates: %r", rates)
+    logging.debug("pv: %r", pv)
+    logging.debug("rates: %r", rates)
 
     assert np.array_equal(pv, np.array([0.0, 4.0, 10.0, 16.0]))
     assert np.array_equal(rates, np.array([0.5, 0.4, 0.3, 0.2]))

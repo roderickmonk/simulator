@@ -13,6 +13,7 @@ from fixtures import load_object_ids, buying, selling
 import fixtures
 import numpy as np
 from match_result import MatchResult
+from typing import List
 
 remote_mongo_client = MongoClient(os.environ["MONGODB"])
 sim_db = remote_mongo_client.sim_dev
@@ -32,7 +33,7 @@ def conduct_buy_test(
     buy_rate: float,
     sell_rate: float,
     expected_trade_count: int,
-    sell_trades: [dict],
+    sell_trades: List[dict],
     start_assets: np.array,
     first_used_trade: int = 0,
 ):
@@ -57,7 +58,7 @@ def conduct_buy_test(
 def conduct_sell_test(
     sell_rate: float,
     expected_trade_count: int,
-    buy_trades: [dict],
+    buy_trades: List[dict],
     start_assets: np.array = matching_engine.assets,
     first_used_trade: int = 0,
 ):
@@ -82,7 +83,7 @@ def conduct_buy_low_ceiling_test(
     buy_rate: float,
     sell_rate: float,
     expected_trade_count: int,
-    sell_trades: [],
+    sell_trades: List[dict],
 ):
 
     assert not sim_config.sim_id == None
@@ -106,7 +107,7 @@ def conduct_buy_low_ceiling_test(
 def conduct_sell_low_ceiling_test(
     sell_rate: float,
     expected_trade_count: int,
-    buy_trades: [],
+    buy_trades: List[dict],
     start_assets: np.array,
 ):
 
@@ -130,7 +131,7 @@ def conduct_sell_low_ceiling_test(
 def sim_trade_checker(
     buy_side: bool,
     expected_trade_count: int,
-    trades: [],
+    trades: List[dict],
     first_used_trade: int = 0,
 ):
 
