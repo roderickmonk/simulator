@@ -108,9 +108,6 @@ def simulate():
         # Convenience destructuring
         depth = sim_config.partition_config["depth"]
 
-        trader_config = {}
-        trader_config["feeRate"] = sim_config.partition_config["feeRate"]
-
         trader_config = dict(
             (key, sim_config.partition_config[key])
             for key in [
@@ -146,7 +143,7 @@ def simulate():
         else:
             trader = importlib.import_module(
                 sim_config.partition_config["trader"].lower()
-            ).Trader(sim_config)
+            ).Trader(trader_config)
 
         try:
             orderbooks = Orderbooks(
