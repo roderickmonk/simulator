@@ -9,3 +9,4 @@ share/
 *.ipch
 .vscode/
 .venv/
+__pycache__
