@@ -118,7 +118,7 @@ def simulate():
                 "tick",
             ]
         )
-        trader_config |= {"sim_db": remote_mongo_client[os.environ["SIMULATOR_DB"]]}
+        trader_config |= {"sim_db": remote_mongo_client["sim_configuration"]}
 
         logging.info(f"{trader_config=}")
 
