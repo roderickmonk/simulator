@@ -14,7 +14,6 @@ export NODE_ENV=production
 # Give Python access to traders
 export PYTHONPATH=./Python:~/traders:.:$PYTHONPATH
 
-source .venv/bin/activate
+source .venv/bin/activate --prompt Simulator
 
 echo -n "Simulator version: ";node -pe "require('./package.json').version"
-

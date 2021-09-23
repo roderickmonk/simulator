@@ -14,11 +14,12 @@ from datetime import datetime
 import numpy as np
 from bson.objectid import ObjectId
 from pymongo import MongoClient
-from schema import And, Optional, Schema, SchemaError, Use
+from schema import SchemaError
 
 import sim_config
 from matching_engine import MatchingEngine
 from orderbooks import Orderbooks
+from copy import copy
 
 
 def check(conf_schema, conf):
@@ -107,6 +108,22 @@ def simulate():
         # Convenience destructuring
         depth = sim_config.partition_config["depth"]
 
+        trader_config = {}
+        trader_config["feeRate"] = sim_config.partition_config["feeRate"]
+
+        trader_config = dict(
+            (key, sim_config.partition_config[key])
+            for key in [
+                "allowOrderConflicts",
+                "feeRate",
+                "quantityLimit",
+                "pdf",
+                "tick",
+            ]
+        )
+
+        logging.info(f"{trader_config=}")
+
         """
         # Load optional PDF data
         if sim_config.partition_config["pdf"]:
@@ -141,7 +158,7 @@ def simulate():
         assert sim_config.partition_config["minNotional"], "Min Notional Missing"
 
         if __debug__:
-            from co1 import Trader
+            from traders.co1 import Trader
 
             trader = Trader(sim_config)
 

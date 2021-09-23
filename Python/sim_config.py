@@ -7,10 +7,6 @@ from schema import Schema, And, Use, Optional, SchemaError
 import numpy as np
 import math
 
-try:
-    profile
-except NameError:
-    profile = lambda x: x
 
 sim_id: str = None
 orderbook_id: str = None
@@ -33,14 +29,15 @@ def check(conf_schema, conf):
 
 partition_schema = Schema(
     {
-        '_id': And(Use(str)),
-        'quantityLimit': And(Use(float)),
-        'inventoryLimit': And(Use(float)),
-        'feeRate': And(Use(float)),
-        'actualFeeRate': And(Use(float)),
-        'tick': And(Use(float)),
+        "_id": And(Use(str)),
+        "quantityLimit": And(Use(float)),
+        "inventoryLimit": And(Use(float)),
+        "feeRate": And(Use(float)),
+        "actualFeeRate": And(Use(float)),
+        "tick": And(Use(float)),
     },
-    ignore_extra_keys=True)
+    ignore_extra_keys=True,
+)
 
 
 def init(config):
@@ -52,12 +49,12 @@ def init(config):
         partition_config = config
 
         if __debug__:
-            logging.debug(f'partition_config: {partition_config}')
+            logging.debug(f"partition_config: {partition_config}")
 
         if not check(partition_schema, partition_config):
-            raise Exception('Invalid Partition Configuration')
+            raise Exception("Invalid Partition Configuration")
 
-        rate_precision = -int(np.log10(partition_config['tick']))
+        rate_precision = -int(np.log10(partition_config["tick"]))
 
         return None
 
