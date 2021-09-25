@@ -9,17 +9,18 @@ import math
 import operator
 import os
 import sys
+from copy import copy
 from datetime import datetime
 
 import numpy as np
 from bson.objectid import ObjectId
+from common_sentient.get_pdf import get_pdf
 from pymongo import MongoClient
 from schema import SchemaError
 
 import sim_config
 from matching_engine import MatchingEngine
 from orderbooks import Orderbooks
-from copy import copy
 
 
 def check(conf_schema, conf):
@@ -107,6 +108,8 @@ def simulate():
 
         # Convenience destructuring
         depth = sim_config.partition_config["depth"]
+        
+        pdf = get_pdf (remote_mongo_client["sim_configuration"]["tunings"], sim_config.partition_config["pdf"])
 
         trader_config = dict(
             (key, sim_config.partition_config[key])
@@ -114,14 +117,12 @@ def simulate():
                 "allowOrderConflicts",
                 "feeRate",
                 "quantityLimit",
-                "pdf",
-                "tick",
                 "precision",
             ]
         )
-        trader_config |= {"sim_db": remote_mongo_client["sim_configuration"]}
+        trader_config |= {"pdf": pdf}
 
-        logging.debug(f"{trader_config=}")
+        logging.info(f"{trader_config=}")
 
         # Matching Engine
         matching_engine = MatchingEngine(
