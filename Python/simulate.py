@@ -139,6 +139,8 @@ def simulate():
             raise InvalidConfiguration("Min Notional Missing")
 
         # Matching Engine
+
+        partition_config.pop ("pdf")
         matching_engine = MatchingEngine(
             assets=np.array([math.inf, 0], dtype=float),
             **partition_config,
