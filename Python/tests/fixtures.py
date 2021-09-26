@@ -27,7 +27,7 @@ def load_object_ids():
     sim_config.partition_config["_id"] = ObjectId()
     sim_config.partition_config["simVersion"] = "testing"
     sim_config.orderbook_id = ObjectId()
-    sim_config.quantity_precision = 8
+    # sim_config.quantity_precision = 8
     sim_config.trades_collection.delete_many({})
 
 @pytest.fixture()
