@@ -139,7 +139,7 @@ class ProductionConfigManager extends Barrel_1.ConfigManagerBase {
                 for (const [asset, botConfig] of Object.entries(hftConfig.bots)) {
                     const market = `${hftConfig.baseCurrency}-${asset}`;
                     this.mergeProcessConfigWithBotConfig(botConfig, lodash_1.default.pick(hftConfig, [
-                        "quantityLimit",
+                        "QL",
                         "archiveCycles",
                         "backstop",
                         "sellDelay",
@@ -157,7 +157,7 @@ class ProductionConfigManager extends Barrel_1.ConfigManagerBase {
                     if (lodash_1.default.isUndefined(botConfig.inventoryLimit)) {
                         if (lodash_1.default.isUndefined(hftConfig.inventoryLimit)) {
                             botConfig.inventoryLimit =
-                                botConfig.quantityLimit;
+                                botConfig.QL;
                         }
                         else {
                             botConfig.inventoryLimit =

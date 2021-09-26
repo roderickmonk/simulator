@@ -118,7 +118,7 @@ def simulate():
             for key in [
                 "allowOrderConflicts",
                 "feeRate",
-                "quantityLimit",
+                "QL",
                 "precision",
             ]
         ) | {"pdf": pdf}
@@ -131,7 +131,7 @@ def simulate():
         # Matching Engine
         matching_engine = MatchingEngine(
             assets=np.array([math.inf, 0], dtype=float),
-            QL=partition_config["quantityLimit"],
+            QL=partition_config["QL"],
             IL=partition_config["inventoryLimit"],
             actual_fee_rate=partition_config["actualFeeRate"],
             min_notional=partition_config["minNotional"],

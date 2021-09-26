@@ -77,7 +77,7 @@ const multiplyConfigParams = {
             type: "string",
         }
     },
-    quantityLimit: {
+    QL: {
         type: "array",
         items: {
             type: "number",

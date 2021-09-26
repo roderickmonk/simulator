@@ -29,7 +29,7 @@ def test_co1_test0():
         trader_config = {
             "_id": "00000000",
             "name": "config-name",
-            "quantityLimit": 0.1,
+            "QL": 0.1,
             "inventoryLimit": 0.1,
             "feeRate": 0.002,
             "actualFeeRate": 0.002,
@@ -66,7 +66,7 @@ def test_co1_test1():
         trader_config = {
             "_id": "00000000",
             "name": "config-name",
-            "quantityLimit": 0.1,
+            "QL": 0.1,
             "inventoryLimit": 0.1,
             "feeRate": 0.002,
             "actualFeeRate": 0.002,
@@ -122,8 +122,8 @@ def test_traders_in_real_time():
 
         allow_order_conflicts = False
 
-        bot_config["quantityLimit"] = float(bot_config["quantityLimit"])
-        bot_config["inventoryLimit"] = float(bot_config["quantityLimit"])
+        bot_config["QL"] = float(bot_config["QL"])
+        bot_config["inventoryLimit"] = float(bot_config["QL"])
         bot_config["feeRate"] = float(bot_config["feeRate"])
         bot_config["tick"] = float(bot_config["tick"])
 
@@ -137,7 +137,7 @@ def test_traders_in_real_time():
         sim_config.partition_config = {
             "_id": "00000000",
             "name": "config-name",
-            "quantityLimit": bot_config["quantityLimit"],
+            "QL": bot_config["QL"],
             "inventoryLimit": bot_config["inventoryLimit"],
             "feeRate": bot_config["feeRate"],
             "actualFeeRate": 0.0027,
@@ -383,8 +383,8 @@ def test_compare_bots():
         logging.error("bot_config: %r", bot_config)
 
         # Float fields need an explicit conversion from string to float
-        bot_config["quantityLimit"] = float(bot_config["quantityLimit"])
-        bot_config["inventoryLimit"] = float(bot_config["quantityLimit"])
+        bot_config["QL"] = float(bot_config["QL"])
+        bot_config["inventoryLimit"] = float(bot_config["QL"])
         bot_config["feeRate"] = float(bot_config["feeRate"])
         bot_config["tick"] = float(bot_config["tick"])
         bot_config["priceDepthLimit"] = float(bot_config["priceDepthLimit"])
@@ -400,7 +400,7 @@ def test_compare_bots():
         sim_config.partition_config = {
             "_id": "00000000",
             "name": "config-name",
-            "quantityLimit": bot_config["quantityLimit"],
+            "QL": bot_config["QL"],
             "inventoryLimit": bot_config["inventoryLimit"],
             "feeRate": bot_config["feeRate"],
             "actualFeeRate": 0.0027,
@@ -647,7 +647,7 @@ def test_CO1_BUY_get_pv_and_rates_allow_order_conflicts_false_1():
         trader_config = {
             "_id": "00000000",
             "name": "config-name",
-            "quantityLimit": 0.1,
+            "QL": 0.1,
             "inventoryLimit": 0.1,
             "feeRate": 0.002,
             "actualFeeRate": 0.002,
@@ -681,7 +681,7 @@ def test_CO1_BUY_get_pv_and_rates_allow_order_conflicts_true_1():
         trader_config = {
             "_id": "00000000",
             "name": "config-name",
-            "quantityLimit": 0.1,
+            "QL": 0.1,
             "inventoryLimit": 0.1,
             "feeRate": 0.002,
             "actualFeeRate": 0.002,
@@ -718,7 +718,7 @@ def test_CO1_BUY_get_pv_and_rates_allow_order_conflicts_false_2():
         trader_config = {
             "_id": "00000000",
             "name": "config-name",
-            "quantityLimit": 0.1,
+            "QL": 0.1,
             "inventoryLimit": 0.1,
             "feeRate": 0.002,
             "actualFeeRate": 0.002,
@@ -760,7 +760,7 @@ def test_CO1_BUY_get_pv_and_rates_allow_order_conflicts_true_2():
     trader_config = {
         "_id": "00000000",
         "name": "config-name",
-        "quantityLimit": 0.1,
+        "QL": 0.1,
         "inventoryLimit": 0.1,
         "feeRate": 0.002,
         "actualFeeRate": 0.002,
@@ -801,7 +801,7 @@ def test_CO1_BUY_get_pv_and_rates_3():
         trader_config = {
             "_id": "00000000",
             "name": "config-name",
-            "quantityLimit": 0.1,
+            "QL": 0.1,
             "inventoryLimit": 0.1,
             "feeRate": 0.002,
             "actualFeeRate": 0.002,
@@ -836,7 +836,7 @@ def test_CO1_SELL_get_pv_and_rates_1():
         trader_config = {
             "_id": "00000000",
             "name": "config-name",
-            "quantityLimit": 0.1,
+            "QL": 0.1,
             "inventoryLimit": 0.1,
             "feeRate": 0.002,
             "actualFeeRate": 0.002,
@@ -873,7 +873,7 @@ def test_CO1_SELL_get_pv_and_rates_2():
         trader_config = {
             "_id": "00000000",
             "name": "config-name",
-            "quantityLimit": 0.1,
+            "QL": 0.1,
             "inventoryLimit": 0.1,
             "feeRate": 0.002,
             "actualFeeRate": 0.002,
@@ -914,7 +914,7 @@ def test_CO1_SELL_get_pv_and_rates_3():
         trader_config = {
             "_id": "00000000",
             "name": "config-name",
-            "quantityLimit": 0.1,
+            "QL": 0.1,
             "inventoryLimit": 0.1,
             "feeRate": 0.002,
             "actualFeeRate": 0.002,
@@ -955,7 +955,7 @@ def test_evol_1():
         trader_config = {
             "_id": "00000000",
             "name": "config-name",
-            "quantityLimit": 0.1,
+            "QL": 0.1,
             "inventoryLimit": 0.1,
             "feeRate": 0.002,
             "actualFeeRate": 0.002,
@@ -991,7 +991,7 @@ def test_evol_2():
         trader_config = {
             "_id": "00000000",
             "name": "config-name",
-            "quantityLimit": 0.1,
+            "QL": 0.1,
             "inventoryLimit": 0.1,
             "feeRate": 0.002,
             "actualFeeRate": 0.002,
@@ -1028,7 +1028,7 @@ def test_evol_3():
         trader_config = {
             "_id": "00000000",
             "name": "config-name",
-            "quantityLimit": 0.1,
+            "QL": 0.1,
             "inventoryLimit": 0.1,
             "feeRate": 0.002,
             "actualFeeRate": 0.002,
@@ -1058,7 +1058,7 @@ def test_evol_4():
         trader_config = {
             "_id": "00000000",
             "name": "config-name",
-            "quantityLimit": 0.05,
+            "QL": 0.05,
             "inventoryLimit": 0.1,
             "feeRate": 0.002,
             "actualFeeRate": 0.002,
@@ -1089,7 +1089,7 @@ def test_evol_5():
         trader_config = {
             "_id": "00000000",
             "name": "config-name",
-            "quantityLimit": 0.05,
+            "QL": 0.05,
             "inventoryLimit": 0.1,
             "feeRate": 0.002,
             "actualFeeRate": 0.002,
@@ -1124,7 +1124,7 @@ def test_evol_6():
         trader_config = {
             "_id": "00000000",
             "name": "config-name",
-            "quantityLimit": 0.05,
+            "QL": 0.05,
             "inventoryLimit": 0.1,
             "feeRate": 0.002,
             "actualFeeRate": 0.002,

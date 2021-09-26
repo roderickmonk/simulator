@@ -61,7 +61,7 @@ exports.multiplyConfigSchema = {
             type: "number",
         },
     },
-    quantityLimit: {
+    QL: {
         type: "array",
         items: {
             type: "number",

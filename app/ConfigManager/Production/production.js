@@ -98,7 +98,7 @@ exports.productionSchema = {
             default: 2.0,
             minimum: 1.0,
         },
-        quantityLimit: {
+        QL: {
             type: "number",
         },
         queueLengthTolerance: {
@@ -224,7 +224,7 @@ exports.productionSchema = {
             "feeRate",
             "sellDelay",
             "sellAttempts",
-            "quantityLimit",
+            "QL",
             "logging",
             "account",
             "minQuantityLimitFactor",
@@ -318,7 +318,7 @@ exports.productionBotSchema = {
             type: "number",
             default: 0,
         },
-        quantityLimit: {
+        QL: {
             type: "number"
         },
         hftSimTesting: {
@@ -492,7 +492,7 @@ exports.productionBotSchema = {
         "backstop",
         "sellDelay",
         "sellAttempts",
-        "quantityLimit",
+        "QL",
         "hftSimTesting",
         "inventoryLimit",
         "inventoryLimitSide",
