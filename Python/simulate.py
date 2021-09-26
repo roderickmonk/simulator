@@ -100,8 +100,6 @@ def simulate():
             {"_id": partition_id},
             {
                 "configName": False,
-                "envId": False,
-                "exchange": False,
                 "partitions": False,
                 "ts": False,
                 "saveRedis": False,
@@ -115,9 +113,11 @@ def simulate():
 
         logging.debug("partition_config:\n" + str(partition_config))
 
+        envId = partition_config["envId"]
         depth = partition_config["depth"]
         trader = partition_config["trader"].lower()
         market = partition_config["market"].lower()
+        exchange = partition_config["exchange"].lower()
         startTime = partition_config["startTime"]
         endTime = partition_config["endTime"]
 
@@ -157,6 +157,8 @@ def simulate():
         partition_config.pop ("partition")
         partition_config.pop ("startTime")
         partition_config.pop ("endTime")
+        partition_config.pop ("envId")
+        partition_config.pop ("exchange")
         
         matching_engine = MatchingEngine(
             assets=np.array([math.inf, 0], dtype=float),
@@ -182,8 +184,8 @@ def simulate():
         try:
             orderbooks = Orderbooks(
                 ob_collection=local_sim_db.orderbooks,
-                envId=partition_config["envId"],
-                exchange=partition_config["exchange"].lower(),
+                envId=envId,
+                exchange=exchange,
                 market=market,
                 depth=depth,
                 start=startTime,
