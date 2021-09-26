@@ -97,7 +97,8 @@ def simulate():
             raise Exception("Unable to Connect to Local MongoDB")
 
         partition_config = sim_db.partitions.find_one(
-            {"_id": partition_id}, {"configName": False, "ts": False, "status": False}
+            {"_id": partition_id},
+            {"configName": False, "envId": False, "ts": False, "status": False},
         )
         if partition_config is None:
             raise RuntimeError("Unknown Trader Configuration")
