@@ -117,6 +117,7 @@ def simulate():
 
         depth = partition_config["depth"]
         trader = partition_config["trader"].lower()
+        market = partition_config["market"].lower()
 
         pdf = get_pdf(
             remote_mongo_client["sim_configuration"]["tunings"],
@@ -150,6 +151,7 @@ def simulate():
         partition_config.pop ("depth")
         partition_config.pop ("precision")
         partition_config.pop ("trader")
+        partition_config.pop ("market")
         
         matching_engine = MatchingEngine(
             assets=np.array([math.inf, 0], dtype=float),
@@ -177,7 +179,7 @@ def simulate():
                 ob_collection=local_sim_db.orderbooks,
                 envId=partition_config["envId"],
                 exchange=partition_config["exchange"].lower(),
-                market=partition_config["market"].lower(),
+                market=market,
                 depth=depth,
                 start=partition_config["startTime"],
                 end=partition_config["endTime"],
