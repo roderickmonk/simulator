@@ -144,6 +144,8 @@ def simulate():
         partition_config.pop ("pdf")
         partition_config.pop ("feeRate")
         partition_config.pop ("tick")
+        partition_config.pop ("allowOrderConflicts")
+        
         matching_engine = MatchingEngine(
             assets=np.array([math.inf, 0], dtype=float),
             **partition_config,
