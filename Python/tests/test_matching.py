@@ -38,7 +38,7 @@ def conduct_buy_test(
     first_used_trade: int = 0,
 ):
 
-    assert not sim_config.sim_id == None
+    assert sim_config.sim_id is not None
 
     matching_engine.buy(
         start_assets=start_assets,
@@ -63,7 +63,7 @@ def conduct_sell_test(
     first_used_trade: int = 0,
 ):
 
-    assert not sim_config.sim_id == None
+    assert sim_config.sim_id is not None
 
     matching_engine.sell(
         start_assets=start_assets,
@@ -86,7 +86,7 @@ def conduct_buy_low_ceiling_test(
     sell_trades: List[dict],
 ):
 
-    assert not sim_config.sim_id == None
+    assert sim_config.sim_id is not None
 
     matching_engine.buy(
         start_assets=np.array([math.inf, 0]),
@@ -111,7 +111,7 @@ def conduct_sell_low_ceiling_test(
     start_assets: np.array,
 ):
 
-    assert not sim_config.sim_id == None
+    assert sim_config.sim_id is not None
 
     matching_engine.sell(
         start_assets=start_assets,
