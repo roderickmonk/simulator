@@ -98,7 +98,13 @@ def simulate():
 
         partition_config = sim_db.partitions.find_one(
             {"_id": partition_id},
-            {"configName": False, "envId": False, "ts": False, "status": False},
+            {
+                "configName": False,
+                "envId": False,
+                "ts": False,
+                "status": False,
+                "trim": False,
+            },
         )
         if partition_config is None:
             raise RuntimeError("Unknown Trader Configuration")
