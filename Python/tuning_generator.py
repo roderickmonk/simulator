@@ -55,7 +55,7 @@ class TuningGenerator:
 
     def load_trades_volumes(self) -> None:
 
-        IL = self.config["inventoryLimit"]
+        IL = self.config["IL"]
 
         self.meta_remaining_volumes.append([
             v if v <= IL else IL for v in list(

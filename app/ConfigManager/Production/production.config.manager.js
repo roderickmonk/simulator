@@ -154,14 +154,14 @@ class ProductionConfigManager extends Barrel_1.ConfigManagerBase {
                         "alternateMarketTracking",
                         "tuningGeneration"
                     ]));
-                    if (lodash_1.default.isUndefined(botConfig.inventoryLimit)) {
-                        if (lodash_1.default.isUndefined(hftConfig.inventoryLimit)) {
-                            botConfig.inventoryLimit =
+                    if (lodash_1.default.isUndefined(botConfig.IL)) {
+                        if (lodash_1.default.isUndefined(hftConfig.IL)) {
+                            botConfig.IL =
                                 botConfig.QL;
                         }
                         else {
-                            botConfig.inventoryLimit =
-                                hftConfig.inventoryLimit;
+                            botConfig.IL =
+                                hftConfig.IL;
                         }
                     }
                     if (lodash_1.default.isUndefined(botConfig.tick)) {

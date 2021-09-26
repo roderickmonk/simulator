@@ -31,7 +31,7 @@ exports.multiplyConfigSchema = {
             type: "number",
         }
     },
-    inventoryLimit: {
+    IL: {
         type: "array",
         items: {
             type: "number",

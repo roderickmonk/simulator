@@ -53,7 +53,7 @@ const multiplyConfigParams = {
             type: "number",
         }
     },
-    inventoryLimit: {
+    IL: {
         type: "array",
         items: {
             type: "number",

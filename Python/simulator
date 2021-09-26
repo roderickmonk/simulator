@@ -45,7 +45,7 @@ stsim_config_schema = Schema(
         "partitions": And(Use(int)),
         "trader": And(Use(str)),
         "QL": And(Use(float)),
-        "inventoryLimit": And(Use(float)),
+        "IL": And(Use(float)),
         "feeRate": And(Use(float)),
         "actualFeeRate": And(Use(float)),
         "tick": And(Use(float)),
@@ -58,7 +58,7 @@ trader_config_schema = Schema(
     {
         "_id": And(Use(str)),
         "QL": And(Use(float)),
-        "inventoryLimit": And(Use(float)),
+        "IL": And(Use(float)),
         "feeRate": And(Use(float)),
         "actualFeeRate": And(Use(float)),
         "tick": And(Use(float)),

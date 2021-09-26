@@ -30,7 +30,7 @@ def test_co1_test0():
             "_id": "00000000",
             "name": "config-name",
             "QL": 0.1,
-            "inventoryLimit": 0.1,
+            "IL": 0.1,
             "feeRate": 0.002,
             "actualFeeRate": 0.002,
             "allowOrderConflicts": False,
@@ -67,7 +67,7 @@ def test_co1_test1():
             "_id": "00000000",
             "name": "config-name",
             "QL": 0.1,
-            "inventoryLimit": 0.1,
+            "IL": 0.1,
             "feeRate": 0.002,
             "actualFeeRate": 0.002,
             "precision": 6,
@@ -123,7 +123,7 @@ def test_traders_in_real_time():
         allow_order_conflicts = False
 
         bot_config["QL"] = float(bot_config["QL"])
-        bot_config["inventoryLimit"] = float(bot_config["QL"])
+        bot_config["IL"] = float(bot_config["QL"])
         bot_config["feeRate"] = float(bot_config["feeRate"])
         bot_config["tick"] = float(bot_config["tick"])
 
@@ -138,7 +138,7 @@ def test_traders_in_real_time():
             "_id": "00000000",
             "name": "config-name",
             "QL": bot_config["QL"],
-            "inventoryLimit": bot_config["inventoryLimit"],
+            "IL": bot_config["IL"],
             "feeRate": bot_config["feeRate"],
             "actualFeeRate": 0.0027,
             "tick": bot_config["tick"],
@@ -384,7 +384,7 @@ def test_compare_bots():
 
         # Float fields need an explicit conversion from string to float
         bot_config["QL"] = float(bot_config["QL"])
-        bot_config["inventoryLimit"] = float(bot_config["QL"])
+        bot_config["IL"] = float(bot_config["QL"])
         bot_config["feeRate"] = float(bot_config["feeRate"])
         bot_config["tick"] = float(bot_config["tick"])
         bot_config["priceDepthLimit"] = float(bot_config["priceDepthLimit"])
@@ -401,7 +401,7 @@ def test_compare_bots():
             "_id": "00000000",
             "name": "config-name",
             "QL": bot_config["QL"],
-            "inventoryLimit": bot_config["inventoryLimit"],
+            "IL": bot_config["IL"],
             "feeRate": bot_config["feeRate"],
             "actualFeeRate": 0.0027,
             "tick": bot_config["tick"],
@@ -648,7 +648,7 @@ def test_CO1_BUY_get_pv_and_rates_allow_order_conflicts_false_1():
             "_id": "00000000",
             "name": "config-name",
             "QL": 0.1,
-            "inventoryLimit": 0.1,
+            "IL": 0.1,
             "feeRate": 0.002,
             "actualFeeRate": 0.002,
             "precision": 2,
@@ -682,7 +682,7 @@ def test_CO1_BUY_get_pv_and_rates_allow_order_conflicts_true_1():
             "_id": "00000000",
             "name": "config-name",
             "QL": 0.1,
-            "inventoryLimit": 0.1,
+            "IL": 0.1,
             "feeRate": 0.002,
             "actualFeeRate": 0.002,
             "precision": 2,
@@ -719,7 +719,7 @@ def test_CO1_BUY_get_pv_and_rates_allow_order_conflicts_false_2():
             "_id": "00000000",
             "name": "config-name",
             "QL": 0.1,
-            "inventoryLimit": 0.1,
+            "IL": 0.1,
             "feeRate": 0.002,
             "actualFeeRate": 0.002,
             "precision": 1,
@@ -761,7 +761,7 @@ def test_CO1_BUY_get_pv_and_rates_allow_order_conflicts_true_2():
         "_id": "00000000",
         "name": "config-name",
         "QL": 0.1,
-        "inventoryLimit": 0.1,
+        "IL": 0.1,
         "feeRate": 0.002,
         "actualFeeRate": 0.002,
         "precision": 1,
@@ -802,7 +802,7 @@ def test_CO1_BUY_get_pv_and_rates_3():
             "_id": "00000000",
             "name": "config-name",
             "QL": 0.1,
-            "inventoryLimit": 0.1,
+            "IL": 0.1,
             "feeRate": 0.002,
             "actualFeeRate": 0.002,
             "precision": 2,
@@ -837,7 +837,7 @@ def test_CO1_SELL_get_pv_and_rates_1():
             "_id": "00000000",
             "name": "config-name",
             "QL": 0.1,
-            "inventoryLimit": 0.1,
+            "IL": 0.1,
             "feeRate": 0.002,
             "actualFeeRate": 0.002,
             "precision": 2,
@@ -874,7 +874,7 @@ def test_CO1_SELL_get_pv_and_rates_2():
             "_id": "00000000",
             "name": "config-name",
             "QL": 0.1,
-            "inventoryLimit": 0.1,
+            "IL": 0.1,
             "feeRate": 0.002,
             "actualFeeRate": 0.002,
             "precision": 1,
@@ -915,7 +915,7 @@ def test_CO1_SELL_get_pv_and_rates_3():
             "_id": "00000000",
             "name": "config-name",
             "QL": 0.1,
-            "inventoryLimit": 0.1,
+            "IL": 0.1,
             "feeRate": 0.002,
             "actualFeeRate": 0.002,
             "precision": 2,
@@ -956,7 +956,7 @@ def test_evol_1():
             "_id": "00000000",
             "name": "config-name",
             "QL": 0.1,
-            "inventoryLimit": 0.1,
+            "IL": 0.1,
             "feeRate": 0.002,
             "actualFeeRate": 0.002,
             "precision": 8,
@@ -992,7 +992,7 @@ def test_evol_2():
             "_id": "00000000",
             "name": "config-name",
             "QL": 0.1,
-            "inventoryLimit": 0.1,
+            "IL": 0.1,
             "feeRate": 0.002,
             "actualFeeRate": 0.002,
             "precision": 8,
@@ -1029,7 +1029,7 @@ def test_evol_3():
             "_id": "00000000",
             "name": "config-name",
             "QL": 0.1,
-            "inventoryLimit": 0.1,
+            "IL": 0.1,
             "feeRate": 0.002,
             "actualFeeRate": 0.002,
             "precision": 8,
@@ -1059,7 +1059,7 @@ def test_evol_4():
             "_id": "00000000",
             "name": "config-name",
             "QL": 0.05,
-            "inventoryLimit": 0.1,
+            "IL": 0.1,
             "feeRate": 0.002,
             "actualFeeRate": 0.002,
             "precision": 8,
@@ -1090,7 +1090,7 @@ def test_evol_5():
             "_id": "00000000",
             "name": "config-name",
             "QL": 0.05,
-            "inventoryLimit": 0.1,
+            "IL": 0.1,
             "feeRate": 0.002,
             "actualFeeRate": 0.002,
             "precision": 8,
@@ -1125,7 +1125,7 @@ def test_evol_6():
             "_id": "00000000",
             "name": "config-name",
             "QL": 0.05,
-            "inventoryLimit": 0.1,
+            "IL": 0.1,
             "feeRate": 0.002,
             "actualFeeRate": 0.002,
             "precision": 8,

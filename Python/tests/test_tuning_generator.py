@@ -17,7 +17,7 @@ config = {
     "depthStart": 0.01,
     "depthEnd": 100.0,
     "depthSamples": 100,
-    "inventoryLimit": 200,
+    "IL": 200,
 }
 
 np.set_printoptions(precision=12)
@@ -116,7 +116,7 @@ def test_load_total_volume_0():
         "depthStart": 0.01,
         "depthEnd": 100.0,
         "depthSamples": 4,
-        "inventoryLimit": 200,
+        "IL": 200,
     }
 
     tg = TuningGenerator(config=config)
@@ -143,7 +143,7 @@ def test_load_trades_volumes_1():
         "depthStart": 0.01,
         "depthEnd": 100.0,
         "depthSamples": 100,
-        "inventoryLimit": math.inf,
+        "IL": math.inf,
     }
 
     tg = TuningGenerator(config=config)
@@ -173,7 +173,7 @@ def test_load_trades_volumes_2():
         "depthStart": 0.01,
         "depthEnd": 100.0,
         "depthSamples": 100,
-        "inventoryLimit": 200,
+        "IL": 200,
     }
 
     tg = TuningGenerator(config=config)
@@ -204,7 +204,7 @@ def test_load_trades_volumes_3():
         "depthStart": 0.01,
         "depthEnd": 100.0,
         "depthSamples": 100,
-        "inventoryLimit": math.inf,
+        "IL": math.inf,
     }
 
     tg = TuningGenerator(config=config)
@@ -235,7 +235,7 @@ def test_load_trades_volumes_4():
         "depthStart": 0.01,
         "depthEnd": 100.0,
         "depthSamples": 100,
-        "inventoryLimit": 200,
+        "IL": 200,
     }
 
     tg = TuningGenerator(config=config)
@@ -266,7 +266,7 @@ def test_load_trades_volumes_5():
         "depthStart": 0.01,
         "depthEnd": 100.0,
         "depthSamples": 100,
-        "inventoryLimit": math.inf,
+        "IL": math.inf,
     }
 
     tg = TuningGenerator(config=config)
@@ -304,7 +304,7 @@ def test_load_trades_price_depths_1():
         "depthStart": 0.01,
         "depthEnd": 100.0,
         "depthSamples": 100,
-        "inventoryLimit": 200,
+        "IL": 200,
     }
 
     tg = TuningGenerator(config=config)
@@ -335,7 +335,7 @@ def test_load_trades_price_depths_2():
         "depthStart": 0.01,
         "depthEnd": 100.0,
         "depthSamples": 100,
-        "inventoryLimit": 200,
+        "IL": 200,
     }
 
     tg = TuningGenerator(config=config)
@@ -377,7 +377,7 @@ def test_trades_price_depth_0():
         "depthStart": 0.01,
         "depthEnd": 100.0,
         "depthSamples": 100,
-        "inventoryLimit": math.inf,
+        "IL": math.inf,
     }
 
     tg = TuningGenerator(config=config)
@@ -410,7 +410,7 @@ def test_trades_price_depth_1():
         "depthStart": 0.01,
         "depthEnd": 100.0,
         "depthSamples": 100,
-        "inventoryLimit": 200,
+        "IL": 200,
     }
 
     tg = TuningGenerator(config=config)
@@ -445,7 +445,7 @@ def test_trades_price_depth_2():
         "depthStart": 0.01,
         "depthEnd": 100.0,
         "depthSamples": 100,
-        "inventoryLimit": math.inf,
+        "IL": math.inf,
     }
 
     tg = TuningGenerator(config=config)
@@ -480,7 +480,7 @@ def test_trades_price_depth_3():
         "depthStart": 0.01,
         "depthEnd": 100.0,
         "depthSamples": 100,
-        "inventoryLimit": 200,
+        "IL": 200,
     }
 
     tg = TuningGenerator(config=config)
@@ -515,7 +515,7 @@ def test_trades_price_depth_4():
         "depthStart": 0.01,
         "depthEnd": 100.0,
         "depthSamples": 100,
-        "inventoryLimit": math.inf,
+        "IL": math.inf,
     }
 
     tg = TuningGenerator(config=config)
@@ -550,7 +550,7 @@ def test_trades_price_depth_5():
         "depthStart": 0.01,
         "depthEnd": 100.0,
         "depthSamples": 100,
-        "inventoryLimit": 200,
+        "IL": 200,
     }
 
     tg = TuningGenerator(config=config)
@@ -585,7 +585,7 @@ def test_load_remaining_depth_0():
         "depthStart": 0.01,
         "depthEnd": 100.0,
         "depthSamples": 3,
-        "inventoryLimit": math.inf,
+        "IL": math.inf,
     }
 
     tg = TuningGenerator(config=config)
@@ -617,7 +617,7 @@ def test_load_remaining_depth_1():
         "depthStart": 0.01,
         "depthEnd": 100.0,
         "depthSamples": 3,
-        "inventoryLimit": 200,
+        "IL": 200,
     }
 
     tg = TuningGenerator(config=config)
@@ -650,7 +650,7 @@ def test_load_remaining_price_depths_0():
         "depthStart": 0.01,
         "depthEnd": 100.0,
         "depthSamples": 3,
-        "inventoryLimit": 325,
+        "IL": 325,
     }
 
     tg = TuningGenerator(config=config)
@@ -697,7 +697,7 @@ def test_load_remaining_price_depths_1():
         "depthStart": 0.01,
         "depthEnd": 100.0,
         "depthSamples": 4,
-        "inventoryLimit": math.inf,
+        "IL": math.inf,
     }
 
     tg = TuningGenerator(config=config)
@@ -744,7 +744,7 @@ def test_load_remaining_price_depths_2():
         "depthStart": 0.01,
         "depthEnd": 100.0,
         "depthSamples": 4,
-        "inventoryLimit": 500,
+        "IL": 500,
     }
 
     tg = TuningGenerator(config=config)
@@ -780,7 +780,7 @@ def test_get_values_0():
         "depthStart": 0.01,
         "depthEnd": 100.0,
         "depthSamples": 3,
-        "inventoryLimit": 325,
+        "IL": 325,
     }
 
     tg = TuningGenerator(config=config)
@@ -822,7 +822,7 @@ def test_get_values_1():
         "depthStart": 0.01,
         "depthEnd": 100.0,
         "depthSamples": 3,
-        "inventoryLimit": math.inf,
+        "IL": math.inf,
     }
 
     tg = TuningGenerator(config=config)
@@ -853,7 +853,7 @@ def test_meta_remaining_volumes_0():
         "depthStart": 0.01,
         "depthEnd": 100.0,
         "depthSamples": 100,
-        "inventoryLimit": math.inf,
+        "IL": math.inf,
     }
 
     tg = TuningGenerator(config=config)

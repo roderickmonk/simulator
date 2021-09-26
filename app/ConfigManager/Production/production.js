@@ -105,7 +105,7 @@ exports.productionSchema = {
             type: "number",
             default: 3,
         },
-        inventoryLimit: {
+        IL: {
             type: "number",
         },
         inventoryLimitSide: {
@@ -325,7 +325,7 @@ exports.productionBotSchema = {
             type: "boolean",
             default: false,
         },
-        inventoryLimit: {
+        IL: {
             type: "number"
         },
         inventoryLimitSide: {
@@ -494,7 +494,7 @@ exports.productionBotSchema = {
         "sellAttempts",
         "QL",
         "hftSimTesting",
-        "inventoryLimit",
+        "IL",
         "inventoryLimitSide",
         "minNotional",
         "minimumOrderSize",
