@@ -142,6 +142,7 @@ def simulate():
 
         partition_config.pop ("pdf")
         partition_config.pop ("feeRate")
+        partition_config.pop ("tick")
         matching_engine = MatchingEngine(
             assets=np.array([math.inf, 0], dtype=float),
             **partition_config,
