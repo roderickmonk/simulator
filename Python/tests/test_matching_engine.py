@@ -1,10 +1,10 @@
 import os
 from bson.objectid import ObjectId
-import sim_config
+import common_sentient.sim_config as sim_config
 from fixtures import load_object_ids, buying, selling
 import logging
 import math
-from matching_engine import MatchingEngine
+from common_sentient.matching_engine import MatchingEngine
 from pymongo import MongoClient
 from random import randint
 import numpy as np

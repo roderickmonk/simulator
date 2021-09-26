@@ -18,8 +18,8 @@ from common_sentient.get_pdf import get_pdf
 from pymongo import MongoClient
 from schema import SchemaError
 
-import sim_config
-from matching_engine import MatchingEngine
+import common_sentient.sim_config as sim_config
+from common_sentient.matching_engine import MatchingEngine
 from orderbooks import Orderbooks
 
 
@@ -108,8 +108,11 @@ def simulate():
 
         # Convenience destructuring
         depth = sim_config.partition_config["depth"]
-        
-        pdf = get_pdf (remote_mongo_client["sim_configuration"]["tunings"], sim_config.partition_config["pdf"])
+
+        pdf = get_pdf(
+            remote_mongo_client["sim_configuration"]["tunings"],
+            sim_config.partition_config["pdf"],
+        )
 
         trader_config = dict(
             (key, sim_config.partition_config[key])
@@ -140,6 +143,7 @@ def simulate():
 
         if __debug__:
             from traders.co1 import Trader
+
             trader = Trader(trader_config)
 
         else:
@@ -271,6 +275,7 @@ def simulate():
 
         except StopIteration:
             # logging.info('StopIteration Detected')
+            
             # Send the matchings to the database
             if len(matchings) > 0:
                 sim_config.sim_db.matchings.insert_many(matchings)

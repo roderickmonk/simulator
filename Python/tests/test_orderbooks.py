@@ -13,18 +13,13 @@ from pymongo import MongoClient
 from datetime import datetime
 import dateutil.parser
 import dateutil.parser as parser
-import importlib
-import logging
 from schema import Schema, And, Use, Optional, SchemaError
 from bson.objectid import ObjectId
 import operator
 import numpy
-from matching_engine import MatchingEngine
-import sim_config
+from common_sentient.matching_engine import MatchingEngine
 from copy import copy
-from matching_engine import MatchingEngine
 from orderbooks import Orderbooks
-import pytest
 from fixtures import delete_test_orderbooks
 import numpy as np
 

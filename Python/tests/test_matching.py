@@ -1,18 +1,18 @@
 #!/usr/bin/env python
 
 import os
-import sim_config
+import common_sentient.sim_config as sim_config
 import logging
 from bson.objectid import ObjectId
 from pymongo import MongoClient
-from matching_engine import MatchingEngine
+from common_sentient.matching_engine import MatchingEngine
 import json
 import math
 import sys
 from fixtures import load_object_ids, buying, selling
 import fixtures
 import numpy as np
-from match_result import MatchResult
+from common_sentient.match_result import MatchResult
 from typing import List
 
 remote_mongo_client = MongoClient(os.environ["MONGODB"])

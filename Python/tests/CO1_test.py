@@ -14,11 +14,9 @@ from pprint import pprint
 import dateutil.parser as parser
 import numpy as np
 import pytest
-import sim_config
+import common_sentient.sim_config as sim_config
 from bson.objectid import ObjectId
-from matching_engine import MatchingEngine
-from pymongo import MongoClient
-from schema import And, Optional, Schema, SchemaError, Use
+from common_sentient.matching_engine import MatchingEngine
 from traders import co1
 
 from fixtures import delete_test_orderbooks

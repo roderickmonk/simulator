@@ -1,4 +1,3 @@
-
 import datetime as DT
 import importlib
 import json
@@ -11,21 +10,17 @@ from copy import copy
 from datetime import datetime
 from pprint import pprint
 
-import numpy
-import pymongo
 from bson.objectid import ObjectId
 from pymongo import MongoClient
 
 import dateutil.parser as parser
 import pytest
-import sim_config
 from fixtures import delete_test_orderbooks
-from matching_engine import MatchingEngine
 from schema import And, Optional, Schema, SchemaError, Use
 from simulate import find_trades
 
-assert os.environ['MONGODB'], 'MONGODB Not Defined'
-remote_mongo_client = MongoClient(os.environ['MONGODB'])
+assert os.environ["MONGODB"], "MONGODB Not Defined"
+remote_mongo_client = MongoClient(os.environ["MONGODB"])
 
 history_db = remote_mongo_client.history
 
@@ -35,13 +30,16 @@ def test_find_trades_bench(benchmark):
 
     filter = {
         "e": 0,
-        "x": 'bittrex',
-        "m": 'btc-xrp',
+        "x": "bittrex",
+        "m": "btc-xrp",
         "ob": ObjectId("5bb2c21d30446c4fe546aed1"),
     }
 
     buy_trades, sell_trades = benchmark(
-        find_trades, history_db.trades, filter, )
+        find_trades,
+        history_db.trades,
+        filter,
+    )
 
     assert len(buy_trades) == 0
     assert len(sell_trades) == 7
@@ -52,13 +50,12 @@ def test_find_no_trades_bench(benchmark):
 
     filter = {
         "e": 0,
-        "x": 'bittrex',
-        "m": 'btc-xrp',
+        "x": "bittrex",
+        "m": "btc-xrp",
         "ob": ObjectId("5b5268a9f48dc94bde385ce8"),
     }
 
-    buy_trades, sell_trades = benchmark(
-        find_trades, history_db.trades, filter)
+    buy_trades, sell_trades = benchmark(find_trades, history_db.trades, filter)
 
     assert len(buy_trades) == 0
     assert len(sell_trades) == 0

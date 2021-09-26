@@ -14,7 +14,6 @@ import coloredlogs
 from schema import Schema, And, Use, Optional, SchemaError
 from bson.objectid import ObjectId
 import operator
-import sim_config
 from copy import copy
 import numpy as np
 from operator import itemgetter
