@@ -20,6 +20,7 @@ from schema import SchemaError
 
 import common_sentient.sim_config as sim_config
 from common_sentient.matching_engine import MatchingEngine
+from common_sentient.exceptions import InvalidConfiguration
 from orderbooks import Orderbooks
 
 
@@ -122,10 +123,12 @@ def simulate():
                 "quantityLimit",
                 "precision",
             ]
-        )
-        trader_config |= {"pdf": pdf}
+        ) | {"pdf": pdf}
 
         logging.info(f"{trader_config=}")
+
+        if "minNotional" not in sim_config.partition_config:
+            raise InvalidConfiguration("Min Notional Missing")
 
         # Matching Engine
         matching_engine = MatchingEngine(
@@ -139,13 +142,9 @@ def simulate():
 
         sim_config.init(sim_config.partition_config)
 
-        assert sim_config.partition_config["minNotional"], "Min Notional Missing"
-
         if __debug__:
             from traders.co1 import Trader
-
             trader = Trader(trader_config)
-
         else:
             trader = importlib.import_module(
                 sim_config.partition_config["trader"].lower()
@@ -275,7 +274,7 @@ def simulate():
 
         except StopIteration:
             # logging.info('StopIteration Detected')
-            
+
             # Send the matchings to the database
             if len(matchings) > 0:
                 sim_config.sim_db.matchings.insert_many(matchings)
