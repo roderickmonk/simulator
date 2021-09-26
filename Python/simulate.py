@@ -145,6 +145,7 @@ def simulate():
         partition_config.pop ("feeRate")
         partition_config.pop ("tick")
         partition_config.pop ("allowOrderConflicts")
+        partition_config.pop ("depth")
         
         matching_engine = MatchingEngine(
             assets=np.array([math.inf, 0], dtype=float),
