@@ -47,8 +47,8 @@ def test_co1_test0():
 
         buy_rate, sell_rate = trader.compute_orders(buyob, sellob)
 
-        assert round(buy_rate, sim_config.rate_precision) == 0.01000001
-        assert round(sell_rate, sim_config.rate_precision) == 0.01299999
+        assert round(buy_rate, trader_config["precision"]) == 0.01000001
+        assert round(sell_rate, trader_config["precision"]) == 0.01299999
 
     except StopIteration:
         assert False  # Must not be here
@@ -85,10 +85,10 @@ def test_co1_test1():
         buy_rate, sell_rate = trader.compute_orders(buyob, sellob)
 
         logging.warning("buy_rate: " + str(buy_rate))
-        logging.warning("sim_config.rate_precision: " + str(sim_config.rate_precision))
+        logging.warning("trader_config["precision"]: " + str(trader_config["precision"]))
 
-        assert round(buy_rate, sim_config.rate_precision) == 0.010001
-        assert round(sell_rate, sim_config.rate_precision) == 0.012999
+        assert round(buy_rate, trader_config["precision"]) == 0.010001
+        assert round(sell_rate, trader_config["precision"]) == 0.012999
 
     except StopIteration:
         assert False  # Must not be here
@@ -328,9 +328,9 @@ def test_traders_in_real_time():
                     logging.error(
                         output_format.format(
                             "Python Buy:",
-                            "%.8f" % round(buy_rate, sim_config.rate_precision),
+                            "%.8f" % round(buy_rate, trader_config["precision"]),
                             "Sell:",
-                            "%.8f" % round(sell_rate, sim_config.rate_precision),
+                            "%.8f" % round(sell_rate, trader_config["precision"]),
                         )
                     )
 
@@ -357,8 +357,8 @@ def test_traders_in_real_time():
                         f"Rust / Python Same: {rust_python_same_count}, Diff: {rust_python_diff_count}"
                     )
 
-        assert round(buy_rate, sim_config.rate_precision) == -1
-        assert round(sell_rate, sim_config.rate_precision) == -1
+        assert round(buy_rate, trader_config["precision"]) == -1
+        assert round(sell_rate, trader_config["precision"]) == -1
 
     except StopIteration:
         assert False  # Must not be here
@@ -597,9 +597,9 @@ def test_compare_bots():
                     logging.error(
                         output_format.format(
                             "Python Buy:",
-                            "%.8f" % round(buy_rate, sim_config.rate_precision),
+                            "%.8f" % round(buy_rate, trader_config["precision"]),
                             "Sell:",
-                            "%.8f" % round(sell_rate, sim_config.rate_precision),
+                            "%.8f" % round(sell_rate, trader_config["precision"]),
                         )
                     )
 
@@ -630,8 +630,8 @@ def test_compare_bots():
                         f"Rust / Python Same: {rust_python_same_count}, Diff: {rust_python_diff_count}"
                     )
 
-        assert round(buy_rate, sim_config.rate_precision) == -1
-        assert round(sell_rate, sim_config.rate_precision) == -1
+        assert round(buy_rate, trader_config["precision"]) == -1
+        assert round(sell_rate, trader_config["precision"]) == -1
 
     except StopIteration:
         assert False  # Must not be here
