@@ -102,6 +102,7 @@ def simulate():
                 "configName": False,
                 "envId": False,
                 "exchange": False,
+                "partitions": False,
                 "ts": False,
                 "saveRedis": False,
                 "status": False,
