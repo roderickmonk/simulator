@@ -107,6 +107,7 @@ def simulate():
                 "saveRedis": False,
                 "status": False,
                 "trim": False,
+                "timeFrame": False,
             },
         )
         if partition_config is None:
