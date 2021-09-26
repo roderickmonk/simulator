@@ -118,6 +118,8 @@ def simulate():
         depth = partition_config["depth"]
         trader = partition_config["trader"].lower()
         market = partition_config["market"].lower()
+        startTime = partition_config["startTime"]
+        endTime = partition_config["endTime"]
 
         pdf = get_pdf(
             remote_mongo_client["sim_configuration"]["tunings"],
@@ -153,6 +155,8 @@ def simulate():
         partition_config.pop ("trader")
         partition_config.pop ("market")
         partition_config.pop ("partition")
+        partition_config.pop ("startTime")
+        partition_config.pop ("endTime")
         
         matching_engine = MatchingEngine(
             assets=np.array([math.inf, 0], dtype=float),
@@ -182,8 +186,8 @@ def simulate():
                 exchange=partition_config["exchange"].lower(),
                 market=market,
                 depth=depth,
-                start=partition_config["startTime"],
-                end=partition_config["endTime"],
+                start=startTime,
+                end=endTime,
             )
 
         except StopIteration:
