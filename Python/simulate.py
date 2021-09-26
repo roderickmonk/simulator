@@ -152,6 +152,7 @@ def simulate():
         partition_config.pop ("precision")
         partition_config.pop ("trader")
         partition_config.pop ("market")
+        partition_config.pop ("partition")
         
         matching_engine = MatchingEngine(
             assets=np.array([math.inf, 0], dtype=float),
