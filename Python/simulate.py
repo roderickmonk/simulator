@@ -149,6 +149,7 @@ def simulate():
         partition_config.pop ("allowOrderConflicts")
         partition_config.pop ("depth")
         partition_config.pop ("precision")
+        partition_config.pop ("trader")
         
         matching_engine = MatchingEngine(
             assets=np.array([math.inf, 0], dtype=float),
