@@ -85,7 +85,7 @@ def test_co1_test1():
         buy_rate, sell_rate = trader.compute_orders(buyob, sellob)
 
         logging.warning("buy_rate: " + str(buy_rate))
-        logging.warning("trader_config["precision"]: " + str(trader_config["precision"]))
+        logging.warning("trader_config['precision']: " + str(trader_config['precision']))
 
         assert round(buy_rate, trader_config["precision"]) == 0.010001
         assert round(sell_rate, trader_config["precision"]) == 0.012999
@@ -328,9 +328,9 @@ def test_traders_in_real_time():
                     logging.error(
                         output_format.format(
                             "Python Buy:",
-                            "%.8f" % round(buy_rate, trader_config["precision"]),
+                            "%.8f" % round(buy_rate, trader_config['precision']),
                             "Sell:",
-                            "%.8f" % round(sell_rate, trader_config["precision"]),
+                            "%.8f" % round(sell_rate, trader_config['precision']),
                         )
                     )
 
@@ -597,9 +597,9 @@ def test_compare_bots():
                     logging.error(
                         output_format.format(
                             "Python Buy:",
-                            "%.8f" % round(buy_rate, trader_config["precision"]),
+                            "%.8f" % round(buy_rate, trader_config['precision']),
                             "Sell:",
-                            "%.8f" % round(sell_rate, trader_config["precision"]),
+                            "%.8f" % round(sell_rate, trader_config['precision']),
                         )
                     )
 
