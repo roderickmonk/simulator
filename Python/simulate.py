@@ -138,7 +138,7 @@ def simulate():
             trades_collection=sim_db.trades,
         )
 
-        sim_config.init(partition_config)
+        sim_config.partition_config = partition_config
 
         if __debug__:
             from traders.co1 import Trader
