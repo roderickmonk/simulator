@@ -97,14 +97,12 @@ def simulate():
             raise Exception("Unable to Connect to Local MongoDB")
 
         partition_config = sim_db.partitions.find_one(
-            {"_id": partition_id}
+            {"_id": partition_id}, {"_id": False}
         )
         if partition_config is None:
-            raise RuntimeError ("Unknown Trader Configuration")
+            raise RuntimeError("Unknown Trader Configuration")
 
-        logging.debug(
-            "partition_config:\n" + str(partition_config)
-        )
+        logging.debug("partition_config:\n" + str(partition_config))
 
         depth = partition_config["depth"]
 
@@ -113,15 +111,18 @@ def simulate():
             partition_config["pdf"],
         )
 
-        trader_config = dict(
-            (key, partition_config[key])
-            for key in [
-                "allowOrderConflicts",
-                "feeRate",
-                "QL",
-                "precision",
-            ]
-        ) | {"pdf": pdf}
+        trader_config = (
+            dict(
+                (key, partition_config[key])
+                for key in [
+                    "allowOrderConflicts",
+                    "feeRate",
+                    "QL",
+                    "precision",
+                ]
+            )
+            | {"pdf": pdf}
+        )
 
         logging.info(f"{trader_config=}")
 
@@ -143,11 +144,12 @@ def simulate():
 
         if __debug__:
             from traders.co1 import Trader
+
             trader = Trader(trader_config)
         else:
-            trader = importlib.import_module(
-                partition_config["trader"].lower()
-            ).Trader(trader_config)
+            trader = importlib.import_module(partition_config["trader"].lower()).Trader(
+                trader_config
+            )
 
         try:
             orderbooks = Orderbooks(
