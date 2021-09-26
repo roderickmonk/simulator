@@ -116,6 +116,7 @@ def simulate():
         logging.debug("partition_config:\n" + str(partition_config))
 
         depth = partition_config["depth"]
+        trader = partition_config["trader"].lower()
 
         pdf = get_pdf(
             remote_mongo_client["sim_configuration"]["tunings"],
@@ -166,7 +167,7 @@ def simulate():
 
             trader = Trader(trader_config)
         else:
-            trader = importlib.import_module(partition_config["trader"].lower()).Trader(
+            trader = importlib.import_module(trader).Trader(
                 trader_config
             )
 
