@@ -146,19 +146,19 @@ def simulate():
 
         # Matching Engine
 
-        partition_config.pop ("pdf")
-        partition_config.pop ("feeRate")
-        partition_config.pop ("tick")
-        partition_config.pop ("allowOrderConflicts")
-        partition_config.pop ("depth")
-        partition_config.pop ("precision")
-        partition_config.pop ("trader")
-        partition_config.pop ("market")
-        partition_config.pop ("partition")
-        partition_config.pop ("startTime")
-        partition_config.pop ("endTime")
-        partition_config.pop ("envId")
-        partition_config.pop ("exchange")
+        # partition_config.pop ("pdf")
+        # partition_config.pop ("feeRate")
+        # partition_config.pop ("tick")
+        # partition_config.pop ("allowOrderConflicts")
+        # partition_config.pop ("depth")
+        # partition_config.pop ("precision")
+        # partition_config.pop ("trader")
+        # partition_config.pop ("market")
+        # partition_config.pop ("partition")
+        # partition_config.pop ("startTime")
+        # partition_config.pop ("endTime")
+        # partition_config.pop ("envId")
+        # partition_config.pop ("exchange")
         
         matching_engine = MatchingEngine(
             assets=np.array([math.inf, 0], dtype=float),
