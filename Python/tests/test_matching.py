@@ -20,6 +20,10 @@ sim_db = remote_mongo_client.sim_dev
 sim_config.trades_collection = sim_db.trades
 
 matching_engine = MatchingEngine(
+    _id=ObjectId(),
+    runId=ObjectId(),
+    simId=ObjectId(),
+    simVersion="test",
     QL=0.02,
     IL=0.02,
     assets=np.array([math.inf, 0]),
@@ -37,8 +41,6 @@ def conduct_buy_test(
     start_assets: np.array,
     first_used_trade: int = 0,
 ):
-
-    assert sim_config.sim_id is not None
 
     matching_engine.buy(
         start_assets=start_assets,
@@ -62,8 +64,6 @@ def conduct_sell_test(
     start_assets: np.array = matching_engine.assets,
     first_used_trade: int = 0,
 ):
-
-    assert sim_config.sim_id is not None
 
     matching_engine.sell(
         start_assets=start_assets,
@@ -167,8 +167,8 @@ def sim_trade_checker(
             logging.debug(f"sell fee: {round(fee,8)}, " f"sell b: {round(b,8)}")
             assert math.isclose(sim_trade["sellFee"], fee, abs_tol=1e-7)
 
-        assert sim_trade["s"] == sim_config.sim_id
-        assert sim_trade["p"] == sim_config.partition_config["_id"]
+        # assert sim_trade["s"] == sim_config.sim_id
+        # assert sim_trade["p"] == sim_config.partition_config["_id"]
         assert sim_trade["o"] == sim_config.orderbook_id
         assert math.isclose(abs(sim_trade["b"]), b, abs_tol=1e-7)
 

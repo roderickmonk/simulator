@@ -10,9 +10,17 @@ from random import randint
 import numpy as np
 import pytest
 
-remote_mongo_client = MongoClient(os.environ['MONGODB'])
+remote_mongo_client = MongoClient(os.environ["MONGODB"])
 sim_db = remote_mongo_client.sim_dev
 sim_config.trades_collection = sim_db.trades
+
+matchingEngineDefaults = {
+    "_id": ObjectId(),
+    "runId": ObjectId(),
+    "simId": ObjectId(),
+    "simVersion": "test",
+    "minNotional": 0,
+}
 
 
 def make_trade(r: float, q: float = None):
@@ -20,7 +28,13 @@ def make_trade(r: float, q: float = None):
     if q == None:
         q = 0.01 / r
 
-    return dict({"_id": ObjectId(), "r": r, "q": q, })
+    return dict(
+        {
+            "_id": ObjectId(),
+            "r": r,
+            "q": q,
+        }
+    )
 
 
 def test_many_obs_0_trades_each():
@@ -30,7 +44,7 @@ def test_many_obs_0_trades_each():
 
     QL = 0.01
     IL = math.inf
-    actual_fee_rate = 0.0027
+    actualFeeRate = 0.0027
 
     cycles = 100
 
@@ -38,12 +52,14 @@ def test_many_obs_0_trades_each():
     sell_rate = 0.25
 
     matching_engine = MatchingEngine(
-
-        assets=np.array([start_funds, start_inventory]),
-        QL=0.01,
-        IL=math.inf,
-        actual_fee_rate=actual_fee_rate,
-        trades_collection=sim_db.trades,
+        **matchingEngineDefaults
+        | {
+            "assets": np.array([start_funds, start_inventory]),
+            "QL": 0.01,
+            "IL": math.inf,
+            "actualFeeRate": actualFeeRate,
+            "trades_collection": sim_db.trades,
+        }
     )
 
     for i in range(cycles):
@@ -59,8 +75,14 @@ def test_many_obs_0_trades_each():
 
     # Ensure correct funds * inventory
     funds, inventory = matching_engine.assets
-    assert math.isclose(funds, start_funds,)
-    assert math.isclose(inventory, start_inventory,)
+    assert math.isclose(
+        funds,
+        start_funds,
+    )
+    assert math.isclose(
+        inventory,
+        start_inventory,
+    )
 
 
 @pytest.mark.skip()
@@ -75,7 +97,7 @@ def test_track_multiple_buys(load_object_ids):
 
     QL = 0.01
     IL = math.inf
-    actual_fee_rate = 0.0027
+    actualFeeRate = 0.0027
 
     cycles = 100
 
@@ -83,12 +105,14 @@ def test_track_multiple_buys(load_object_ids):
     sell_rate = 0.25
 
     matching_engine = MatchingEngine(
-
-        assets=np.array([start_funds, start_inventory]),
-        QL=0.01,
-        IL=math.inf,
-        actual_fee_rate=actual_fee_rate,
-        trades_collection=sim_db.trades,
+        **matchingEngineDefaults
+        | {
+            "assets": np.array([start_funds, start_inventory]),
+            "QL": 0.01,
+            "IL": math.inf,
+            "actualFeeRate": actualFeeRate,
+            "trades_collection": sim_db.trades,
+        }
     )
 
     for i in range(cycles):
@@ -113,9 +137,7 @@ def test_track_multiple_buys(load_object_ids):
     # Ensure correct inventory
     assert math.isclose(
         inventory,
-        start_inventory
-        + cycles *
-        (make_trade(0.25)["q"] * (1 - actual_fee_rate)),
+        start_inventory + cycles * (make_trade(0.25)["q"] * (1 - actualFeeRate)),
     )
 
 
@@ -126,7 +148,7 @@ def test_track_multiple_sells(load_object_ids):
 
     QL = 0.01
     IL = math.inf
-    actual_fee_rate = 0.0027
+    actualFeeRate = 0.0027
 
     cycles = 100
 
@@ -134,12 +156,14 @@ def test_track_multiple_sells(load_object_ids):
     sell_rate = 0.25
 
     matching_engine = MatchingEngine(
-
-        assets=np.array([start_funds, start_inventory]),
-        QL=0.01,
-        IL=math.inf,
-        actual_fee_rate=actual_fee_rate,
-        trades_collection=sim_db.trades,
+        **matchingEngineDefaults
+        | {
+            "assets": np.array([start_funds, start_inventory]),
+            "QL": 0.01,
+            "IL": math.inf,
+            "actualFeeRate": actualFeeRate,
+            "trades_collection": sim_db.trades,
+        }
     )
 
     for i in range(cycles):
@@ -158,7 +182,7 @@ def test_track_multiple_sells(load_object_ids):
     # Ensure the correct funds
     assert math.isclose(
         funds,
-        start_funds + (cycles * QL) * (1 - actual_fee_rate),
+        start_funds + (cycles * QL) * (1 - actualFeeRate),
     )
 
     # Ensure the correct inventory
@@ -175,7 +199,7 @@ def test_track_multiple_buys_and_sells(load_object_ids):
 
     QL = 0.01
     IL = math.inf
-    actual_fee_rate = 0.0027
+    actualFeeRate = 0.0027
 
     cycles = 100
 
@@ -183,12 +207,14 @@ def test_track_multiple_buys_and_sells(load_object_ids):
     sell_rate = 0.25
 
     matching_engine = MatchingEngine(
-
-        assets=np.array([start_funds, start_inventory]),
-        QL=QL,
-        IL=IL,
-        actual_fee_rate=actual_fee_rate,
-        trades_collection=sim_db.trades,
+        **matchingEngineDefaults
+        | {
+            "assets": np.array([start_funds, start_inventory]),
+            "QL": QL,
+            "IL": IL,
+            "actualFeeRate": actualFeeRate,
+            "trades_collection": sim_db.trades,
+        }
     )
 
     for i in range(cycles):
@@ -207,14 +233,14 @@ def test_track_multiple_buys_and_sells(load_object_ids):
     # Ensure correct funds
     assert math.isclose(
         funds,
-        start_funds + (cycles * QL) * (1 - actual_fee_rate) - cycles * QL,
+        start_funds + (cycles * QL) * (1 - actualFeeRate) - cycles * QL,
     )
 
     # Ensure correct inventory
     assert math.isclose(
         inventory,
         start_inventory
-        + cycles * (make_trade(0.25)["q"] * (1 - actual_fee_rate))
+        + cycles * (make_trade(0.25)["q"] * (1 - actualFeeRate))
         - cycles * make_trade(0.25)["q"],
     )
 
@@ -226,7 +252,7 @@ def test_track_multiple_buys_and_sells_hi_QL(load_object_ids):
 
     QL = 0.02
     IL = math.inf
-    actual_fee_rate = 0.0027
+    actualFeeRate = 0.0027
 
     cycles = 100
 
@@ -234,12 +260,14 @@ def test_track_multiple_buys_and_sells_hi_QL(load_object_ids):
     sell_rate = 0.25
 
     matching_engine = MatchingEngine(
-
-        assets=np.array([start_funds, start_inventory]),
-        QL=QL,
-        IL=IL,
-        actual_fee_rate=actual_fee_rate,
-        trades_collection=sim_db.trades,
+        **matchingEngineDefaults
+        | {
+            "assets": np.array([start_funds, start_inventory]),
+            "QL": QL,
+            "IL": IL,
+            "actualFeeRate": actualFeeRate,
+            "trades_collection": sim_db.trades,
+        }
     )
 
     for i in range(cycles):
@@ -266,14 +294,14 @@ def test_track_multiple_buys_and_sells_hi_QL(load_object_ids):
     # Ensure correct funds
     assert math.isclose(
         funds,
-        start_funds + cycles * QL * (1 - actual_fee_rate) - cycles * QL,
+        start_funds + cycles * QL * (1 - actualFeeRate) - cycles * QL,
     )
 
     # Ensure correct inventory
     assert math.isclose(
         inventory,
         start_inventory
-        + 2 * cycles * (make_trade(0.25)["q"] * (1 - actual_fee_rate))
+        + 2 * cycles * (make_trade(0.25)["q"] * (1 - actualFeeRate))
         - 2 * cycles * make_trade(0.25)["q"],
     )
 
@@ -285,7 +313,7 @@ def test_track_multiple_buys_and_sells_hi_QL_extra_trades(load_object_ids):
 
     QL = 0.02
     IL = math.inf
-    actual_fee_rate = 0.0027
+    actualFeeRate = 0.0027
 
     cycles = 100
 
@@ -293,12 +321,14 @@ def test_track_multiple_buys_and_sells_hi_QL_extra_trades(load_object_ids):
     sell_rate = 0.25
 
     matching_engine = MatchingEngine(
-
-        assets=np.array([start_funds, start_inventory]),
-        QL=QL,
-        IL=IL,
-        actual_fee_rate=actual_fee_rate,
-        trades_collection=sim_db.trades,
+        **matchingEngineDefaults
+        | {
+            "assets": np.array([start_funds, start_inventory]),
+            "QL": QL,
+            "IL": IL,
+            "actualFeeRate": actualFeeRate,
+            "trades_collection": sim_db.trades,
+        }
     )
 
     for i in range(cycles):
@@ -324,27 +354,26 @@ def test_track_multiple_buys_and_sells_hi_QL_extra_trades(load_object_ids):
 
     assert math.isclose(
         funds,
-        start_funds + cycles * QL * (1 - actual_fee_rate) - cycles * QL,
+        start_funds + cycles * QL * (1 - actualFeeRate) - cycles * QL,
     )
 
     # Ensure correct inventory
     assert math.isclose(
         inventory,
         start_inventory
-        + 2 * cycles * (make_trade(0.25)["q"] * (1 - actual_fee_rate))
+        + 2 * cycles * (make_trade(0.25)["q"] * (1 - actualFeeRate))
         - 2 * cycles * make_trade(0.25)["q"],
     )
 
 
 def test_IL_equals_0(load_object_ids):
-    """ Blocks buying
-    """
+    """Blocks buying"""
     start_funds = 5.0
     start_inventory = 50.0
 
     QL = 0.01
     IL = 0
-    actual_fee_rate = 0.0027
+    actualFeeRate = 0.0027
 
     cycles = 100
 
@@ -354,12 +383,14 @@ def test_IL_equals_0(load_object_ids):
     trades_per_cycle = 1
 
     matching_engine = MatchingEngine(
-
-        assets=np.array([start_funds, start_inventory]),
-        QL=QL,
-        IL=IL,
-        actual_fee_rate=actual_fee_rate,
-        trades_collection=sim_db.trades,
+        **matchingEngineDefaults
+        | {
+            "assets": np.array([start_funds, start_inventory]),
+            "QL": QL,
+            "IL": IL,
+            "actualFeeRate": actualFeeRate,
+            "trades_collection": sim_db.trades,
+        }
     )
 
     for i in range(cycles):
@@ -385,7 +416,7 @@ def test_IL_equals_0(load_object_ids):
 
     assert math.isclose(
         funds,
-        start_funds + (cycles * QL) * (1 - actual_fee_rate),
+        start_funds + (cycles * QL) * (1 - actualFeeRate),
     )
 
     assert math.isclose(
@@ -395,14 +426,13 @@ def test_IL_equals_0(load_object_ids):
 
 
 def test_IL_equals_0_sell_everthing(load_object_ids):
-    """ Blocks buying, sell everything
-    """
+    """Blocks buying, sell everything"""
     start_funds = 5.0
     start_inventory = 1.0
 
     QL = 0.01
     IL = 0
-    actual_fee_rate = 0.0027
+    actualFeeRate = 0.0027
     cycles = 100
 
     rate = 0.25
@@ -412,12 +442,15 @@ def test_IL_equals_0_sell_everthing(load_object_ids):
     trades_per_cycle = 1
 
     matching_engine = MatchingEngine(
-
-        assets=np.array([start_funds, start_inventory]),
-        QL=QL,
-        IL=IL,
-        actual_fee_rate=actual_fee_rate,
-        trades_collection=sim_db.trades,
+        **matchingEngineDefaults
+        | {
+            "assets": np.array([start_funds, start_inventory]),
+            "QL": QL,
+            "IL": IL,
+            "actualFeeRate": actualFeeRate,
+            "minNotional": 1e-8,
+            "trades_collection": sim_db.trades,
+        }
     )
 
     # Monitor the depleting inventory
@@ -444,12 +477,15 @@ def test_IL_equals_0_sell_everthing(load_object_ids):
 
     assert math.isclose(
         funds,
-        start_funds + (25 * QL) * (1 - actual_fee_rate),
+        start_funds + (25 * QL) * (1 - actualFeeRate),
     )
 
     assert inventory == 0
 
+
 import pytest
+
+
 @pytest.mark.skip(reason="ToDo")
 def test_toggle(load_object_ids):
     """
@@ -459,7 +495,7 @@ def test_toggle(load_object_ids):
 
     for cycle in [1, 2]:
 
-        logging.debug ('cycle: ' + str(cycle))
+        logging.debug("cycle: " + str(cycle))
 
         """ Toggle between buying and selling
         """
@@ -467,7 +503,7 @@ def test_toggle(load_object_ids):
 
         QL = 0.01
         IL = QL
-        actual_fee_rate = 0.0
+        actualFeeRate = 0.0
 
         rate = 1.00
         buy_rate = rate
@@ -476,11 +512,14 @@ def test_toggle(load_object_ids):
         trades_per_cycle = 1
 
         matching_engine = MatchingEngine(
-            assets=np.array([math.inf, start_inventory]),
-            QL=QL,
-            IL=IL,
-            actual_fee_rate=actual_fee_rate,
-            trades_collection=sim_db.trades,
+            **matchingEngineDefaults
+            | {
+                "assets": np.array([math.inf, start_inventory]),
+                "QL": QL,
+                "IL": IL,
+                "actualFeeRate": actualFeeRate,
+                "trades_collection": sim_db.trades,
+            }
         )
 
         for i in range(cycle):
@@ -504,7 +543,7 @@ def test_toggle(load_object_ids):
 
             _, inventory = matching_engine.assets
 
-            logging.debug('inventory: %f', inventory)
+            logging.debug("inventory: %f", inventory)
 
         _, inventory = matching_engine.assets
 
