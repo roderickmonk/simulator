@@ -9,27 +9,17 @@ from pymongo.collection import Collection
 
 
 class Orderbooks:
-    def __init__(
-        self,
-        *,
-        ob_collection: Collection,
-        envId: int,
-        exchange: str,
-        market: str,
-        depth: float,
-        start: datetime,
-        end: datetime,
-    ):
+    def __init__(self, **kwargs):
 
-        self.ob_collection = ob_collection
-        self.envId = envId
-        self.exchange = exchange
-        self.market = market
-        self.depth = depth
-        self.start = start
-        self.end = end
+        self.ob_collection = kwargs["ob_collection"]
+        self.envId = kwargs["envId"]
+        self.exchange = kwargs["exchange"]
+        self.market = kwargs["market"]
+        self.depth = kwargs["depth"]
+        self.start = kwargs["start"]
+        self.end = kwargs["end"]
 
-        assert start < end
+        assert self.start < self.end
 
         self.buy_orderbook = []
         self.sell_orderbook = []

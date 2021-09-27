@@ -96,39 +96,28 @@ def simulate():
         if local_sim_db == None:
             raise Exception("Unable to Connect to Local MongoDB")
 
-        partition_config = sim_db.partitions.find_one(
-            {"_id": partition_id},
-            {
-                "configName": False,
-                "partitions": False,
-                "ts": False,
-                "saveRedis": False,
-                "status": False,
-                "trim": False,
-                "timeFrame": False,
-            },
-        )
-        if partition_config is None:
+        config = sim_db.partitions.find_one({"_id": partition_id})
+        if config is None:
             raise RuntimeError("Unknown Trader Configuration")
 
-        logging.debug("partition_config:\n" + str(partition_config))
+        logging.debug("config:\n" + str(config))
 
-        envId = partition_config["envId"]
-        depth = partition_config["depth"]
-        trader = partition_config["trader"].lower()
-        market = partition_config["market"].lower()
-        exchange = partition_config["exchange"].lower()
-        startTime = partition_config["startTime"]
-        endTime = partition_config["endTime"]
+        envId = config["envId"]
+        depth = config["depth"]
+        trader = config["trader"].lower()
+        market = config["market"].lower()
+        exchange = config["exchange"].lower()
+        startTime = config["startTime"]
+        endTime = config["endTime"]
 
         pdf = get_pdf(
             remote_mongo_client["sim_configuration"]["tunings"],
-            partition_config["pdf"],
+            config["pdf"],
         )
 
         trader_config = (
             dict(
-                (key, partition_config[key])
+                (key, config[key])
                 for key in [
                     "allowOrderConflicts",
                     "feeRate",
@@ -141,56 +130,25 @@ def simulate():
 
         logging.info(f"{trader_config=}")
 
-        if "minNotional" not in partition_config:
+        if "minNotional" not in config:
             raise InvalidConfiguration("Min Notional Missing")
 
-        # Matching Engine
-
-        # partition_config.pop ("pdf")
-        # partition_config.pop ("feeRate")
-        # partition_config.pop ("tick")
-        # partition_config.pop ("allowOrderConflicts")
-        # partition_config.pop ("depth")
-        # partition_config.pop ("precision")
-        # partition_config.pop ("trader")
-        # partition_config.pop ("market")
-        # partition_config.pop ("partition")
-        # partition_config.pop ("startTime")
-        # partition_config.pop ("endTime")
-        # partition_config.pop ("envId")
-        # partition_config.pop ("exchange")
-        
         matching_engine = MatchingEngine(
             assets=np.array([math.inf, 0], dtype=float),
-            **partition_config,
-            # QL=partition_config["QL"],
-            # IL=partition_config["IL"],
-            # actual_fee_rate=partition_config["actualFeeRate"],
-            # min_notional=partition_config["minNotional"],
+            **config,
             trades_collection=sim_db.trades,
         )
 
-        sim_config.partition_config = partition_config
+        sim_config.config = config
 
         if __debug__:
             from traders.co1 import Trader
-
             trader = Trader(trader_config)
         else:
-            trader = importlib.import_module(trader).Trader(
-                trader_config
-            )
+            trader = importlib.import_module(trader).Trader(trader_config)
 
         try:
-            orderbooks = Orderbooks(
-                ob_collection=local_sim_db.orderbooks,
-                envId=envId,
-                exchange=exchange,
-                market=market,
-                depth=depth,
-                start=startTime,
-                end=endTime,
-            )
+            orderbooks = Orderbooks(ob_collection=local_sim_db.orderbooks, **config)
 
         except StopIteration:
             os._exit(0)
@@ -269,17 +227,15 @@ def simulate():
 
                     matchings.append(
                         {
-                            "runId": partition_config["runId"],
-                            "simVersion": partition_config["simVersion"],
-                            "e": partition_config["envId"],
-                            "x": partition_config["exchange"],
-                            "m": partition_config["market"],
-                            "s": partition_config["simId"],
-                            "p": partition_config["_id"],
+                            "runId": config["runId"],
+                            "simVersion": config["simVersion"],
+                            "e": config["envId"],
+                            "x": config["exchange"],
+                            "m": config["market"],
+                            "s": config["simId"],
+                            "p": config["_id"],
                             "depth": depth,
-                            "allowOrderConflicts": partition_config[
-                                "allowOrderConflicts"
-                            ],
+                            "allowOrderConflicts": config["allowOrderConflicts"],
                             "ob": orderbook["_id"],
                             "ts": datetime.now(),
                             "topBuy": orderbook["buy"][0][0],
