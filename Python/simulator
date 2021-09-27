@@ -238,10 +238,10 @@ if __name__ == "__main__":
         if not check(stsim_config_schema, simulation):
             raise Exception("Invalid Simulator Configuration")
 
-        start = simulation["timeFrame"]["startTime"]
-        logging.debug("start: " + str(start))
-        end = simulation["timeFrame"]["endTime"]
-        logging.debug("end: " + str(end))
+        startTime = simulation["timeFrame"]["startTime"]
+        logging.debug("startTime: " + str(startTime))
+        endTime = simulation["timeFrame"]["endTime"]
+        logging.debug("endTime: " + str(endTime))
 
         optimized = simulation["trader"]["optimized"]
 
@@ -260,8 +260,8 @@ if __name__ == "__main__":
             envId=simulation["envId"],
             exchange=simulation["exchange"],
             market=simulation["market"],
-            startTime=start,
-            endTime=end,
+            startTime=startTime,
+            endTime=endTime,
             depth=simulation["depth"],
             ob_collection=remote_mongo_client.history.orderbooks,
         )
