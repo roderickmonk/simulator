@@ -138,10 +138,11 @@ def simulate():
             trades_collection=sim_db.trades,
         )
 
-        logging.fatal (f"{config=}")
+        logging.fatal(f"{config=}")
 
         if __debug__:
             from traders.co1 import Trader
+
             trader = Trader(trader_config)
         else:
             trader = importlib.import_module(trader).Trader(trader_config)
@@ -157,6 +158,8 @@ def simulate():
             while True:
 
                 orderbook = orderbooks.next()
+
+                orderbook_id = orderbook["_id"]
 
                 buy_trades = orderbook["buy_trades"]
                 assert all(
@@ -201,6 +204,7 @@ def simulate():
                     matching_engine_calls += 1
 
                     buy_match, sell_match = matching_engine.match(
+                        orderbook_id=orderbook_id,
                         buy_rate=buy_rate,
                         sell_rate=sell_rate,
                         buy_trades=buy_trades,
