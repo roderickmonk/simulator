@@ -48,7 +48,7 @@ class Orderbooks:
                     "e": self.envId,
                     "x": self.exchange,
                     "m": self.market,
-                    "ts": {"$gte": start_snapshot["ts"], "$lt": end},
+                    "ts": {"$gte": start_snapshot["ts"], "$lt": self.end},
                     "s": {"$exists": True},
                     "V": "V",  # valid flag
                 },
