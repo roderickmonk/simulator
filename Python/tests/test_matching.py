@@ -167,8 +167,6 @@ def sim_trade_checker(
             logging.debug(f"sell fee: {round(fee,8)}, " f"sell b: {round(b,8)}")
             assert math.isclose(sim_trade["sellFee"], fee, abs_tol=1e-7)
 
-        # assert sim_trade["s"] == sim_config.sim_id
-        # assert sim_trade["p"] == sim_config.partition_config["_id"]
         assert sim_trade["o"] == sim_config.orderbook_id
         assert math.isclose(abs(sim_trade["b"]), b, abs_tol=1e-7)
 

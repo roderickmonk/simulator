@@ -265,8 +265,6 @@ if __name__ == "__main__":
 
                 total_orderbooks += 1
 
-                sim_config.orderbook_id = orderbook["_id"]
-
                 # Get all trades associated with the orderbook
                 filter = {
                     "e": orderbook["e"],

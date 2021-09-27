@@ -139,8 +139,6 @@ def simulate():
             trades_collection=sim_db.trades,
         )
 
-        # sim_config.config = config
-
         logging.fatal (f"{config=}")
 
         if __debug__:
