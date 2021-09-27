@@ -224,8 +224,8 @@ if __name__ == "__main__":
                 exchange=config["exchange"],
                 market=config["market"],
                 depth=config["depth"],
-                start=config["timeFrame"]["startTime"],
-                end=config["timeFrame"]["endTime"],
+                startTime=config["timeFrame"]["startTime"],
+                endTime=config["timeFrame"]["endTime"],
             )
 
         except StopIteration:
