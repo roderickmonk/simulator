@@ -96,7 +96,7 @@ def conduct_buy_low_ceiling_test(
     )
 
     sim_trades = list(
-        sim_config.trades_collection.find(
+        sim_db.trades.find(
             {"o": sim_config.orderbook_id}, no_cursor_timeout=True
         )
     )
@@ -120,7 +120,7 @@ def conduct_sell_low_ceiling_test(
     )
 
     sim_trades = list(
-        sim_config.trades_collection.find(
+        sim_db.trades.find(
             {"o": sim_config.orderbook_id}, no_cursor_timeout=True
         )
     )
@@ -138,7 +138,7 @@ def sim_trade_checker(
     trades = trades[first_used_trade:]
 
     sim_trades = list(
-        sim_config.trades_collection.find(
+        sim_db.trades.find(
             {"o": sim_config.orderbook_id}, no_cursor_timeout=True
         )
     )

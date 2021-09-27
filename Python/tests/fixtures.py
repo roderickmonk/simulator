@@ -1,6 +1,6 @@
 import os
 import pytest
-import common_sentient.sim_config as sim_config
+import sim_config as sim_config
 from bson.objectid import ObjectId
 from pymongo import MongoClient
 
@@ -27,7 +27,6 @@ def load_object_ids():
     sim_config.partition_config["_id"] = ObjectId()
     sim_config.partition_config["simVersion"] = "testing"
     sim_config.orderbook_id = ObjectId()
-    # sim_config.quantity_precision = 8
     sim_config.trades_collection.delete_many({})
 
 @pytest.fixture()

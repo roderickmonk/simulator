@@ -18,7 +18,6 @@ from common_sentient.get_pdf import get_pdf
 from pymongo import MongoClient
 from schema import SchemaError
 
-import common_sentient.sim_config as sim_config
 from common_sentient.matching_engine import MatchingEngine
 from common_sentient.exceptions import InvalidConfiguration
 from orderbooks import Orderbooks
@@ -158,8 +157,6 @@ def simulate():
             while True:
 
                 orderbook = orderbooks.next()
-
-                # sim_config.orderbook_id = orderbook["_id"]
 
                 buy_trades = orderbook["buy_trades"]
                 assert all(

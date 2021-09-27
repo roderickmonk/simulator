@@ -12,14 +12,13 @@ import pytest
 
 remote_mongo_client = MongoClient(os.environ["MONGODB"])
 sim_db = remote_mongo_client.sim_dev
-sim_config.trades_collection = sim_db.trades
 
 matchingEngineDefaults = {
     "_id": ObjectId(),
     "runId": ObjectId(),
     "simId": ObjectId(),
     "simVersion": "test",
-    "minNotional": 0,
+    "minNotional": 0
 }
 
 
@@ -63,8 +62,6 @@ def test_many_obs_0_trades_each():
     )
 
     for i in range(cycles):
-
-        sim_config.orderbook_id = ObjectId()
 
         matching_engine.match(
             buy_rate=buy_rate,
@@ -117,7 +114,6 @@ def test_track_multiple_buys(load_object_ids):
 
     for i in range(cycles):
 
-        sim_config.orderbook_id = ObjectId()
 
         matching_engine.match(
             buy_rate=buy_rate,
@@ -168,7 +164,6 @@ def test_track_multiple_sells(load_object_ids):
 
     for i in range(cycles):
 
-        sim_config.orderbook_id = ObjectId()
 
         matching_engine.match(
             buy_rate=buy_rate,
@@ -219,7 +214,6 @@ def test_track_multiple_buys_and_sells(load_object_ids):
 
     for i in range(cycles):
 
-        sim_config.orderbook_id = ObjectId()
 
         matching_engine.match(
             buy_rate=buy_rate,
@@ -272,7 +266,6 @@ def test_track_multiple_buys_and_sells_hi_QL(load_object_ids):
 
     for i in range(cycles):
 
-        sim_config.orderbook_id = ObjectId()
 
         buy_trades = []
         for i in range(2):
@@ -333,7 +326,6 @@ def test_track_multiple_buys_and_sells_hi_QL_extra_trades(load_object_ids):
 
     for i in range(cycles):
 
-        sim_config.orderbook_id = ObjectId()
 
         buy_trades = []
         for i in range(2):
@@ -395,7 +387,6 @@ def test_IL_equals_0(load_object_ids):
 
     for i in range(cycles):
 
-        sim_config.orderbook_id = ObjectId()
 
         buy_trades = []
         for i in range(trades_per_cycle):
@@ -456,7 +447,6 @@ def test_IL_equals_0_sell_everthing(load_object_ids):
     # Monitor the depleting inventory
     while matching_engine.assets[1] > 0:
 
-        sim_config.orderbook_id = ObjectId()
 
         buy_trades = []
         for i in range(trades_per_cycle):
@@ -524,7 +514,6 @@ def test_toggle(load_object_ids):
 
         for i in range(cycle):
 
-            sim_config.orderbook_id = ObjectId()
 
             buy_trades = []
             for i in range(trades_per_cycle):
