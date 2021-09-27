@@ -159,7 +159,7 @@ def simulate():
 
                 orderbook = orderbooks.next()
 
-                sim_config.orderbook_id = orderbook["_id"]
+                # sim_config.orderbook_id = orderbook["_id"]
 
                 buy_trades = orderbook["buy_trades"]
                 assert all(
