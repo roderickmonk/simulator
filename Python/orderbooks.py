@@ -16,8 +16,8 @@ class Orderbooks:
         self.exchange = kwargs["exchange"]
         self.market = kwargs["market"]
         self.depth = kwargs["depth"]
-        self.start = kwargs["start"]
-        self.end = kwargs["end"]
+        self.start = kwargs["startTime"]
+        self.end = kwargs["endTime"]
 
         assert self.start < self.end
 
