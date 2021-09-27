@@ -141,6 +141,8 @@ def simulate():
 
         sim_config.config = config
 
+        print (f"{config=}")
+
         if __debug__:
             from traders.co1 import Trader
             trader = Trader(trader_config)
