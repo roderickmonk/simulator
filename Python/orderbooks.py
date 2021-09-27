@@ -43,11 +43,11 @@ class Orderbooks:
 
         # Setup an iterator to drive the simulation
         self.iter = iter(
-            ob_collection.find(
+            self.ob_collection.find(
                 filter={
-                    "e": envId,
-                    "x": exchange,
-                    "m": market,
+                    "e": self.envId,
+                    "x": self.exchange,
+                    "m": self.market,
                     "ts": {"$gte": start_snapshot["ts"], "$lt": end},
                     "s": {"$exists": True},
                     "V": "V",  # valid flag
