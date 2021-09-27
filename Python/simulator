@@ -260,8 +260,8 @@ if __name__ == "__main__":
             envId=simulation["envId"],
             exchange=simulation["exchange"],
             market=simulation["market"],
-            start=start,
-            end=end,
+            startTime=start,
+            endTime=end,
             depth=simulation["depth"],
             ob_collection=remote_mongo_client.history.orderbooks,
         )
