@@ -101,13 +101,7 @@ def simulate():
 
         logging.debug("config:\n" + str(config))
 
-        envId = config["envId"]
         depth = config["depth"]
-        trader = config["trader"].lower()
-        market = config["market"].lower()
-        exchange = config["exchange"].lower()
-        startTime = config["startTime"]
-        endTime = config["endTime"]
 
         pdf = get_pdf(
             remote_mongo_client["sim_configuration"]["tunings"],
@@ -144,8 +138,11 @@ def simulate():
             from traders.co1 import Trader
 
             trader = Trader(trader_config)
+
         else:
-            trader = importlib.import_module(trader).Trader(trader_config)
+            trader = importlib.import_module(config["trader"].lower()).Trader(
+                trader_config
+            )
 
         try:
             orderbooks = Orderbooks(ob_collection=local_sim_db.orderbooks, **config)

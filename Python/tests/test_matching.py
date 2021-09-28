@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 import os
-import common_sentient.sim_config as sim_config
+import sim_config as sim_config
 import logging
 from bson.objectid import ObjectId
 from pymongo import MongoClient
@@ -31,6 +31,7 @@ matching_engine = MatchingEngine(
     minNotional=0.0005,
     trades_collection=sim_db.trades,
 )
+matching_engine.orderbook_id = ObjectId()
 
 
 def conduct_buy_test(
@@ -86,8 +87,6 @@ def conduct_buy_low_ceiling_test(
     sell_trades: List[dict],
 ):
 
-    assert sim_config.sim_id is not None
-
     matching_engine.buy(
         start_assets=np.array([math.inf, 0]),
         buy_rate=buy_rate,
@@ -96,9 +95,7 @@ def conduct_buy_low_ceiling_test(
     )
 
     sim_trades = list(
-        sim_db.trades.find(
-            {"o": sim_config.orderbook_id}, no_cursor_timeout=True
-        )
+        sim_db.trades.find({"o": orderbook_id}, no_cursor_timeout=True)
     )
 
     assert len(sim_trades) == expected_trade_count
@@ -111,8 +108,6 @@ def conduct_sell_low_ceiling_test(
     start_assets: np.array,
 ):
 
-    assert sim_config.sim_id is not None
-
     matching_engine.sell(
         start_assets=start_assets,
         sell_rate=sell_rate,
@@ -120,9 +115,7 @@ def conduct_sell_low_ceiling_test(
     )
 
     sim_trades = list(
-        sim_db.trades.find(
-            {"o": sim_config.orderbook_id}, no_cursor_timeout=True
-        )
+        sim_db.trades.find({"o": sim_config.orderbook_id}, no_cursor_timeout=True)
     )
 
     assert len(sim_trades) == expected_trade_count
@@ -138,13 +131,11 @@ def sim_trade_checker(
     trades = trades[first_used_trade:]
 
     sim_trades = list(
-        sim_db.trades.find(
-            {"o": sim_config.orderbook_id}, no_cursor_timeout=True
-        )
+        sim_db.trades.find({"o": sim_config.orderbook_id}, no_cursor_timeout=True)
     )
 
-    logging.debug(f"sim_trades: {sim_trades}")
-    logging.debug(f"trades: {trades}")
+    logging.error(f"sim_trades: {sim_trades}")
+    logging.error(f"trades: {trades}")
 
     assert len(sim_trades) == expected_trade_count
 
@@ -293,13 +284,10 @@ def test_buy_1_from_1_trades(buying, load_object_ids):
     q = round(quantity / 0.20, 8)
     b = round(r * q, 8)
 
-    for i in range(trade_count):
+    for _ in range(trade_count):
         trades.append({"_id": ObjectId(), "r": r, "q": q, "b": b})
 
-    logging.debug("trades:\n" + str(trades))
-
-    expected_funds = -quantity
-    expected_inventory = (quantity / buy_rate) * (1 - matching_engine.actualFeeRate)
+    logging.error("trades:\n" + str(trades))
 
     conduct_buy_test(
         buy_rate=buy_rate,
@@ -308,11 +296,6 @@ def test_buy_1_from_1_trades(buying, load_object_ids):
         start_assets=matching_engine.assets,
         sell_trades=trades,
     )
-
-    funds, inventory = matching_engine.assets
-
-    # assert expected_funds == funds
-    # assert expected_inventory = inventory
 
 
 def test_sell_1_from_1_trades(selling, load_object_ids):
@@ -830,6 +813,7 @@ def test_buy_side_min_notional_failure(
 ):
 
     matching_engine.minNotional = 0.011
+    matching_engine.orderbook_id = ObjectId()
 
     sell_trades = []
     sell_trades.append(

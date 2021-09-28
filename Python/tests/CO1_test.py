@@ -14,7 +14,7 @@ from pprint import pprint
 import dateutil.parser as parser
 import numpy as np
 import pytest
-import common_sentient.sim_config as sim_config
+import sim_config as sim_config
 from bson.objectid import ObjectId
 from common_sentient.matching_engine import MatchingEngine
 from traders import co1
