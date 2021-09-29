@@ -189,9 +189,7 @@ def simulate():
                     else orderbook["sell"]
                 )
 
-                result = trader.compute_orders(buyob=buyob, sellob=sellob)
-
-                buy_rate, sell_rate = result
+                buy_rate, sell_rate = trader.compute_orders(buyob=buyob, sellob=sellob)
 
                 if buy_rate > 0 and sell_rate > 0:
 
