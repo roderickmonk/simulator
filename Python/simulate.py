@@ -129,7 +129,7 @@ def simulate():
         matching_engine = MatchingEngine(
             assets=np.array([math.inf, 0], dtype=float),
             **config,
-            trades_collection=sim_db.trades,
+            sim_trades=sim_db.trades,
         )
 
         logging.fatal(f"{config=}")
@@ -155,7 +155,6 @@ def simulate():
             while True:
 
                 orderbook = orderbooks.next()
-
                 orderbook_id = orderbook["_id"]
 
                 buy_trades = orderbook["buy_trades"]
@@ -171,8 +170,6 @@ def simulate():
                     for i in range(len(sell_trades) - 1)
                 ), "Sell Trades Not Sorted"
                 sell_trades_count += len(sell_trades)
-
-                assert len(buy_trades) > 0 or len(sell_trades) > 0
 
                 if __debug__ and (len(buy_trades) > 0 or len(sell_trades) > 0):
                     logging.debug("len(buy_trades): " + str(len(buy_trades)))
