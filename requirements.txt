@@ -10,6 +10,7 @@ click==8.0.1
 cmake==3.21.2
 colorama==0.4.4
 coloredlogs==15.0.1
+common-sentient @ git+ssh://git@github.com/1057405bcltd/common_sentient.git@f7c68f1817a0f9e5fb360e724a6160eb4be01cf0
 contextlib2==21.6.0
 cryptography==3.4.8
 docutils==0.17.1
@@ -48,6 +49,7 @@ six==1.16.0
 toml==0.10.2
 tomli==1.2.1
 tqdm==4.62.3
+traders==0.1.0
 twine==3.4.2
 typed-ast==1.4.3
 typing-extensions==3.10.0.2
