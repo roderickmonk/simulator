@@ -29,8 +29,8 @@ from numpy import array
 from pymongo import MongoClient
 from schema import And, Optional, Schema, SchemaError, Use
 
-from common_sentient.match_result import MatchResult
-from common_sentient.matching_engine import MatchingEngine
+from sentient_util.match_result import MatchResult
+from sentient_util.matching_engine import MatchingEngine
 from orderbooks import Orderbooks
 
 orderbook_trades = {}

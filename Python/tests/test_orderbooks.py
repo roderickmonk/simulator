@@ -17,7 +17,7 @@ from schema import Schema, And, Use, Optional, SchemaError
 from bson.objectid import ObjectId
 import operator
 import numpy
-from common_sentient.matching_engine import MatchingEngine
+from sentient_util.matching_engine import MatchingEngine
 from copy import copy
 from orderbooks import Orderbooks
 from fixtures import delete_test_orderbooks

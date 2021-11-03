@@ -10,7 +10,6 @@ click==8.0.1
 cmake==3.21.2
 colorama==0.4.4
 coloredlogs==15.0.1
-common-sentient @ git+ssh://git@github.com/1057405bcltd/common_sentient.git@f7c68f1817a0f9e5fb360e724a6160eb4be01cf0
 contextlib2==21.6.0
 cryptography==3.4.8
 docutils==0.17.1
@@ -45,6 +44,8 @@ rfc3986==1.5.0
 schema==0.7.4
 scipy==1.7.1
 SecretStorage==3.3.1
+sentient-traders @ git+ssh://git@github.com/1057405bcltd/sentient-traders.git@66f228735658c9927c6e4fac5f92f00c2644eb16
+sentient-util @ git+ssh://git@github.com/1057405bcltd/sentient-util.git@872bda2f307d5182a1590f1c569b9c9bc290d9cf
 six==1.16.0
 toml==0.10.2
 tomli==1.2.1

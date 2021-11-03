@@ -5,14 +5,14 @@ import sim_config as sim_config
 import logging
 from bson.objectid import ObjectId
 from pymongo import MongoClient
-from common_sentient.matching_engine import MatchingEngine
+from sentient_util.matching_engine import MatchingEngine
 import json
 import math
 import sys
 from fixtures import load_object_ids, buying, selling
 import fixtures
 import numpy as np
-from common_sentient.match_result import MatchResult
+from sentient_util.match_result import MatchResult
 from typing import List
 
 remote_mongo_client = MongoClient(os.environ["MONGODB"])

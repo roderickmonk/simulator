@@ -15,12 +15,12 @@ from schema import Schema, And, Use, Optional, SchemaError
 from bson.objectid import ObjectId
 import operator
 import numpy
-from common_sentient.matching_engine import MatchingEngine
+from sentient_util.matching_engine import MatchingEngine
 from copy import copy
 from orderbooks import Orderbooks
 import numpy as np
 from numpy import array
-from common_sentient.match_result import MatchResult
+from sentient_util.match_result import MatchResult
 import functools
 import redis
 from pickle import loads, dumps
