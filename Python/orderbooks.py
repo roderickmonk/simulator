@@ -39,7 +39,8 @@ class Orderbooks:
 
         if __debug__:
             logging.debug("start_snapshot: %r", start_snapshot)
-            logging.debug("actual_end: %r", last_orderbook["ts"])
+            if last_orderbook:
+                logging.debug("actual_end: %r", last_orderbook["ts"])
 
         # Setup an iterator to drive the simulation
         self.iter = iter(

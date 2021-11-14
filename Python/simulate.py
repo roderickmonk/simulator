@@ -56,7 +56,7 @@ def find_trades(trades, filter):
 
 def simulate():
 
-    matching_engine: Optional [MatchingEngine] = None
+    matching_engine: Optional[MatchingEngine] = None
     CO_calls = 0
     matching_engine_calls = 0
     returncode = 0
@@ -138,18 +138,22 @@ def simulate():
         if __debug__:
             from traders.co1 import Trader
 
-            trader = Trader(trader_config)
+            trader = Trader(trader_config=trader_config)
 
         else:
-            trader = importlib.import_module(config["trader"].lower()).Trader(
-                trader_config=trader_config
-            )
+            trader_module = importlib.import_module(config["trader"].lower())
+
+            if not getattr(trader_module, "Trader"):
+                raise TypeError(f"Trader not found")
+
+            trader = getattr(trader_module, "Trader")(trader_config=trader_config)
 
         try:
             orderbooks = Orderbooks(ob_collection=local_sim_db.orderbooks, **config)
 
-        except StopIteration:
-            os._exit(0)
+        except StopIteration as msg:
+            logging.critical(f"{msg=}")
+            raise
 
         try:
 
@@ -207,7 +211,9 @@ def simulate():
                     funds, inventory = matching_engine.assets
 
                     if __debug__:
-                        logging.debug(f"compute_orders return: {result}")
+                        logging.debug(
+                            f"compute_orders return: {buy_rate=}, {sell_rate=}"
+                        )
                         logging.debug("buy_match: " + str(buy_match))
                         logging.debug("sell_match: " + str(sell_match))
 
