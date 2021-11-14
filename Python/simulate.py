@@ -11,6 +11,7 @@ import os
 import sys
 from copy import copy
 from datetime import datetime
+from typing import Optional
 
 import numpy as np
 from bson.objectid import ObjectId
@@ -55,7 +56,7 @@ def find_trades(trades, filter):
 
 def simulate():
 
-    matching_engine: MatchingEngine = None
+    matching_engine: Optional [MatchingEngine] = None
     CO_calls = 0
     matching_engine_calls = 0
     returncode = 0

@@ -298,7 +298,7 @@ class Orderbooks:
                 orderbook.append([delta[1], delta[2]])
 
     @staticmethod
-    def apply_depth(depth: float, orderbook: np.array) -> np.array:
+    def apply_depth(depth: float, orderbook: np.ndarray) -> np.ndarray:
 
         if depth == 0:
             return orderbook
