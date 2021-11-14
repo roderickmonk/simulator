@@ -1,12 +1,13 @@
 import os
 import numpy as np
 import logging
-from schema import Schema, And, Use, Optional, SchemaError
+from schema import Schema, And, Use, SchemaError
 import numpy as np
+from typing import Optional
 
 
-sim_id: str = None
-orderbook_id: str = None
+sim_id: Optional[str] = None
+orderbook_id: Optional[str] = None
 # rate_precision: int = None
 # quantity_precision: int = None
 # partition_config: dict = {}
