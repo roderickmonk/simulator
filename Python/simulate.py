@@ -143,10 +143,10 @@ def simulate():
         else:
             trader_module = importlib.import_module(config["trader"].lower())
 
-            if not getattr(trader_module, "Trader"):
+            if (trader_class := getattr(trader_module, "Trader")) is None:
                 raise TypeError(f"Trader not found")
 
-            trader = getattr(trader_module, "Trader")(trader_config=trader_config)
+            trader = trader_class(trader_config=trader_config)
 
         try:
             orderbooks = Orderbooks(ob_collection=local_sim_db.orderbooks, **config)
