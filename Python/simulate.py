@@ -141,7 +141,7 @@ def simulate():
 
         else:
             trader = importlib.import_module(config["trader"].lower()).Trader(
-                trader_config
+                trader_config=trader_config
             )
 
         try:
