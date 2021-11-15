@@ -221,7 +221,8 @@ class Orderbooks:
                 if orderbook == None:
                     raise StopIteration
 
-                assert "s" in orderbook
+                if "s" not in orderbook:
+                    raise RuntimeError ("orderbook without 's' sequence field")
 
                 if orderbook["s"] == True:
 
