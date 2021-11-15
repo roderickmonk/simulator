@@ -160,6 +160,9 @@ def simulate():
             while True:
 
                 orderbook = orderbooks.next()
+
+                breakpoint()
+                
                 orderbook_id = orderbook["_id"]
 
                 buy_trades = orderbook["buy_trades"]
