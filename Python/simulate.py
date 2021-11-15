@@ -161,8 +161,10 @@ def simulate():
 
                 orderbook = orderbooks.next()
 
-                breakpoint()
-                
+                logging.critical(orderbook)
+
+                return
+
                 orderbook_id = orderbook["_id"]
 
                 buy_trades = orderbook["buy_trades"]
