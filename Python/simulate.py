@@ -161,9 +161,7 @@ def simulate():
 
                 orderbook = orderbooks.next()
 
-                logging.critical(orderbook)
-
-                return
+                # logging.critical(orderbook)
 
                 orderbook_id = orderbook["_id"]
 
@@ -182,8 +180,8 @@ def simulate():
                 sell_trades_count += len(sell_trades)
 
                 if __debug__ and (len(buy_trades) > 0 or len(sell_trades) > 0):
-                    logging.debug("len(buy_trades): " + str(len(buy_trades)))
-                    logging.debug("len(sell_trades): " + str(len(sell_trades)))
+                    logging.debug(f"{len(buy_trades)=}")
+                    logging.debug(f"{len(sell_trades)=}")
 
                 CO_calls += 1
 
