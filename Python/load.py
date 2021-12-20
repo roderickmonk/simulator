@@ -27,10 +27,11 @@ import redis
 from bson.objectid import ObjectId
 from numpy import array
 from pymongo import MongoClient
+from pymongo.errors import CollectionInvalid, OperationFailure
 from schema import And, Optional, Schema, SchemaError, Use
-
 from sentient_util.match_result import MatchResult
 from sentient_util.matching_engine import MatchingEngine
+
 from orderbooks import Orderbooks
 
 orderbook_trades = {}
@@ -136,10 +137,7 @@ if __name__ == "__main__":
         try:
             local_sim_db.create_collection("orderbooks")
 
-        except pymongo.errors.OperationFailure:
-            pass  # Ignore error if collection already exists
-
-        except pymongo.errors.CollectionInvalid:
+        except (CollectionInvalid, OperationFailure):
             pass  # Ignore error if collection already exists
 
         local_sim_db.orderbooks.create_index(
@@ -325,8 +323,8 @@ if __name__ == "__main__":
                     }
 
                     # Can't save numpy arrays hence convert OBs to list
-                    insertObj["buy"] = insertObj["buy"].tolist()
-                    insertObj["sell"] = insertObj["sell"].tolist()
+                    insertObj["buy"] = insertObj["buy"].tolist()  # type:ignore
+                    insertObj["sell"] = insertObj["sell"].tolist()  # type:ignore
 
                     # try:
                     local_sim_db.orderbooks.replace_one(

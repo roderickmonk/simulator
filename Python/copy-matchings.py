@@ -3,6 +3,7 @@
 import os
 import sys
 import json
+from typing import Dict, Union
 import pymongo
 import math
 from pymongo import MongoClient
@@ -25,13 +26,6 @@ import functools
 import redis
 from pickle import loads, dumps
 import json
-
-try:
-    profile
-except NameError:
-
-    def profile(x):
-        return x
 
 
 def check(conf_schema, conf):
@@ -64,7 +58,6 @@ def find_trades(trades, filter):
     return buy_trades, sell_trades
 
 
-@profile
 def run():
 
     logging.basicConfig(
@@ -103,7 +96,9 @@ def run():
     sim_trades = []
     for sim_trade_key in sim_trade_keys:
 
-        sim_trade = r.hgetall(sim_trade_key)
+        sim_trade: Dict[str, Union[str, ObjectId]] = r.hgetall(
+            sim_trade_key
+        )  # type:ignore
         assert "runId" in sim_trade, "Corrupt Sim Trade"
 
         sim_trade["runId"] = ObjectId(sim_trade["runId"])
@@ -141,7 +136,9 @@ def run():
     matchings = []
     for matching_key in matching_keys:
 
-        matching = r.hgetall(matching_key)
+        matching: Dict[str, Union[str, ObjectId]] = r.hgetall(
+            matching_key
+        )  # type:ignore
 
         matching["runId"] = ObjectId(matching["runId"])
         matching["ob"] = ObjectId(matching["ob"])
