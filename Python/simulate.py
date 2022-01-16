@@ -19,7 +19,7 @@ from sentient_util.get_pdf import get_pdf
 from pymongo import MongoClient
 from schema import SchemaError
 
-from sentient_util.matching_engine import MatchingEngine
+from sentient_util.matching_engine import MatchingEngine, MatchingEngineResult
 from sentient_util.exceptions import InvalidConfiguration
 from orderbooks import Orderbooks
 
@@ -30,28 +30,6 @@ def check(conf_schema, conf):
         return True
     except SchemaError:
         return False
-
-
-def find_trades(trades, filter):
-
-    buy_trades = []
-    sell_trades = []
-
-    for trade in trades.find(filter=filter, no_cursor_timeout=True):
-
-        # Corral the buy and sell trades into separate lists
-        if trade["buy"]:
-            buy_trades.append(trade)
-        else:
-            sell_trades.append(trade)
-
-        # Sort the buy trades into decreasing order
-        buy_trades.sort(key=operator.itemgetter("r"), reverse=True)
-
-        # Sort the sell trades into increasing order
-        sell_trades.sort(key=operator.itemgetter("r"), reverse=False)
-
-    return buy_trades, sell_trades
 
 
 def simulate():
@@ -127,11 +105,10 @@ def simulate():
         if "minNotional" not in config:
             raise InvalidConfiguration("Min Notional Missing")
 
-        matching_engine = MatchingEngine(
-            assets=np.array([math.inf, 0], dtype=float),
-            **config,
-            sim_trades=sim_db.trades,
-        )
+        config.funds = math.inf
+        config.inventory = 0
+
+        matching_engine = MatchingEngine(**config)
 
         logging.fatal(f"{config=}")
 
@@ -203,22 +180,29 @@ def simulate():
 
                     matching_engine_calls += 1
 
-                    buy_match, sell_match = matching_engine.match(
+                    # buy_match, sell_match = matching_engine.match(
+                    #     orderbook_id=orderbook_id,
+                    #     buy_rate=buy_rate,
+                    #     sell_rate=sell_rate,
+                    #     buy_trades=buy_trades,
+                    #     sell_trades=sell_trades,
+                    # )
+
+                    matching = matching_engine.match(
                         orderbook_id=orderbook_id,
                         buy_rate=buy_rate,
                         sell_rate=sell_rate,
                         buy_trades=buy_trades,
                         sell_trades=sell_trades,
                     )
-
-                    funds, inventory = matching_engine.assets
+                    funds, inventory = matching_engine.assets()
 
                     if __debug__:
                         logging.debug(
                             f"compute_orders return: {buy_rate=}, {sell_rate=}"
                         )
-                        logging.debug("buy_match: " + str(buy_match))
-                        logging.debug("sell_match: " + str(sell_match))
+                        logging.debug("buy_match: " + str(matching.buy_match))
+                        logging.debug("sell_match: " + str(matching.sell_match))
 
                     buy_depth = sum(
                         map(lambda x: x[1] if x[0] > buy_rate else 0, buyob)
@@ -244,7 +228,7 @@ def simulate():
                             "topBuy": orderbook["buy"][0][0],
                             "buyRate": buy_rate,
                             "buyCount": len(buy_trades),
-                            "buyMatch": str(buy_match).split(".")[1],
+                            "buyMatch": str(matching.buy_match).split(".")[1],
                             "buyDepth": buy_depth,
                             "buys": list(map((lambda x: x["r"]), buy_trades))
                             if len(buy_trades) > 0
@@ -252,7 +236,7 @@ def simulate():
                             "topSell": orderbook["sell"][0][0],
                             "sellRate": sell_rate,
                             "sellCount": len(sell_trades),
-                            "sellMatch": str(sell_match).split(".")[1],
+                            "sellMatch": str(matching.sell_match).split(".")[1],
                             "sellDepth": sell_depth,
                             "sells": list(map((lambda x: x["r"]), sell_trades))
                             if len(sell_trades) > 0
