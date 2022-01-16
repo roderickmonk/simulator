@@ -29,8 +29,6 @@ from numpy import array
 from pymongo import MongoClient
 from pymongo.errors import CollectionInvalid, OperationFailure
 from schema import And, Optional, Schema, SchemaError, Use
-from sentient_util.match_result import MatchResult
-from sentient_util.matching_engine import MatchingEngine
 
 from orderbooks import Orderbooks
 

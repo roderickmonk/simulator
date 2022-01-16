@@ -21,6 +21,7 @@ from schema import SchemaError
 
 from sentient_util.matching_engine import MatchingEngine, MatchingEngineResult
 from sentient_util.exceptions import InvalidConfiguration
+from sentient_util.pydantic_config import SimEnv0_Config
 from orderbooks import Orderbooks
 
 
@@ -100,15 +101,17 @@ def simulate():
             | {"pdf": pdf}
         )
 
-        logging.info(f"{trader_config=}")
+        logging.debug(f"{trader_config=}")
 
         if "minNotional" not in config:
             raise InvalidConfiguration("Min Notional Missing")
 
-        config.funds = math.inf
-        config.inventory = 0
+        config["funds"] = math.inf
+        config["inventory"] = 0
 
-        matching_engine = MatchingEngine(**config)
+        config.pop ("_id")
+
+        matching_engine = MatchingEngine(SimEnv0_Config(**config))
 
         logging.fatal(f"{config=}")
 
