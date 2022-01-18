@@ -47,7 +47,7 @@ const start = (configGenerator, simDb) => __awaiter(void 0, void 0, void 0, func
             tasks.push((callback) => {
                 try {
                     console.log(chalk.blue(`Simulation (${configName}) ${simId} Activated`));
-                    (0, child_process_1.exec)(`simulator ${simId}`, (err, stdout, stderr) => {
+                    (0, child_process_1.exec)(`simulator.py ${simId}`, (err, stdout, stderr) => {
                         callback(err, stderr);
                     });
                 }

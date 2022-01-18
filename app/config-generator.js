@@ -61,8 +61,6 @@ class ConfigGenerator {
                 assert(entry.type === 'array', `Multiply Parameter "${prop}" Data Not Array`);
                 if (multipleParams.hasOwnProperty(prop)) {
                 }
-                console.log({ multipleParams });
-                console.log({ propertyScheam: this.propertySchema });
                 Object.keys(multipleParams).forEach(property => {
                     assert(this.propertySchema.has(property), `Required Multiply Parameter "${property}" Not Found`);
                 });

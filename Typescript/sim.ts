@@ -74,7 +74,7 @@ const start = async (
                         console.log(chalk.blue(`Simulation (${configName}) ${simId} Activated`));
 
                         exec(
-                            `simulator ${simId}`,
+                            `simulator.py ${simId}`,
 
                             (err: Error, stdout: string, stderr: string) => {
 

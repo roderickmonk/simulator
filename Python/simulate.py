@@ -5,23 +5,23 @@ warnings.filterwarnings("ignore", category=UserWarning)
 
 import importlib
 import logging
-import math
-import operator
 import os
 import sys
-from copy import copy
 from datetime import datetime
-from typing import Optional
 
+from sentient_util import logger
 import numpy as np
 from bson.objectid import ObjectId
-from sentient_util.get_pdf import get_pdf
+from devtools import debug
 from pymongo import MongoClient
 from schema import SchemaError
-
-from sentient_util.matching_engine import MatchingEngine, MatchingEngineResult
 from sentient_util.exceptions import InvalidConfiguration
-from sentient_util.pydantic_config import SimEnv0_Config
+from sentient_util.get_pdf import get_pdf
+from sentient_util.matching_engine import MatchingEngine, MatchingEngineResult
+from sentient_util.pydantic_config import SimEnv0_Config, Trade
+from sentient_traders.config import TraderConfig
+
+from config import PartitionConfig
 from orderbooks import Orderbooks
 
 
@@ -35,7 +35,7 @@ def check(conf_schema, conf):
 
 def simulate():
 
-    matching_engine: Optional[MatchingEngine] = None
+    # matching_engine: Optional[MatchingEngine] = None
     CO_calls = 0
     matching_engine_calls = 0
     returncode = 0
@@ -51,7 +51,10 @@ def simulate():
             format="[%(levelname)-5s] %(message)s", level=logging.INFO, datefmt=""
         )
 
-        logging.info(f"simulate args: {sys.argv}")
+        logger.setup(fmt="[%(levelname)-5s] %(message)s")
+        logger.set_log_level("INFO")
+
+        logging.debug(f"simulate args: {sys.argv}")
 
         if len(sys.argv) == 2:
             partition_id = ObjectId(sys.argv[1])
@@ -79,49 +82,21 @@ def simulate():
         if config is None:
             raise RuntimeError("Unknown Trader Configuration")
 
-        logging.debug("config:\n" + str(config))
-
-        depth = config["depth"]
-
-        pdf = get_pdf(
-            remote_mongo_client["sim_configuration"]["tunings"],
-            config["pdf"],
-        )
-
-        trader_config = (
-            dict(
-                (key, config[key])
-                for key in [
-                    "allowOrderConflicts",
-                    "feeRate",
-                    "QL",
-                    "precision",
-                ]
-            )
-            | {"pdf": pdf}
-        )
+        trader_config = TraderConfig(**config)
+        matching_engine = MatchingEngine(SimEnv0_Config(**config))
+        config = PartitionConfig(**config)
 
         logging.debug(f"{trader_config=}")
-
-        if "minNotional" not in config:
-            raise InvalidConfiguration("Min Notional Missing")
-
-        config["funds"] = math.inf
-        config["inventory"] = 0
-
-        config.pop ("_id")
-
-        matching_engine = MatchingEngine(SimEnv0_Config(**config))
-
-        logging.fatal(f"{config=}")
+        logging.debug(f"{config=}")
+        logging.error(f"{matching_engine=}")
 
         if __debug__:
-            from traders.co1 import Trader
+            from sentient_traders.co1 import Trader
 
             trader = Trader(trader_config=trader_config)
 
         else:
-            trader_module = importlib.import_module(config["trader"].lower())
+            trader_module = importlib.import_module(config.trader.lower())
 
             if (trader_class := getattr(trader_module, "Trader")) is None:
                 raise TypeError(f"Trader not found")
@@ -129,7 +104,9 @@ def simulate():
             trader = trader_class(trader_config=trader_config)
 
         try:
-            orderbooks = Orderbooks(ob_collection=local_sim_db.orderbooks, **config)
+            orderbooks = Orderbooks(
+                ob_collection=local_sim_db.orderbooks, **dict(config)
+            )
 
         except StopIteration as msg:
             logging.critical(f"{msg=}")
@@ -141,23 +118,30 @@ def simulate():
 
                 orderbook = orderbooks.next()
 
-                # logging.critical(orderbook)
-
                 orderbook_id = orderbook["_id"]
 
-                buy_trades = orderbook["buy_trades"]
+                buy_trades = [Trade(**trade) for trade in orderbook["buy_trades"]]
+                for t in buy_trades:
+                    t.ob = ObjectId(t.ob)
+                    t.ob_id = ObjectId(t.ob)
+
                 assert all(
-                    buy_trades[i]["r"] >= buy_trades[i + 1]["r"]
+                    buy_trades[i].r >= buy_trades[i + 1].r
                     for i in range(len(buy_trades) - 1)
                 ), "Buy Trades Not Sorted"
                 buy_trades_count += len(buy_trades)
+                logging.debug(f"{buy_trades=}")
 
-                sell_trades = orderbook["sell_trades"]
+                sell_trades = [Trade(**trade) for trade in orderbook["sell_trades"]]
+                for t in sell_trades:
+                    t.ob = ObjectId(t.ob)
+                    t.ob_id = ObjectId(t.ob)
                 assert all(
-                    sell_trades[i]["r"] <= sell_trades[i + 1]["r"]
+                    sell_trades[i].r <= sell_trades[i + 1].r
                     for i in range(len(sell_trades) - 1)
                 ), "Sell Trades Not Sorted"
                 sell_trades_count += len(sell_trades)
+                logging.debug(f"{sell_trades=}")
 
                 if __debug__ and (len(buy_trades) > 0 or len(sell_trades) > 0):
                     logging.debug(f"{len(buy_trades)=}")
@@ -166,30 +150,24 @@ def simulate():
                 CO_calls += 1
 
                 buyob = (
-                    Orderbooks.apply_depth(depth, orderbook["buy"])
-                    if depth > 0
+                    Orderbooks.apply_depth(config.depth, orderbook["buy"])
+                    if config.depth > 0
                     else orderbook["buy"]
                 )
 
                 sellob = (
-                    Orderbooks.apply_depth(depth, orderbook["sell"])
-                    if depth > 0
+                    Orderbooks.apply_depth(config.depth, orderbook["sell"])
+                    if config.depth > 0
                     else orderbook["sell"]
                 )
 
                 buy_rate, sell_rate = trader.compute_orders(buyob=buyob, sellob=sellob)
 
+                logging.debug(f"{buy_rate=}, {sell_rate=}")
+
                 if buy_rate > 0 and sell_rate > 0:
 
                     matching_engine_calls += 1
-
-                    # buy_match, sell_match = matching_engine.match(
-                    #     orderbook_id=orderbook_id,
-                    #     buy_rate=buy_rate,
-                    #     sell_rate=sell_rate,
-                    #     buy_trades=buy_trades,
-                    #     sell_trades=sell_trades,
-                    # )
 
                     matching = matching_engine.match(
                         orderbook_id=orderbook_id,
@@ -217,31 +195,31 @@ def simulate():
 
                     matchings.append(
                         {
-                            "runId": config["runId"],
-                            "simVersion": config["simVersion"],
-                            "e": config["envId"],
-                            "x": config["exchange"],
-                            "m": config["market"],
-                            "s": config["simId"],
-                            "p": config["_id"],
-                            "depth": depth,
-                            "allowOrderConflicts": config["allowOrderConflicts"],
+                            "runId": config.runId,
+                            "simVersion": config.simVersion,
+                            "e": config.envId,
+                            "x": config.exchange,
+                            "m": config.market,
+                            "s": config.simId,
+                            "p": partition_id,
+                            "depth": config.depth,
+                            "allowOrderConflicts": config.allowOrderConflicts,
                             "ob": orderbook["_id"],
                             "ts": datetime.now(),
                             "topBuy": orderbook["buy"][0][0],
                             "buyRate": buy_rate,
                             "buyCount": len(buy_trades),
-                            "buyMatch": str(matching.buy_match).split(".")[1],
+                            "buyMatch": matching.buy_match.value,
                             "buyDepth": buy_depth,
-                            "buys": list(map((lambda x: x["r"]), buy_trades))
+                            "buys": list(map((lambda x: x.r), buy_trades))
                             if len(buy_trades) > 0
                             else None,
                             "topSell": orderbook["sell"][0][0],
                             "sellRate": sell_rate,
                             "sellCount": len(sell_trades),
-                            "sellMatch": str(matching.sell_match).split(".")[1],
+                            "sellMatch": matching.sell_match.value,
                             "sellDepth": sell_depth,
-                            "sells": list(map((lambda x: x["r"]), sell_trades))
+                            "sells": list(map((lambda x: x.r), sell_trades))
                             if len(sell_trades) > 0
                             else None,
                             "funds": funds,

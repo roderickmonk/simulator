@@ -80,8 +80,8 @@ export class ConfigGenerator {
 
             // Ensure required params 
 
-            console.log({ multipleParams });
-            console.log({ propertyScheam: this.propertySchema });
+            // console.log({ multipleParams });
+            // console.log({ propertySchema: this.propertySchema });
             
             Object.keys(multipleParams).forEach(property => {
 

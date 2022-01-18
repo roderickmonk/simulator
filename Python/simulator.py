@@ -4,19 +4,22 @@ import warnings
 
 warnings.filterwarnings("ignore", category=UserWarning)
 
-import os
-import time
 import asyncio
 import logging
+import os
 import sys
+import time
+from datetime import datetime
+
 import dateutil.parser
-import datetime
-from schema import Schema, And, Use, Optional, SchemaError
-from pymongo import MongoClient
 from bson.objectid import ObjectId
 from dateutil import parser
+from pymongo import MongoClient
+from schema import And, Optional, Schema, SchemaError, Use
+
 from orderbooks import Orderbooks
 
+from config import SimulationConfig
 
 sim_id = ""
 
@@ -79,7 +82,7 @@ async def run_command(*args):
     process = await asyncio.create_subprocess_exec(
         *args,
         # stdout must be a pipe to be accessible as process.stdout
-        stdout=asyncio.subprocess.PIPE
+        stdout=asyncio.subprocess.PIPE,
     )
 
     # Status
@@ -233,36 +236,40 @@ if __name__ == "__main__":
         logging.debug("simulation: %r", simulation)
 
         if simulation == None:
-            raise Exception("Unknown Simulator")
+            raise Exception(f"Unknown simulation configuration: {sim_id}")
 
         if not check(stsim_config_schema, simulation):
             raise Exception("Invalid Simulator Configuration")
 
-        startTime = simulation["timeFrame"]["startTime"]
+        simulation_config = SimulationConfig(**simulation)
+
+        logging.critical(f"{simulation_config=}")
+
+        startTime = simulation_config.timeFrame.startTime
         logging.debug("startTime: " + str(startTime))
-        endTime = simulation["timeFrame"]["endTime"]
+        endTime = simulation_config.timeFrame.endTime
         logging.debug("endTime: " + str(endTime))
 
-        optimized = simulation["trader"]["optimized"]
+        optimized = simulation_config.trader.optimized
 
         if optimized:
             logging.info(
                 "{0:30}{1:10}".format(
-                    "Trader (optimized):", simulation["trader"]["name"].lower()
+                    "Trader (optimized):", simulation_config.trader.name.lower()
                 )
             )
         else:
             logging.info(
-                "{0:30}{1:10}".format("Trader:", simulation["trader"]["name"].lower())
+                "{0:30}{1:10}".format("Trader:", simulation_config.trader.name.lower())
             )
 
         orderbooks = Orderbooks(
-            envId=simulation["envId"],
-            exchange=simulation["exchange"],
-            market=simulation["market"],
+            envId=simulation_config.envId,
+            exchange=simulation_config.exchange,
+            market=simulation_config.market,
             startTime=startTime,
             endTime=endTime,
-            depth=simulation["depth"],
+            depth=simulation_config.depth,
             ob_collection=remote_mongo_client.history.orderbooks,
         )
 
@@ -275,9 +282,9 @@ if __name__ == "__main__":
                 "Channel:",
                 ":".join(
                     [
-                        str(simulation["envId"]),
-                        simulation["exchange"],
-                        simulation["market"],
+                        str(simulation_config.envId),
+                        simulation_config.exchange,
+                        simulation_config.market
                     ]
                 ),
             )
@@ -285,11 +292,11 @@ if __name__ == "__main__":
 
         logging.info(
             "{0:30}{1:10}".format(
-                "Start Time:", str(simulation["timeFrame"]["startTime"])
+                "Start Time:", str(simulation_config.timeFrame.startTime)
             )
         )
         logging.info(
-            "{0:30}{1:10}".format("End Time:", str(simulation["timeFrame"]["endTime"]))
+            "{0:30}{1:10}".format("End Time:", str(simulation_config.timeFrame.endTime))
         )
 
         actual_start = first_orderbook["ts"]
@@ -306,11 +313,11 @@ if __name__ == "__main__":
         assert actual_start < actual_end
 
         # Record the actual start and end times of the simulation
-        simulation["timeFrame"]["startTime"] = actual_start
-        simulation["timeFrame"]["endTime"] = actual_end
+        simulation_config.timeFrame.startTime = actual_start
+        simulation_config.timeFrame.endTime = actual_end
         sim_db.simulations.replace_one({"_id": ObjectId(sim_id)}, simulation)
 
-        partitions = list(partition(actual_start, actual_end, simulation["partitions"]))
+        partitions = list(partition(actual_start, actual_end, simulation_config.partitions))
 
         # Start the n subprocesses
         commands = []
@@ -329,7 +336,7 @@ if __name__ == "__main__":
                     "_id": partition_id,
                     "simId": ObjectId(sim_id),
                     "partition": i,
-                    "trader": simulation["trader"]["name"],
+                    "trader": simulation_config.trader.name,
                     "startTime": dateutil.parser.parse(partitions[i]),
                     "endTime": dateutil.parser.parse(partitions[i + 1]),
                 }
