@@ -1,6 +1,6 @@
 {
   "name": "simulator",
-  "version": "2.0.1",
+  "version": "3.0.0",
   "description": "To the target AWS ec2 apply the following changes:",
   "main": "index.js",
   "directories": {
