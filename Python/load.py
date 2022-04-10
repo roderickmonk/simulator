@@ -337,12 +337,9 @@ if __name__ == "__main__":
                     if config["saveRedis"]:
 
                         redis_key = (
-                            str(orderbook["e"])
-                            + ":"
-                            + orderbook["x"]
-                            + ":"
-                            + orderbook["m"]
+                            f"{orderbook['e']}:{orderbook['x']}:{orderbook['m']}"
                         )
+
                         redis_score = int(orderbook["ts"].timestamp() * 1000)
 
                         r.zadd(redis_key, {str(orderbook["_id"]): redis_score})
