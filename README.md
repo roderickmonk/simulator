@@ -13,7 +13,7 @@ To the target AWS ec2 apply the following changes:
 
 ## Software Installation ##
 
-It is assumed that Python 3.6.5 has already been installed on the target ec2.  What follows are instructions to install the simulation software.
+It is assumed that Python +3.6.5 has already been installed on the target ec2.  What follows are instructions to install the simulation software.
 
 1. Install the software:
 
